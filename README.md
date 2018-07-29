@@ -55,6 +55,10 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a block starts by `{` and ends by `}`.
 *   a do block starts its own line.
 
+## Limitations
+
+*   Blocks must be properly aligned.
+
 ## Installation
 
 Install the [DMD 2 compiler](https://dlang.org/download.html).
