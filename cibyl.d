@@ -74,6 +74,14 @@ class LINE
 
     // -- INQUIRIES
 
+    bool IsEmpty(
+        )
+    {
+        return Text == "";
+    }
+
+    // ~~
+
     bool HasCommand(
         string command,
         string[] prefix_array = null
@@ -142,6 +150,15 @@ class LINE
 
             return indented_text;
         }
+    }
+
+    // -- OPERATIONS
+
+    void Remove(
+        )
+    {
+        Text = "";
+        IsRemoved = true;
     }
 }
 
@@ -312,7 +329,7 @@ class CODE
             if ( FindBrace( opening_line_index, "{", LineIndex + 1, line.SpaceCount )
                  && FindBrace( closing_line_index, "}", opening_line_index + 1, line.SpaceCount ) )
             {
-                LineArray[ opening_line_index ].IsRemoved = true;
+                LineArray[ opening_line_index ].Remove();
 
                 if ( ( closing_command_array.length > 0
                        && closing_line_index + 1 < LineArray.length
@@ -321,15 +338,16 @@ class CODE
                      || ( command == "else"
                           && HasPriorCommand( "when", LineIndex - 1, line.SpaceCount ) ) )
                 {
-                    LineArray[ closing_line_index ].IsRemoved = true;
+                    LineArray[ closing_line_index ].Remove();
                 }
                 else
                 {
                     LineArray[ closing_line_index ].Text = "end";
                 }
 
-                if ( line.Text.startsWith( "do |" )
-                     && LineIndex > 0 )
+                if ( line.HasCommand( "do" )
+                     && LineIndex > 0
+                     && !LineArray[ LineIndex - 1 ].IsEmpty() )
                 {
                     LineArray[ LineIndex - 1 ].Text ~= " \\";
                 }
