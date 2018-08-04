@@ -133,7 +133,7 @@ class LINE
 
         if ( IsRemoved )
         {
-            if ( ConciseOptionIsEnabled )
+            if ( CompactOptionIsEnabled )
             {
                 return "";
             }
@@ -537,7 +537,7 @@ string
 LANGUAGE
     Language;
 bool
-    ConciseOptionIsEnabled,
+    CompactOptionIsEnabled,
     CreateOptionIsEnabled,
     WatchOptionIsEnabled;
 long
@@ -717,7 +717,7 @@ void main(
     SpaceText = " ";
 
     Language = LANGUAGE.Ruby;
-    ConciseOptionIsEnabled = false;
+    CompactOptionIsEnabled = false;
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
@@ -737,9 +737,9 @@ void main(
         {
             Language = LANGUAGE.Crystal;
         }
-        else if ( option == "--concise" )
+        else if ( option == "--compact" )
         {
-            ConciseOptionIsEnabled = true;
+            CompactOptionIsEnabled = true;
         }
         else if ( option == "--create" )
         {
@@ -782,7 +782,7 @@ void main(
         writeln( "Options :" );
         writeln( "    --ruby" );
         writeln( "    --crystal" );
-        writeln( "    --concise" );
+        writeln( "    --compact" );
         writeln( "    --create" );
         writeln( "    --watch" );
         writeln( "    --pause 500" );

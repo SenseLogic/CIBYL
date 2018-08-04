@@ -80,7 +80,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 ```
 --ruby : generate Ruby files
 --crystal : generate Crystal files
---concise : remove unused lines
+--compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
 --pause 500 : time to wait before checking the Cibyl files again
@@ -89,7 +89,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 ### Examples
 
 ```bash
-cibyl --ruby --concise CB/ RB/
+cibyl --ruby --compact CB/ RB/
 ```
 
 Converts the Cibyl files of the input folder into matching Ruby files in the output folder.
