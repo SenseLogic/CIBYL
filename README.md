@@ -2,11 +2,11 @@
 
 # Cibyl
 
-Lightweight language which compiles to Ruby and Crystal.
+Lightweight curly bracket language which compiles to Ruby and Crystal.
 
 # Description
 
-Cibyl is a lightweight language which allows to use a C-like syntax to program Ruby and Crystal applications.
+Cibyl is a lightweight language which allows to develop Ruby and Crystal applications with a C-like syntax.
 
 ## Sample
 
