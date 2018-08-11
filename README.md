@@ -2,7 +2,7 @@
 
 # Cibyl
 
-Lightweight curly bracket language which compiles to Ruby and Crystal.
+Lightweight curly-bracket language which compiles to Ruby and Crystal.
 
 # Description
 
