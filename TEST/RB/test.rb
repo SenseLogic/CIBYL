@@ -12,7 +12,8 @@ module CIBYL
 
         # -- INQUIRIES
 
-        def red?
+        def red?(
+            )
             return self == Red;
         end
     end
@@ -141,7 +142,8 @@ module CIBYL
 
         # ~~
 
-        def test_begin
+        def test_begin(
+            )
             begin
                 result = 1;
             rescue
@@ -155,7 +157,8 @@ module CIBYL
 
         # ~~
 
-        def test_rescue
+        def test_rescue(
+            )
             result = 1;
         rescue
             result = 2;
@@ -167,7 +170,8 @@ module CIBYL
 
         # ~~
 
-        def test_each
+        def test_each(
+            )
             "0123456789".each_char \
                 do |character|
                     print( character );
