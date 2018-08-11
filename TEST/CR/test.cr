@@ -16,7 +16,7 @@ module CIBYL
 
         def red?
 
-            self == Red
+            return self == Red;
         end
     end
 
@@ -32,7 +32,7 @@ module CIBYL
 
         # -- ATTRIBUTES
 
-        property name, age
+        property name, age;
 
         # -- CONSTRUCTORS
 
@@ -47,7 +47,7 @@ module CIBYL
 
         protected def print
 
-            puts "#{age} - #{name}"
+            puts "#{age} - #{name}";
         end
     end
 
@@ -63,29 +63,29 @@ module CIBYL
 
             if ( count <= 1 )
 
-                return 10
+                return 10;
             end
 
             if ( count <= 1 )
 
-                return 10
+                return 10;
 
             else
 
-                return 20
+                return 20;
             end
 
             if ( count <= 1 )
 
-                return 10
+                return 10;
 
             elsif ( count <= 2 )
 
-                return 20
+                return 20;
 
             else
 
-                return 30
+                return 30;
             end
         end
 
@@ -97,16 +97,16 @@ module CIBYL
 
             unless ( count > 1 )
 
-                return 10
+                return 10;
             end
 
             unless ( count > 1 )
 
-                return 10
+                return 10;
 
             else
 
-                return 20
+                return 20;
             end
         end
 
@@ -116,11 +116,11 @@ module CIBYL
             count : Int
             )
 
-            index = 0
+            index = 0;
 
             while ( index < count )
 
-                index = index + 1
+                index = index + 1;
             end
         end
 
@@ -130,11 +130,11 @@ module CIBYL
             count : Int
             )
 
-            index = 0
+            index = 0;
 
             until ( index >= count )
 
-                index = index + 1
+                index = index + 1;
             end
         end
 
@@ -148,7 +148,7 @@ module CIBYL
 
                 when 1
 
-                    return 10
+                    return 10;
 
             end
 
@@ -156,11 +156,11 @@ module CIBYL
 
                 when 1
 
-                    return 10
+                    return 10;
 
                 when 2
 
-                    return 20
+                    return 20;
 
             end
 
@@ -168,15 +168,15 @@ module CIBYL
 
                 when 1
 
-                    return 10
+                    return 10;
 
                 when 2
 
-                    return 20
+                    return 20;
 
                 else
 
-                    return 30
+                    return 30;
 
             end
         end
@@ -187,19 +187,19 @@ module CIBYL
 
             begin
 
-                result = 1
+                result = 1;
 
             rescue
 
-                result = 2
+                result = 2;
 
             else
 
-                result = 3
+                result = 3;
 
             ensure
 
-                result = 4
+                result = 4;
             end
         end
 
@@ -207,19 +207,19 @@ module CIBYL
 
         def test_rescue
 
-            result = 1
+            result = 1;
 
         rescue
 
-            result = 2
+            result = 2;
 
         else
 
-            result = 3
+            result = 3;
 
         ensure
 
-            result = 4
+            result = 4;
         end
 
         # ~~
@@ -229,10 +229,10 @@ module CIBYL
             "0123456789".each_char \
                 do |character|
 
-                    print character
+                    print character;
                 end
 
-            print '\n'
+            print '\n';
 
             [
                 {1, "A"},
@@ -240,7 +240,7 @@ module CIBYL
             ].each \
                 do |key, value|
 
-                    puts "#{@key} : #{@value}"
+                    puts "#{@key} : #{@value}";
                 end
         end
     end
@@ -248,16 +248,16 @@ end
 
 # -- STATEMENTS
 
-require "http/server"
+require "http/server";
 
 server = HTTP::Server.new \
     do |context|
 
-        context.response.content_type = "text/plain"
-        context.response.print "Hello world! The time is #{Time.now}"
+        context.response.content_type = "text/plain";
+        context.response.print "Hello world! The time is #{Time.now}";
     end
 
-address = server.bind_tcp 8080
-puts "Listening on http://#{address}"
-server.listen
+address = server.bind_tcp 8080;
+puts "Listening on http://#{address}";
+server.listen();
 
