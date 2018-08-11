@@ -39,7 +39,8 @@ module CIBYL
 
         # -- OPERATIONS
 
-        protected def print
+        protected def print(
+            )
             puts "#{age} - #{name}";
         end
     end
@@ -169,17 +170,17 @@ module CIBYL
         def test_each
             "0123456789".each_char \
                 do |character|
-                    print character;
+                    print( character );
                 end
 
-            print '\n';
+            print( '\n' );
 
             [
                 {1, "A"},
                 {2, "B"}
             ].each \
                 do |key, value|
-                    puts "#{@key} : #{@value}";
+                    puts( "#{@key} : #{@value}" );
                 end
         end
     end
@@ -192,10 +193,10 @@ require "http/server";
 server = HTTP::Server.new \
     do |context|
         context.response.content_type = "text/plain";
-        context.response.print "Hello world! The time is #{Time.now}";
+        context.response.print( "Hello world! The time is #{Time.now}" );
     end
 
-address = server.bind_tcp 8080;
-puts "Listening on http://#{address}";
+address = server.bind_tcp( 8080 );
+puts( "Listening on http://#{address}" );
 server.listen();
 
