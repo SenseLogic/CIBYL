@@ -46,7 +46,7 @@ class LINE
 {
     // -- ATTRIBUTES
 
-    long
+    uint
         SpaceCount;
     string
         Text;
@@ -172,7 +172,7 @@ class CODE
         FilePath;
     LINE[]
         LineArray;
-    long
+    uint
         LineIndex;
 
     // -- CONSTRUCTORS
@@ -188,11 +188,11 @@ class CODE
 
     bool HasPriorCommand(
         string command,
-        long last_line_index,
-        long space_count
+        uint last_line_index,
+        uint space_count
         )
     {
-        long
+        uint
             line_index;
         LINE
             line;
@@ -221,10 +221,10 @@ class CODE
     // ~~
 
     bool FindBrace(
-        ref long line_index,
+        ref uint line_index,
         string brace,
-        long first_line_index,
-        long space_count
+        uint first_line_index,
+        uint space_count
         )
     {
         LINE
@@ -315,7 +315,7 @@ class CODE
         LANGUAGE language
         )
     {
-        long
+        uint
             closing_line_index,
             opening_line_index;
         LINE
@@ -584,7 +584,7 @@ void Abort(
 // ~~
 
 string GetSpaceText(
-    long space_count
+    uint space_count
     )
 {
     if ( space_count <= 0 )
