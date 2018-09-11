@@ -53,7 +53,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   `.cb` files contain Cibyl code.
 *   a comment starts by `//`.
 *   a block starts by `{` and ends by `}`.
-*   a do block starts its own line.
+*   a `do` block starts its own line.
 
 ## Limitations
 
