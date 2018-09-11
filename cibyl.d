@@ -31,6 +31,17 @@ import std.string : endsWith, indexOf, replace, split, startsWith, stripLeft, st
 
 // -- TYPES
 
+// .. INT
+
+version ( X86 )
+{
+    alias INT = int;
+}
+else
+{
+    alias INT = long;
+}
+
 // .. CODE
 
 enum LANGUAGE
@@ -46,7 +57,7 @@ class LINE
 {
     // -- ATTRIBUTES
 
-    long
+    INT
         SpaceCount;
     string
         Text;
@@ -172,7 +183,7 @@ class CODE
         FilePath;
     LINE[]
         LineArray;
-    long
+    INT
         LineIndex;
 
     // -- CONSTRUCTORS
@@ -188,11 +199,11 @@ class CODE
 
     bool HasPriorCommand(
         string command,
-        long last_line_index,
-        long space_count
+        INT last_line_index,
+        INT space_count
         )
     {
-        long
+        INT
             line_index;
         LINE
             line;
@@ -221,10 +232,10 @@ class CODE
     // ~~
 
     bool FindBrace(
-        ref long line_index,
+        ref INT line_index,
         string brace,
-        long first_line_index,
-        long space_count
+        INT first_line_index,
+        INT space_count
         )
     {
         LINE
@@ -315,7 +326,7 @@ class CODE
         LANGUAGE language
         )
     {
-        long
+        INT
             closing_line_index,
             opening_line_index;
         LINE
@@ -532,21 +543,20 @@ class FILE
 
 // -- VARIABLES
 
-string
-    SpaceText;
-LANGUAGE
-    Language;
 bool
     CompactOptionIsEnabled,
     CreateOptionIsEnabled,
     WatchOptionIsEnabled;
-long
-    PauseDuration;
 string
     InputFolderPath,
-    OutputFolderPath;
+    OutputFolderPath,
+    SpaceText;
+INT
+    PauseDuration;
 FILE[ string ]
     FileMap;
+LANGUAGE
+    Language;
 
 // -- FUNCTIONS
 
@@ -584,7 +594,7 @@ void Abort(
 // ~~
 
 string GetSpaceText(
-    long space_count
+    INT space_count
     )
 {
     if ( space_count <= 0 )
@@ -600,6 +610,15 @@ string GetSpaceText(
 
         return SpaceText[ 0 .. space_count ];
     }
+}
+
+// ~~
+
+string GetLogicalPath(
+    string path
+    )
+{
+    return path.replace( "\\", "/" );
 }
 
 // ~~
@@ -710,7 +729,9 @@ void main(
     )
 {
     string
-        option;
+        input_folder_path,
+        option,
+        output_folder_path;
 
     argument_array = argument_array[ 1 .. $ ];
 
@@ -752,7 +773,7 @@ void main(
         else if ( option == "--pause"
                   && argument_array.length >= 1 )
         {
-            PauseDuration = argument_array[ 0 ].to!long();
+            PauseDuration = argument_array[ 0 ].to!INT();
 
             argument_array = argument_array[ 1 .. $ ];
         }
@@ -763,16 +784,19 @@ void main(
     }
 
     if ( argument_array.length == 2
-         && argument_array[ 0 ].endsWith( '/' )
-         && argument_array[ 1 ].endsWith( '/' ) )
+         && argument_array[ 0 ].GetLogicalPath().endsWith( '/' )
+         && argument_array[ 1 ].GetLogicalPath().endsWith( '/' ) )
     {
+        input_folder_path = argument_array[ 0 ].GetLogicalPath();
+        output_folder_path = argument_array[ 1 ].GetLogicalPath();
+
         if ( WatchOptionIsEnabled )
         {
-            WatchFiles( argument_array[ 0 ], argument_array[ 1 ] );
+            WatchFiles( input_folder_path, output_folder_path );
         }
         else
         {
-            ProcessFiles( argument_array[ 0 ], argument_array[ 1 ], false );
+            ProcessFiles( input_folder_path, output_folder_path, false );
         }
     }
     else

@@ -19,7 +19,7 @@ def fibonacci(
 {
     if ( n <= 1 )
     {
-        return 1;
+        return n;
     }
     else
     {
@@ -27,7 +27,7 @@ def fibonacci(
     }
 }
 
-puts fibonacci( 5 );
+puts fibonacci( 8 );
 ```
 
 ```ruby
@@ -37,13 +37,13 @@ def fibonacci(
     n : Int32
     )
     if ( n <= 1 )
-        return 1;
+        return n;
     else
         return fibonacci( n - 1 ) + fibonacci( n - 2 );
     end
 end
 
-puts fibonacci( 5 );
+puts fibonacci( 8 );
 ```
 
 ## Syntax
