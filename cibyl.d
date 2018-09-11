@@ -551,10 +551,10 @@ string
     InputFolderPath,
     OutputFolderPath,
     SpaceText;
-INT
-    PauseDuration;
 FILE[ string ]
     FileMap;
+INT
+    PauseDuration;
 LANGUAGE
     Language;
 
