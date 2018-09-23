@@ -12,7 +12,7 @@ module CIBYL
 
         # -- INQUIRIES
 
-        def red?(
+        def is_red?(
             )
             return self == Red;
         end

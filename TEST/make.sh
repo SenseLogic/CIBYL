@@ -1,4 +1,4 @@
 #!/bin/sh
 set -x
-../cibyl --ruby --compact CB/ RB/
-../cibyl --crystal --create --watch CB/ CR/
+../cibyl --ruby --case --compact CB/ RB/
+../cibyl --crystal --case --create --watch CB/ CR/

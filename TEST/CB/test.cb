@@ -14,7 +14,7 @@ module CIBYL
 
         // -- INQUIRIES
 
-        def red?(
+        def IsRed?(
             )
         {
             return self == Red;
@@ -37,16 +37,16 @@ module CIBYL
 
         // -- CONSTRUCTORS
 
-        def initialize(
-            @name : String,
-            @age : Int32
+        def Initialize(
+            @Name : String,
+            @Age : Int32
             )
         {
         }
 
         // -- OPERATIONS
 
-        protected def print(
+        protected def Print(
             )
         {
             puts "#{age} - #{name}";
@@ -59,7 +59,7 @@ module CIBYL
     {
         // -- OPERATIONS
 
-        def test_if(
+        def TestIf(
             count : Int
             ) : Int
         {
@@ -93,7 +93,7 @@ module CIBYL
 
         // ~~
 
-        def test_unless(
+        def TestUnless(
             count : Int
             ) : Int
         {
@@ -114,7 +114,7 @@ module CIBYL
 
         // ~~
 
-        def test_while(
+        def TestWhile(
             count : Int
             )
         {
@@ -128,7 +128,7 @@ module CIBYL
 
         // ~~
 
-        def test_until(
+        def TestUntil(
             count : Int
             )
         {
@@ -142,7 +142,7 @@ module CIBYL
 
         // ~~
 
-        def test_case(
+        def TestCase(
             count : Int
             )
         {
@@ -185,7 +185,7 @@ module CIBYL
 
         // ~~
 
-        def test_begin(
+        def TestBegin(
             )
         {
             begin
@@ -208,7 +208,7 @@ module CIBYL
 
         // ~~
 
-        def test_rescue(
+        def TestRescue(
             )
         {
             result = 1;
@@ -228,7 +228,7 @@ module CIBYL
 
         // ~~
 
-        def test_each(
+        def TestEach(
             )
         {
             "0123456789".each_char
@@ -259,9 +259,9 @@ server = HTTP::Server.new
     do |context|
     {
         context.response.content_type = "text/plain";
-        context.response.print( "Hello world! The time is #{Time.now}" );
+        context.response.Print( "Hello world! The time is #{Time.now}" );
     }
 
-address = server.bind_tcp( 8080 );
-puts( "Listening on http://#{address}" );
-server.listen();
+address = server.BindTcp( 8080 );
+Puts( "Listening on http://#{address}" );
+server.Listen();

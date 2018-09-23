@@ -55,6 +55,11 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a block starts by `{` and ends by `}`.
 *   a `do` block starts its own line.
 
+Moreover, if the `--case` option is used :
+*   PascalCase attributes prefixed by '@' are converted to snake_case .
+*   PascalCase methods suffixed by '(' are converted to snake_case.
+*   PascalCase identifiers prefixed by `\` are kept unchanged.
+
 ## Limitations
 
 *   Blocks must be properly aligned.
@@ -80,6 +85,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 ```
 --ruby : generate Ruby files
 --crystal : generate Crystal files
+--case : convert PascalCase attributes and methods to snake_case
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications

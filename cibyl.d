@@ -95,21 +95,13 @@ class LINE
 
     bool HasCommand(
         string command,
-        string[] prefix_array = null
+        string[] command_prefix_array = null
         )
     {
         string
             text;
 
-        text = Text;
-
-        foreach ( prefix; prefix_array )
-        {
-            if ( text.startsWith( prefix ) )
-            {
-                text = text[ prefix.length .. $ ].stripLeft();
-            }
-        }
+        text = Text.RemoveCommandPrefix( command_prefix_array );
 
         return
             text == command
@@ -322,7 +314,7 @@ class CODE
     bool ProcessBlock(
         string command,
         string[] closing_command_array,
-        string[] prefix_array,
+        string[] command_prefix_array,
         LANGUAGE language
         )
     {
@@ -335,7 +327,7 @@ class CODE
         line = LineArray[ LineIndex ];
 
         if ( ( Language & language ) != 0
-             && line.HasCommand( command, prefix_array ) )
+             && line.HasCommand( command, command_prefix_array ) )
         {
             if ( FindBrace( opening_line_index, "{", LineIndex + 1, line.SpaceCount )
                  && FindBrace( closing_line_index, "}", opening_line_index + 1, line.SpaceCount ) )
@@ -380,21 +372,19 @@ class CODE
         )
     {
         string[]
-            prefix_array;
-
-        prefix_array = [ "private ", "protected ", "abstract " ];
+            command_prefix_array = [ "private ", "protected ", "abstract " ];
 
         for ( LineIndex = 0;
               LineIndex < LineArray.length;
               ++LineIndex )
         {
             if ( ProcessComment()
-                 || ProcessBlock( "module", null, prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "lib", null, prefix_array, LANGUAGE.Crystal )
-                 || ProcessBlock( "enum", null, prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "struct", null, prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "class", null, prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "module", null, command_prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "lib", null, command_prefix_array, LANGUAGE.Crystal )
+                 || ProcessBlock( "enum", null, command_prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "struct", null, command_prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "class", null, command_prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], command_prefix_array, LANGUAGE.Any )
                  || ProcessBlock( "if", [ "elsif", "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "elsif", [ "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "else", [ "ensure" ], null, LANGUAGE.Any )
@@ -488,6 +478,106 @@ class FILE
         }
     }
 
+    string FixCase(
+        string text
+        )
+    {
+        bool
+            it_is_inside_comment,
+            it_is_inside_string;
+        char
+            character;
+        string
+            pascal_case_identifier,
+            snake_case_identifier;
+        INT
+            character_index,
+            next_character_index;
+
+        for ( character_index = 0;
+              character_index < text.length;
+              ++character_index )
+        {
+            character = text[ character_index ];
+
+            if ( it_is_inside_comment )
+            {
+                if ( character == '\n' )
+                {
+                    it_is_inside_comment = false;
+                }
+            }
+            else if ( it_is_inside_string )
+            {
+                if ( character == '\\' )
+                {
+                    ++character_index;
+                }
+                else if ( character == '"' )
+                {
+                    it_is_inside_string = false;
+                }
+            }
+            else if ( character == '#' )
+            {
+                it_is_inside_comment = true;
+            }
+            else if ( character == '"' )
+            {
+                it_is_inside_string = true;
+            }
+            else
+            {
+                if ( character >= 'A'
+                     && character <= 'Z'
+                     && ( character_index == 0
+                          || !text[ character_index - 1 ].IsAlphaNumericCharacter() ) )
+                {
+                    next_character_index = character_index + 1;
+
+                    while ( next_character_index < text.length
+                            && text[ next_character_index ].IsAlphaNumericCharacter() )
+                    {
+                        ++next_character_index;
+                    }
+
+                    if ( next_character_index < text.length
+                         && ( text[ next_character_index ] == '!'
+                              || text[ next_character_index ] == '?' ) )
+                    {
+                        ++next_character_index;
+                    }
+
+                    if ( ( character_index >= 1
+                           && text[ character_index - 1 ] == '\\' ) )
+                    {
+                        text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
+
+                        character_index = next_character_index;
+                    }
+                    else if ( ( character_index >= 1
+                                && text[ character_index - 1 ] == '@' )
+                              || ( next_character_index < text.length
+                                   && text[ next_character_index ] == '(' ) )
+                    {
+                        pascal_case_identifier = text[ character_index .. next_character_index ];
+                        snake_case_identifier = pascal_case_identifier.GetSnakeCaseIdentifier();
+
+                        text = text[ 0 .. character_index ] ~ snake_case_identifier ~ text [ next_character_index .. $ ];
+
+                        character_index = character_index + snake_case_identifier.length - 1;
+                    }
+                    else
+                    {
+                        character_index = next_character_index - 1;
+                    }
+                }
+            }
+        }
+
+        return text;
+    }
+
     // ~~
 
     void WriteOutputFile(
@@ -531,6 +621,11 @@ class FILE
 
             output_file_text = code.GetText();
 
+            if ( CaseOptionIsEnabled )
+            {
+                output_file_text = FixCase( output_file_text );
+            }
+
             if ( CreateOptionIsEnabled )
             {
                 CreateOutputFolder();
@@ -544,6 +639,7 @@ class FILE
 // -- VARIABLES
 
 bool
+    CaseOptionIsEnabled,
     CompactOptionIsEnabled,
     CreateOptionIsEnabled,
     WatchOptionIsEnabled;
@@ -619,6 +715,69 @@ string GetLogicalPath(
     )
 {
     return path.replace( "\\", "/" );
+}
+
+// ~~
+
+string RemoveCommandPrefix(
+    string text,
+    string[] command_prefix_array
+    )
+{
+    text = text.stripLeft();
+
+    foreach ( command_prefix; command_prefix_array )
+    {
+        if ( text.startsWith( command_prefix ) )
+        {
+            text = text[ command_prefix.length .. $ ].stripLeft();
+        }
+    }
+
+    return text;
+}
+
+// ~~
+
+bool IsAlphaNumericCharacter(
+    char character
+    )
+{
+    return
+        ( character >= 'A' && character <= 'Z' )
+        || ( character >= 'a' && character <= 'z' )
+        || ( character >= '0' && character <= '9' )
+        || character == '_';
+}
+
+// ~~
+
+string GetSnakeCaseIdentifier(
+    string text
+    )
+{
+    string
+        snake_case_identifier;
+
+    foreach ( character_index, character; text )
+    {
+        if ( character >= 'A'
+             && character <= 'Z' )
+        {
+            if ( character_index > 0 )
+            {
+                snake_case_identifier ~= '_';
+            }
+
+            snake_case_identifier ~= ( character - 'A' ) + 'a';
+        }
+        else
+        {
+            snake_case_identifier ~= character;
+        }
+    }
+
+    return snake_case_identifier;
 }
 
 // ~~
@@ -739,6 +898,7 @@ void main(
 
     Language = LANGUAGE.Ruby;
     CompactOptionIsEnabled = false;
+    CaseOptionIsEnabled = false;
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
@@ -761,6 +921,10 @@ void main(
         else if ( option == "--compact" )
         {
             CompactOptionIsEnabled = true;
+        }
+        else if ( option == "--case" )
+        {
+            CaseOptionIsEnabled = true;
         }
         else if ( option == "--create" )
         {
@@ -806,14 +970,15 @@ void main(
         writeln( "Options :" );
         writeln( "    --ruby" );
         writeln( "    --crystal" );
+        writeln( "    --case" );
         writeln( "    --compact" );
         writeln( "    --create" );
         writeln( "    --watch" );
         writeln( "    --pause 500" );
         writeln( "Examples :" );
-        writeln( "    cibyl CB/ CR/" );
-        writeln( "    cibyl --create CB/ CR/" );
-        writeln( "    cibyl --create --watch CB/ CR/" );
+        writeln( "    cibyl --crystal CB/ CR/" );
+        writeln( "    cibyl --crystal --create CB/ CR/" );
+        writeln( "    cibyl --crystal --create --watch CB/ CR/" );
 
         PrintError( "Invalid arguments : " ~ argument_array.to!string() );
     }
