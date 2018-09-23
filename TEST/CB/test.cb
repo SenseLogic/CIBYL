@@ -234,10 +234,10 @@ module CIBYL
             "0123456789".each_char
                 do |character|
                 {
-                    print( character );
+                    Print( character );
                 }
 
-            print( '\n' );
+            Print( '\n' );
 
             [
                 {1, "A"},
@@ -245,7 +245,7 @@ module CIBYL
             ].each
                 do |key, value|
                 {
-                    puts( "#{@key} : #{@value}" );
+                    Puts( "#{@key} : #{@value}" );
                 }
         }
     }
