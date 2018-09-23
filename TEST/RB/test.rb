@@ -42,7 +42,7 @@ module CIBYL
 
         protected def print(
             )
-            puts "#{age} - #{name}";
+            puts( "#{age} - #{name}" );
         end
     end
 

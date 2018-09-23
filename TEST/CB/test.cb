@@ -49,7 +49,7 @@ module CIBYL
         protected def Print(
             )
         {
-            puts "#{age} - #{name}";
+            Puts( "#{age} - #{name}" );
         }
     }
 
