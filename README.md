@@ -55,8 +55,8 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a block starts by `{` and ends by `}`.
 *   a `do` block starts its own line.
 
-If the `--case` option is used, PascalCase identifiers are :
-*   converted to snake_case if they are prefixed with '@' or suffixed with '('.
+If the `--case` option is used, `PascalCase` identifiers are :
+*   converted to `snake_case` if they are prefixed with '@' or suffixed with '('.
 *   kept unchanged if they are prefixed with `\`.
 
 ## Limitations
