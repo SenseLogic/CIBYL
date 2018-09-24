@@ -56,21 +56,6 @@ If the `--convert` option is used :
 Identifiers prefixed with `#` or located in string literals remain unchanged.
 
 ```ruby
-require "http/server";
-
-server = HTTP::SERVER.New
-    do |context|
-    {
-        context.Response.ContentType = "text/plain";
-        context.Response.Print( "Hello world! The time is #{Time.now}" );
-    }
-
-address = server.BindTcp( 8080 );
-Puts( "Listening on http://#{address}" );
-server.Listen();
-```
-
-```ruby
 enum COLOR
 {
     // -- CONSTANTS
@@ -87,6 +72,21 @@ enum COLOR
         return self == #Red;
     }
 }
+```
+
+```ruby
+require "http/server";
+
+server = HTTP::SERVER.New
+    do |context|
+    {
+        context.Response.ContentType = "text/plain";
+        context.Response.Print( "Hello world! The time is #{Time.now}" );
+    }
+
+address = server.BindTcp( 8080 );
+Puts( "Listening on http://#{address}" );
+server.Listen();
 ```
 
 ## Limitations
