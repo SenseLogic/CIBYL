@@ -267,8 +267,8 @@ require "http/server";
 server = HTTP::Server.New
     do |context|
     {
-        context.response.content_type = "text/plain";
-        context.response.Print( "Hello world! The time is #{Time.now}" );
+        context.Response.ContentType = "text/plain";
+        context.Response.Print( "Hello world! The time is #{Time.now}" );
     }
 
 address = server.BindTcp( 8080 );
