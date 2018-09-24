@@ -146,7 +146,7 @@ and creating the Crystal folders if needed. Then watches the Cibyl files for mod
 
 ## Version
 
-1.0
+1.1
 
 ## Author
 
