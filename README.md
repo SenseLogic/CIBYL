@@ -39,12 +39,12 @@ puts fibonacci( 8 );
 
 ## Naming convention
 
-Additionally, if the `--case` option is enabled, `PascalCase` identifiers will be :
+Additionally, if the `--case` option is enabled, `PascalCase` identifiers will :
 
-*   converted to `snake_case` if they :
+*   automatically be converted to `snake_case` if they :
     *   are prefixed with `@` or `.`
     *   are suffixed with `(`
-*   kept unchanged if they are prefixed with `#`
+*   remain unchanged if they are prefixed with `#`
 
 ```ruby
 require "http/server";
