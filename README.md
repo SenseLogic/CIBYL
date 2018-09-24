@@ -50,17 +50,18 @@ puts fibonacci( 8 );
 
 Most of the Ruby/Crystal syntax is kept unchanged, except that :
 
-*   `.cb` files contain Cibyl code.
-*   a comment starts by `//`.
-*   a block starts by `{` and ends by `}`.
-*   a `do` block starts its own line.
+*   `.cb` files contain Cibyl code
+*   a comment starts by `//`
+*   a block starts by `{` and ends by `}`
+*   a `do` block starts its own line
 
 If the `--case` option is used, `PascalCase` identifiers are :
+
 *   converted to `snake_case` if they :
-    *   are prefixed with `@` or `.`.
-    *   are suffixed with `(`.
-    *   have been parsed as attribute or method names.
-*   kept unchanged if they are prefixed with `#`.
+    *   are prefixed with `@` or `.`
+    *   are suffixed with `(`
+    *   have been parsed as attribute or method names
+*   kept unchanged if they are prefixed with `#`
 
 ## Limitations
 
