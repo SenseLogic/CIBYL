@@ -50,7 +50,7 @@ If several definitions are provided, the last definition is used.
 
 Identifiers in quoted strings or prefixed with `#` won't be replaced.
 
-## Case conversion
+## Identifier conversion
 
 If the `--convert` option is used :
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
