@@ -8,7 +8,16 @@ Lightweight curly-bracket language which compiles to Ruby and Crystal.
 
 Cibyl is a lightweight language which allows to develop Ruby and Crystal applications with a C-like syntax.
 
-## Sample
+## Syntax
+
+### Blocks
+
+Most of the Ruby/Crystal syntax is kept unchanged, except that :
+
+*   `.cb` files contain Cibyl code
+*   a comment starts by `//`
+*   a block starts by `{` and ends by `}`
+*   a `do` block starts its own line
 
 ```ruby
 // Recursive Fibonacci function
@@ -30,30 +39,7 @@ def fibonacci(
 puts fibonacci( 8 );
 ```
 
-```ruby
-# Recursive Fibonacci function
-
-def fibonacci(
-    n : Int32
-    )
-    if ( n <= 1 )
-        return n;
-    else
-        return fibonacci( n - 1 ) + fibonacci( n - 2 );
-    end
-end
-
-puts fibonacci( 8 );
-```
-
-## Syntax
-
-Most of the Ruby/Crystal syntax is kept unchanged, except that :
-
-*   `.cb` files contain Cibyl code
-*   a comment starts by `//`
-*   a block starts by `{` and ends by `}`
-*   a `do` block starts its own line
+### Case
 
 If the `--case` option is used, `PascalCase` identifiers are :
 
@@ -61,6 +47,21 @@ If the `--case` option is used, `PascalCase` identifiers are :
     *   are prefixed with `@` or `.`
     *   are suffixed with `(`
 *   kept unchanged if they are prefixed with `#`
+
+```ruby
+require "http/server";
+
+server = HTTP::Server.New
+    do |context|
+    {
+        context.Response.ContentType = "text/plain";
+        context.Response.Print( "Hello world! The time is #{Time.now}" );
+    }
+
+address = server.BindTcp( 8080 );
+Puts( "Listening on http://#{address}" );
+server.Listen();
+```
 
 ## Limitations
 
