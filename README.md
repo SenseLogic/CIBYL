@@ -58,13 +58,9 @@ Identifiers prefixed with `#` or located in string literals remain unchanged.
 ```ruby
 enum COLOR
 {
-    // -- CONSTANTS
-
     #Red
     #Green
     #Blue
-
-    // -- INQUIRIES
 
     method IsRed?(
         )
