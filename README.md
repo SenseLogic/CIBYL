@@ -118,7 +118,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --ruby : generate Ruby files
 --crystal : generate Crystal files
 --replace dictionary.txt : replace identifiers defined in this dictionary
---convert : convert UPPER_CASE and PascalCase identifiers
+--convert : convert uppercase and Pascal case identifiers
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
