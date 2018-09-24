@@ -69,12 +69,8 @@ enum COLOR
     }
 }
 
-// ~~
-
 struct POINT
 {
-    // -- CONSTRUCTORS
-
     method Initialize(
         @X : INT32,
         @Y : INT32,
@@ -83,8 +79,6 @@ struct POINT
     {
     }
 }
-
-// ~~
 
 require "http/server";
 
