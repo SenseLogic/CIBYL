@@ -37,7 +37,7 @@ def fibonacci(
 puts fibonacci( 8 );
 ```
 
-## Substitutions
+## Identifier substitution
 
 If the `--replace` option is used, identifiers defined in the dictionary files are replaced by their definitions.
 
@@ -50,7 +50,7 @@ If several definitions are provided, the last definition is used.
 
 Identifiers in quoted strings or prefixed with `#` won't be replaced.
 
-## Conversions
+## Case conversion
 
 If the `--convert` option is used :
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
