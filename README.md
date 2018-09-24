@@ -114,7 +114,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --ruby : generate Ruby files
 --crystal : generate Crystal files
 --replace dictionary.txt : replace identifiers defined in this dictionary
---convert : convert uppercase and Pascal case identifiers
+--convert : convert the uppercase and Pascal case identifiers
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
@@ -134,16 +134,15 @@ cibyl --crystal --create --watch CB/ CR/
 ```
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder,
-creating the Crystal folders if needed, and then watches the Cibyl files for modifications.
+creating the Crystal folders if needed. Then watches the Cibyl files for modifications.
 
 ```bash
 cibyl --crystal --replace dictionary.txt --convert --create --watch CB/ CR/
 ```
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder,
-replacing the identifiers specified in `dictionary.txt`,
-converting the case of the `UPPER_CASE` and `PascalCase` identifiers,
-creating the Crystal folders if needed, and then watches the Cibyl files for modifications.
+replacing the identifiers defined in `dictionary.txt`, converting the uppercase and Pascal case identifiers,
+and creating the Crystal folders if needed. Then watches the Cibyl files for modifications.
 
 ## Version
 
