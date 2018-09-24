@@ -41,9 +41,9 @@ puts fibonacci( 8 );
 
 Additionally, if the `--case` option is enabled, `PascalCase` identifiers will :
 
-*   automatically be converted to `snake_case` if they :
-    *   are prefixed with `@` or `.`
-    *   are suffixed with `(`
+*   automatically be converted to `snake_case` if they are :
+    *   prefixed with `@` or `.`
+    *   suffixed with `(`
 *   remain unchanged if they are prefixed with `#`
 
 ```ruby
