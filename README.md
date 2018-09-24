@@ -67,7 +67,7 @@ Puts( "Listening on http://#{address}" );
 server.Listen();
 ```
 
-Identifiers prefixed with `#` or located in string literals aren't converted.
+Identifiers prefixed with `#` or located in string literals remain unchanged.
 
 ```ruby
 enum COLOR
