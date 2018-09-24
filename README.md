@@ -49,8 +49,11 @@ HTTP
 When several definitions are provided, only the last provided definition is applied.
 
 If the `--convert` option is used :
+
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
+
+Identifiers prefixed with `#` or located in string literals remain unchanged.
 
 ```ruby
 require "http/server";
@@ -66,8 +69,6 @@ address = server.BindTcp( 8080 );
 Puts( "Listening on http://#{address}" );
 server.Listen();
 ```
-
-Identifiers prefixed with `#` or located in string literals remain unchanged.
 
 ```ruby
 enum COLOR
