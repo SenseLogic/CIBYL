@@ -34,9 +34,9 @@ module Cibyl
         # -- CONSTRUCTORS
 
         def initialize(
-            @x : Float32,
-            @y : Float32,
-            @z : Float32
+            @x : Int32,
+            @y : Int32,
+            @z : Int32
             )
 
         end

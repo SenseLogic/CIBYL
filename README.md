@@ -68,9 +68,24 @@ enum COLOR
         return self == #Red;
     }
 }
-```
 
-```ruby
+// ~~
+
+struct POINT
+{
+    // -- CONSTRUCTORS
+
+    method Initialize(
+        @X : INT32,
+        @Y : INT32,
+        @Z : INT32
+        )
+    {
+    }
+}
+
+// ~~
+
 require "http/server";
 
 server = HTTP::SERVER.New

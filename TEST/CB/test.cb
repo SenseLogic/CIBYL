@@ -34,9 +34,9 @@ module CIBYL
         // -- CONSTRUCTORS
 
         method Initialize(
-            @X : FLOAT32,
-            @Y : FLOAT32,
-            @Z : FLOAT32
+            @X : INT32,
+            @Y : INT32,
+            @Z : INT32
             )
         {
         }
