@@ -8,16 +8,16 @@ module CIBYL
     {
         // -- CONSTANTS
 
-        Red
-        Green
-        Blue
+        #Red
+        #Green
+        #Blue
 
         // -- INQUIRIES
 
-        def IsRed?(
+        method IsRed?(
             )
         {
-            return self == Red;
+            return self == #Red;
         }
     }
 
@@ -37,9 +37,9 @@ module CIBYL
 
         // -- CONSTRUCTORS
 
-        def Initialize(
-            @Name : String,
-            @Age : Int32,
+        method Initialize(
+            @Name : STRING,
+            @Age : INT32,
             @Color : COLOR
             )
         {
@@ -47,7 +47,7 @@ module CIBYL
 
         // -- INQUIRIES
 
-        def IsGreen?(
+        method IsGreen?(
             )
         {
             return Color == COLOR.#Green;
@@ -55,7 +55,7 @@ module CIBYL
 
         // -- OPERATIONS
 
-        protected def Print(
+        protected method Print(
             )
         {
             Puts( "#{age} - #{name}" );
@@ -68,9 +68,9 @@ module CIBYL
     {
         // -- OPERATIONS
 
-        def TestIf(
-            count : Int
-            ) : Int
+        method TestIf(
+            count : INT
+            ) : INT
         {
             if ( count <= 1 )
             {
@@ -102,9 +102,9 @@ module CIBYL
 
         // ~~
 
-        def TestUnless(
-            count : Int
-            ) : Int
+        method TestUnless(
+            count : INT
+            ) : INT
         {
             unless ( count > 1 )
             {
@@ -123,8 +123,8 @@ module CIBYL
 
         // ~~
 
-        def TestWhile(
-            count : Int
+        method TestWhile(
+            count : INT
             )
         {
             index = 0;
@@ -137,8 +137,8 @@ module CIBYL
 
         // ~~
 
-        def TestUntil(
-            count : Int
+        method TestUntil(
+            count : INT
             )
         {
             index = 0;
@@ -151,8 +151,8 @@ module CIBYL
 
         // ~~
 
-        def TestCase(
-            count : Int
+        method TestCase(
+            count : INT
             )
         {
             case ( count )
@@ -194,7 +194,7 @@ module CIBYL
 
         // ~~
 
-        def TestBegin(
+        method TestBegin(
             )
         {
             begin
@@ -217,7 +217,7 @@ module CIBYL
 
         // ~~
 
-        def TestRescue(
+        method TestRescue(
             )
         {
             result = 1;
@@ -237,7 +237,7 @@ module CIBYL
 
         // ~~
 
-        def TestEach(
+        method TestEach(
             )
         {
             "0123456789".EachChar
@@ -257,6 +257,14 @@ module CIBYL
                     Puts( "#{@key} : #{@value}" );
                 }
         }
+
+        // ~~
+
+        method TestCase(
+            )
+        {
+            data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New
+        }
     }
 }
 
@@ -264,7 +272,7 @@ module CIBYL
 
 require "http/server";
 
-server = HTTP::Server.New
+server = HTTP::SERVER.New
     do |context|
     {
         context.Response.ContentType = "text/plain";

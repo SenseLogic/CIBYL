@@ -37,19 +37,29 @@ def fibonacci(
 puts fibonacci( 8 );
 ```
 
-## Case conversion
+## Substitutions
 
-Additionally, if the `--case` option is enabled, `PascalCase` identifiers will :
+If the `--replace` option is used, identifiers defined in the dictionary files are replaced by their definitions.
 
-*   automatically be converted to `snake_case` if they are :
-    *   prefixed with `@` or `.`
-    *   suffixed with `(`
-*   remain unchanged if they are prefixed with `#`
+```ruby
+method : def
+HTTP
+```
+
+If several definitions are provided, the last definition is used.
+
+Identifiers in quoted strings or prefixed with `#` won't be replaced.
+
+## Conversions
+
+If the `--convert` option is used :
+*   `UPPER_CASE` identifiers are converted to `PascalCase`
+*   `PascalCase` identifiers are converted to `snake_case`
 
 ```ruby
 require "http/server";
 
-server = HTTP::Server.New
+server = HTTP::SERVER.New
     do |context|
     {
         context.Response.ContentType = "text/plain";
@@ -60,6 +70,8 @@ address = server.BindTcp( 8080 );
 Puts( "Listening on http://#{address}" );
 server.Listen();
 ```
+
+Identifiers in quoted strings or prefixed with `#` won't be converted.
 
 ## Limitations
 
@@ -86,8 +98,8 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 ```
 --ruby : generate Ruby files
 --crystal : generate Crystal files
---case : convert PascalCase attributes and methods to snake_case
---parse INPUT_FOLDER/ : find PascalCase attributes and methods in the Cibyl files of this folder
+--replace dictionary.txt : replace identifiers from this dictionary
+--convert : convert UPPER_CASE identifiers to PascalCase, and convert PascalCase identifiers to snake_case
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
@@ -106,7 +118,17 @@ Converts the Cibyl files of the input folder into matching Ruby files in the out
 cibyl --crystal --create --watch CB/ CR/
 ```
 
-Converts the Cibyl files of the input folder into matching Crystal files in the output folder, creating the Crystal folders if needed, and watches the Cibyl files for modifications.
+Converts the Cibyl files of the input folder into matching Crystal files in the output folder,
+creating the Crystal folders if needed, and then watches the Cibyl files for modifications.
+
+```bash
+cibyl --crystal --replace dictionary.txt --convert --create --watch CB/ CR/
+```
+
+Converts the Cibyl files of the input folder into matching Crystal files in the output folder,
+replacing the identifiers specified in `dictionary.txt`,
+converting the case of the `UPPER_CASE` and `PascalCase` identifiers,
+creating the Crystal folders if needed, and then watches the Cibyl files for modifications.
 
 ## Version
 

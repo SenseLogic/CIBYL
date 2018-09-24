@@ -1,9 +1,9 @@
 # -- MODULES
 
-module CIBYL
+module Cibyl
     # -- TYPES
 
-    enum COLOR
+    enum Color
         # -- CONSTANTS
 
         Red
@@ -20,12 +20,12 @@ module CIBYL
 
     # ~~
 
-    abstract struct ABSTRACT
+    abstract struct Abstract
     end
 
     # ~~
 
-    struct PERSON
+    struct Person
         # -- ATTRIBUTES
 
         property name, age, color;
@@ -35,7 +35,7 @@ module CIBYL
         def initialize(
             @name : String,
             @age : Int32,
-            @color : COLOR
+            @color : Color
             )
         end
 
@@ -43,7 +43,7 @@ module CIBYL
 
         def is_green?(
             )
-            return color == COLOR.Green;
+            return color == Color.Green;
         end
 
         # -- OPERATIONS
@@ -56,7 +56,7 @@ module CIBYL
 
     # ~~
 
-    class TEST
+    class Test
         # -- OPERATIONS
 
         def test_if(
@@ -194,6 +194,13 @@ module CIBYL
                 do |key, value|
                     puts( "#{@key} : #{@value}" );
                 end
+        end
+
+        # ~~
+
+        def test_case(
+            )
+            data = Array( NamedTuple( id: Int32, message: String ) ).new
         end
     end
 end

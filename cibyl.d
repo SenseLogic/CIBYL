@@ -27,7 +27,7 @@ import std.datetime : Clock, SysTime;
 import std.file : dirEntries, exists, mkdirRecurse, readText, timeLastModified, write, FileException, SpanMode;
 import std.path : dirName;
 import std.stdio : writeln;
-import std.string : endsWith, indexOf, replace, split, startsWith, stripLeft, stripRight;
+import std.string : endsWith, indexOf, replace, split, startsWith, strip, stripLeft, stripRight;
 
 // -- TYPES
 
@@ -413,8 +413,6 @@ class FILE
         OutputPath;
     bool
         Exists;
-    SysTime
-        ModificationSystemTime;
 
     // ~~
 
@@ -501,8 +499,7 @@ class FILE
     // ~~
 
     string ProcessIdentifiers(
-        string text,
-        bool text_is_fixed
+        string text
         )
     {
         bool
@@ -514,7 +511,9 @@ class FILE
         char
             character;
         string
-            fixed_identifier;
+            identifier;
+        string *
+            replaced_identifier;
         INT
             character_index,
             next_character_index;
@@ -557,8 +556,8 @@ class FILE
             }
             else
             {
-                if ( character >= 'A'
-                     && character <= 'Z'
+                if ( ( ( character >= 'a' && character <= 'z' )
+                       || ( character >= 'A' && character <= 'Z' ) )
                      && ( character_index == 0
                           || !text[ character_index - 1 ].IsAlphaNumericCharacter() ) )
                 {
@@ -580,43 +579,37 @@ class FILE
                     if ( ( character_index >= 1
                            && text[ character_index - 1 ] == '#' ) )
                     {
-                        if ( text_is_fixed )
-                        {
-                            text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
+                        text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
 
-                            character_index = next_character_index;
-                        }
+                        character_index = next_character_index;
                     }
                     else
                     {
-                        fixed_identifier = text[ character_index .. next_character_index ];
+                        identifier = text[ character_index .. next_character_index ];
 
-                        it_is_member_access = ( character_index >= 1 && text[ character_index - 1 ] == '.' );
-                        it_is_attribute_access = ( character_index >= 1 && text[ character_index - 1 ] == '@' );
-                        it_is_function_call = ( next_character_index < text.length && text[ next_character_index ] == '(' );
+                        replaced_identifier = identifier in ReplacedIdentifierMap;
 
-                        if ( it_is_member_access
-                             || it_is_attribute_access
-                             || it_is_function_call
-                             || ( text_is_fixed
-                                  && ( fixed_identifier in IsFixedIdentifierMap ) !is null ) )
+                        if ( replaced_identifier !is null )
                         {
-                            if ( text_is_fixed )
+                            text = text[ 0 .. character_index ] ~ *replaced_identifier ~ text [ next_character_index .. $ ];
+
+                            character_index = character_index + replaced_identifier.length - 1;
+                        }
+                        else if ( ConvertOptionIsEnabled
+                                  && ( character >= 'A' && character <= 'Z' ) )
+                        {
+                            if ( identifier.IsUpperCaseIdentifier() )
                             {
-                                fixed_identifier = fixed_identifier.GetSnakeCaseIdentifier();
-
-                                text = text[ 0 .. character_index ] ~ fixed_identifier ~ text [ next_character_index .. $ ];
-
-                                character_index = character_index + fixed_identifier.length - 1;
+                                identifier = identifier.GetPascalCaseIdentifier();
                             }
                             else
                             {
-                                if ( it_is_attribute_access
-                                     || it_is_function_call )
-                                {
-                                    IsFixedIdentifierMap[ fixed_identifier ] = true;
-                                }
+                                identifier = identifier.GetSnakeCaseIdentifier();
                             }
+
+                            text = text[ 0 .. character_index ] ~ identifier ~ text [ next_character_index .. $ ];
+
+                            character_index = character_index + identifier.length - 1;
                         }
                         else
                         {
@@ -628,39 +621,6 @@ class FILE
         }
 
         return text;
-    }
-
-    // ~~
-
-    void Parse(
-        bool modification_time_is_checked
-        )
-    {
-        string
-            input_file_text;
-        SysTime
-            modification_system_time;
-
-        modification_system_time = InputPath.timeLastModified();
-
-        if ( !modification_time_is_checked
-             || modification_system_time > ModificationSystemTime )
-        {
-            ModificationSystemTime = modification_system_time;
-
-            writeln( "Parsing file : ", InputPath );
-
-            try
-            {
-                input_file_text = InputPath.readText();
-            }
-            catch ( FileException file_exception )
-            {
-                Abort( "Can't parse file : " ~ InputPath, file_exception );
-            }
-
-            ProcessIdentifiers( input_file_text, false );
-        }
     }
 
     // ~~
@@ -682,9 +642,10 @@ class FILE
         {
             input_file_text = ReadInputFile();
 
-            if ( CaseOptionIsEnabled )
+            if ( ReplaceOptionIsEnabled
+                 || ConvertOptionIsEnabled )
             {
-                input_file_text = ProcessIdentifiers( input_file_text, true );
+                input_file_text = ProcessIdentifiers( input_file_text );
             }
 
             code = new CODE( InputPath );
@@ -706,21 +667,19 @@ class FILE
 // -- VARIABLES
 
 bool
-    CaseOptionIsEnabled,
+    ConvertOptionIsEnabled,
     CompactOptionIsEnabled,
     CreateOptionIsEnabled,
+    ReplaceOptionIsEnabled,
     WatchOptionIsEnabled;
-bool[ string ]
-    IsFixedIdentifierMap;
 string
     InputFolderPath,
     OutputFolderPath,
     SpaceText;
-string[]
-    ParsedFolderPathArray;
+string[ string ]
+    ReplacedIdentifierMap;
 FILE[ string ]
-    FileMap,
-    ParsedFileMap;
+    FileMap;
 INT
     PauseDuration;
 LANGUAGE
@@ -824,6 +783,64 @@ bool IsAlphaNumericCharacter(
 
 // ~~
 
+bool IsUpperCaseIdentifier(
+    string text
+    )
+{
+    foreach ( character; text )
+    {
+        if ( character >= 'a' && character <= 'z' )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// ~~
+
+string GetPascalCaseIdentifier(
+    string text
+    )
+{
+    char
+        character;
+    string
+        pascal_case_identifier;
+    INT
+        character_index;
+
+    for ( character_index = 0;
+          character_index < text.length;
+          ++character_index )
+    {
+        character = text[ character_index ];
+
+        if ( character == '_'
+             && character_index + 1 < text.length )
+        {
+            ++character_index;
+
+            pascal_case_identifier ~= text[ character_index ];
+        }
+        else if ( character_index > 0
+                  && character >= 'A'
+                  && character <= 'Z' )
+        {
+            pascal_case_identifier ~= ( character - 'A' ) + 'a';
+        }
+        else
+        {
+            pascal_case_identifier ~= character;
+        }
+    }
+
+    return pascal_case_identifier;
+}
+
+// ~~
+
 string GetSnakeCaseIdentifier(
     string text
     )
@@ -873,35 +890,48 @@ string GetOutputExtension(
 
 // ~~
 
-void ParseFiles(
-    string parsed_folder_path
+void LoadDictionary(
+    string dictionary_file_path
     )
 {
     string
-        parsed_file_path;
-    FILE
-        parsed_file;
-    FILE *
-        found_parsed_file;
+        dictionary_file_text;
+    string[]
+        identifier_array,
+        line_array;
 
-    foreach ( parsed_folder_entry; dirEntries( parsed_folder_path, "*.cb", SpanMode.depth ) )
+    writeln( "Loading file : ", dictionary_file_path );
+
+    try
     {
-        if ( parsed_folder_entry.isFile() )
+        dictionary_file_text = dictionary_file_path.readText();
+    }
+    catch ( FileException file_exception )
+    {
+        Abort( "Can't load file : " ~ dictionary_file_path, file_exception );
+    }
+
+    line_array = dictionary_file_text.replace( "\r", "" ).replace( "\t", " " ).split( "\n" );
+
+    foreach ( line_index, line; line_array )
+    {
+        line = line.strip();
+
+        if ( line.length > 0 )
         {
-            parsed_file_path = parsed_folder_entry.name();
+            identifier_array = line.split( ':' );
 
-            found_parsed_file = parsed_file_path in ParsedFileMap;
-
-            if ( found_parsed_file is null )
+            if ( identifier_array.length == 2 )
             {
-                parsed_file = new FILE( parsed_file_path, "" );
-                parsed_file.Parse( false );
-
-                ParsedFileMap[ parsed_file_path ] = parsed_file;
+                ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 1 ].strip();
+            }
+            else if ( identifier_array.length == 1 )
+            {
+                ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 0 ].strip();
             }
             else
             {
-                found_parsed_file.Parse( true );
+                PrintError( "Invalid definition : " ~ line );
             }
         }
     }
@@ -962,11 +992,6 @@ void ProcessFiles(
     bool modification_time_is_used
     )
 {
-    foreach ( parsed_folder_path; ParsedFolderPathArray )
-    {
-        ParseFiles( parsed_folder_path );
-    }
-
     FindFiles( input_folder_path, output_folder_path );
 
     foreach ( ref file; FileMap )
@@ -1010,9 +1035,10 @@ void main(
     SpaceText = " ";
 
     Language = LANGUAGE.Ruby;
+    ReplaceOptionIsEnabled = false;
+    ReplacedIdentifierMap = null;
+    ConvertOptionIsEnabled = false;
     CompactOptionIsEnabled = false;
-    CaseOptionIsEnabled = false;
-    ParsedFolderPathArray = [];
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
@@ -1032,21 +1058,22 @@ void main(
         {
             Language = LANGUAGE.Crystal;
         }
+        else if ( option == "--replace"
+                  && argument_array.length >= 1 )
+        {
+            ReplaceOptionIsEnabled = true;
+
+            LoadDictionary( argument_array[ 0 ].GetLogicalPath() );
+
+            argument_array = argument_array[ 1 .. $ ];
+        }
+        else if ( option == "--convert" )
+        {
+            ConvertOptionIsEnabled = true;
+        }
         else if ( option == "--compact" )
         {
             CompactOptionIsEnabled = true;
-        }
-        else if ( option == "--case" )
-        {
-            CaseOptionIsEnabled = true;
-        }
-        else if ( option == "--parse"
-                  && argument_array.length >= 1
-                  && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
-        {
-            ParsedFolderPathArray ~= argument_array[ 0 ].GetLogicalPath();
-
-            argument_array = argument_array[ 1 .. $ ];
         }
         else if ( option == "--create" )
         {
@@ -1092,8 +1119,8 @@ void main(
         writeln( "Options :" );
         writeln( "    --ruby" );
         writeln( "    --crystal" );
-        writeln( "    --case" );
-        writeln( "    --parse INPUT_FOLDER/" );
+        writeln( "    --replace dictionary.txt" );
+        writeln( "    --convert" );
         writeln( "    --compact" );
         writeln( "    --create" );
         writeln( "    --watch" );
