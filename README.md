@@ -46,11 +46,7 @@ method : def
 HTTP
 ```
 
-If several definitions are provided, the last definition is used.
-
-Identifiers in quoted strings or prefixed with `#` aren't replaced.
-
-## Identifier conversion
+When several definitions are provided, only the last provided definition is applied.
 
 If the `--convert` option is used :
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
