@@ -598,7 +598,8 @@ class FILE
                         else if ( ConvertOptionIsEnabled
                                   && ( character >= 'A' && character <= 'Z' ) )
                         {
-                            if ( identifier.IsUpperCaseIdentifier() )
+                            if ( identifier.IsUpperCaseIdentifier()
+                                 && identifier.length > 1 )
                             {
                                 identifier = identifier.GetPascalCaseIdentifier();
                             }

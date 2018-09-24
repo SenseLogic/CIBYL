@@ -25,6 +25,19 @@ module Cibyl
 
     # ~~
 
+    struct Point
+        # -- CONSTRUCTORS
+
+        def initialize(
+            @x : Float32,
+            @y : Float32,
+            @z : Float32
+            )
+        end
+    end
+
+    # ~~
+
     struct Person
         # -- ATTRIBUTES
 

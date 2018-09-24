@@ -48,7 +48,7 @@ HTTP
 
 If several definitions are provided, the last definition is used.
 
-Identifiers in quoted strings or prefixed with `#` won't be replaced.
+Identifiers in quoted strings or prefixed with `#` aren't replaced.
 
 ## Identifier conversion
 
@@ -71,7 +71,26 @@ Puts( "Listening on http://#{address}" );
 server.Listen();
 ```
 
-Identifiers in quoted strings or prefixed with `#` won't be converted.
+Identifiers in quoted strings or prefixed with `#` aren't converted.
+
+```ruby
+enum COLOR
+{
+    // -- CONSTANTS
+
+    #Red
+    #Green
+    #Blue
+
+    // -- INQUIRIES
+
+    method IsRed?(
+        )
+    {
+        return self == #Red;
+    }
+}
+```
 
 ## Limitations
 

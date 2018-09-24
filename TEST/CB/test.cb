@@ -29,6 +29,21 @@ module CIBYL
 
     // ~~
 
+    struct POINT
+    {
+        // -- CONSTRUCTORS
+
+        method Initialize(
+            @X : FLOAT32,
+            @Y : FLOAT32,
+            @Z : FLOAT32
+            )
+        {
+        }
+    }
+
+    // ~~
+
     struct PERSON
     {
         // -- ATTRIBUTES
