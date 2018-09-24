@@ -56,6 +56,17 @@ If the `--convert` option is used :
 Identifiers prefixed with `#` or located in string literals remain unchanged.
 
 ```ruby
+struct POINT
+{
+    method Initialize(
+        @X : INT32,
+        @Y : INT32,
+        @Z : INT32
+        )
+    {
+    }
+}
+
 enum COLOR
 {
     #Red
@@ -66,17 +77,6 @@ enum COLOR
         )
     {
         return self == #Red;
-    }
-}
-
-struct POINT
-{
-    method Initialize(
-        @X : INT32,
-        @Y : INT32,
-        @Z : INT32
-        )
-    {
     }
 }
 
