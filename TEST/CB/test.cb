@@ -29,19 +29,28 @@ module CIBYL
 
     // ~~
 
-    struct POINT
+    struct PERSON
     {
         // -- ATTRIBUTES
 
-        property name, age;
+        property Name, Age, Color;
 
         // -- CONSTRUCTORS
 
         def Initialize(
             @Name : String,
-            @Age : Int32
+            @Age : Int32,
+            @Color : COLOR
             )
         {
+        }
+
+        // -- INQUIRIES
+
+        def IsGreen?(
+            )
+        {
+            return Color == COLOR.#Green;
         }
 
         // -- OPERATIONS
@@ -231,7 +240,7 @@ module CIBYL
         def TestEach(
             )
         {
-            "0123456789".each_char
+            "0123456789".EachChar
                 do |character|
                 {
                     Print( character );
@@ -242,7 +251,7 @@ module CIBYL
             [
                 {1, "A"},
                 {2, "B"}
-            ].each
+            ].Each
                 do |key, value|
                 {
                     Puts( "#{@key} : #{@value}" );
@@ -255,7 +264,7 @@ module CIBYL
 
 require "http/server";
 
-server = HTTP::Server.new
+server = HTTP::Server.New
     do |context|
     {
         context.response.content_type = "text/plain";

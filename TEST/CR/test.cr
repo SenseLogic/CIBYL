@@ -29,19 +29,28 @@ module CIBYL
 
     # ~~
 
-    struct POINT
+    struct PERSON
 
         # -- ATTRIBUTES
 
-        property name, age;
+        property name, age, color;
 
         # -- CONSTRUCTORS
 
         def initialize(
             @name : String,
-            @age : Int32
+            @age : Int32,
+            @color : COLOR
             )
 
+        end
+
+        # -- INQUIRIES
+
+        def is_green?(
+            )
+
+            return color == COLOR.Green;
         end
 
         # -- OPERATIONS

@@ -413,6 +413,8 @@ class FILE
         OutputPath;
     bool
         Exists;
+    SysTime
+        ModificationSystemTime;
 
     // ~~
 
@@ -478,18 +480,41 @@ class FILE
         }
     }
 
-    string FixCase(
-        string text
+    // ~~
+
+    void WriteOutputFile(
+        string output_file_text
+        )
+    {
+        writeln( "Writing file : ", OutputPath );
+
+        try
+        {
+            OutputPath.write( output_file_text );
+        }
+        catch ( FileException file_exception )
+        {
+            Abort( "Can't write file : " ~ OutputPath, file_exception );
+        }
+    }
+
+    // ~~
+
+    string ProcessIdentifiers(
+        string text,
+        bool text_is_fixed
         )
     {
         bool
+            it_is_attribute_access,
+            it_is_function_call,
             it_is_inside_comment,
-            it_is_inside_string;
+            it_is_inside_string,
+            it_is_member_access;
         char
             character;
         string
-            pascal_case_identifier,
-            snake_case_identifier;
+            fixed_identifier;
         INT
             character_index,
             next_character_index;
@@ -518,9 +543,13 @@ class FILE
                     it_is_inside_string = false;
                 }
             }
-            else if ( character == '#' )
+            else if ( character == '/'
+                      && character + 1 < text.length
+                      && text[ character_index + 1 ] == '/' )
             {
                 it_is_inside_comment = true;
+
+                ++character_index;
             }
             else if ( character == '"' )
             {
@@ -549,27 +578,50 @@ class FILE
                     }
 
                     if ( ( character_index >= 1
-                           && text[ character_index - 1 ] == '\\' ) )
+                           && text[ character_index - 1 ] == '#' ) )
                     {
-                        text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
+                        if ( text_is_fixed )
+                        {
+                            text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
 
-                        character_index = next_character_index;
-                    }
-                    else if ( ( character_index >= 1
-                                && text[ character_index - 1 ] == '@' )
-                              || ( next_character_index < text.length
-                                   && text[ next_character_index ] == '(' ) )
-                    {
-                        pascal_case_identifier = text[ character_index .. next_character_index ];
-                        snake_case_identifier = pascal_case_identifier.GetSnakeCaseIdentifier();
-
-                        text = text[ 0 .. character_index ] ~ snake_case_identifier ~ text [ next_character_index .. $ ];
-
-                        character_index = character_index + snake_case_identifier.length - 1;
+                            character_index = next_character_index;
+                        }
                     }
                     else
                     {
-                        character_index = next_character_index - 1;
+                        fixed_identifier = text[ character_index .. next_character_index ];
+
+                        it_is_member_access = ( character_index >= 1 && text[ character_index - 1 ] == '.' );
+                        it_is_attribute_access = ( character_index >= 1 && text[ character_index - 1 ] == '@' );
+                        it_is_function_call = ( next_character_index < text.length && text[ next_character_index ] == '(' );
+
+                        if ( it_is_member_access
+                             || it_is_attribute_access
+                             || it_is_function_call
+                             || ( text_is_fixed
+                                  && ( fixed_identifier in IsFixedIdentifierMap ) !is null ) )
+                        {
+                            if ( text_is_fixed )
+                            {
+                                fixed_identifier = fixed_identifier.GetSnakeCaseIdentifier();
+
+                                text = text[ 0 .. character_index ] ~ fixed_identifier ~ text [ next_character_index .. $ ];
+
+                                character_index = character_index + fixed_identifier.length - 1;
+                            }
+                            else
+                            {
+                                if ( it_is_attribute_access
+                                     || it_is_function_call )
+                                {
+                                    IsFixedIdentifierMap[ fixed_identifier ] = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            character_index = next_character_index - 1;
+                        }
                     }
                 }
             }
@@ -580,19 +632,34 @@ class FILE
 
     // ~~
 
-    void WriteOutputFile(
-        string output_file_text
+    void Parse(
+        bool modification_time_is_checked
         )
     {
-        writeln( "Writing file : ", OutputPath );
+        string
+            input_file_text;
+        SysTime
+            modification_system_time;
 
-        try
+        modification_system_time = InputPath.timeLastModified();
+
+        if ( !modification_time_is_checked
+             || modification_system_time > ModificationSystemTime )
         {
-            OutputPath.write( output_file_text );
-        }
-        catch ( FileException file_exception )
-        {
-            Abort( "Can't write file : " ~ OutputPath, file_exception );
+            ModificationSystemTime = modification_system_time;
+
+            writeln( "Parsing file : ", InputPath );
+
+            try
+            {
+                input_file_text = InputPath.readText();
+            }
+            catch ( FileException file_exception )
+            {
+                Abort( "Can't parse file : " ~ InputPath, file_exception );
+            }
+
+            ProcessIdentifiers( input_file_text, false );
         }
     }
 
@@ -615,16 +682,16 @@ class FILE
         {
             input_file_text = ReadInputFile();
 
+            if ( CaseOptionIsEnabled )
+            {
+                input_file_text = ProcessIdentifiers( input_file_text, true );
+            }
+
             code = new CODE( InputPath );
             code.SetLineArray( input_file_text );
             code.Process();
 
             output_file_text = code.GetText();
-
-            if ( CaseOptionIsEnabled )
-            {
-                output_file_text = FixCase( output_file_text );
-            }
 
             if ( CreateOptionIsEnabled )
             {
@@ -643,12 +710,17 @@ bool
     CompactOptionIsEnabled,
     CreateOptionIsEnabled,
     WatchOptionIsEnabled;
+bool[ string ]
+    IsFixedIdentifierMap;
 string
     InputFolderPath,
     OutputFolderPath,
     SpaceText;
+string[]
+    ParsedFolderPathArray;
 FILE[ string ]
-    FileMap;
+    FileMap,
+    ParsedFileMap;
 INT
     PauseDuration;
 LANGUAGE
@@ -801,6 +873,42 @@ string GetOutputExtension(
 
 // ~~
 
+void ParseFiles(
+    string parsed_folder_path
+    )
+{
+    string
+        parsed_file_path;
+    FILE
+        parsed_file;
+    FILE *
+        found_parsed_file;
+
+    foreach ( parsed_folder_entry; dirEntries( parsed_folder_path, "*.cb", SpanMode.depth ) )
+    {
+        if ( parsed_folder_entry.isFile() )
+        {
+            parsed_file_path = parsed_folder_entry.name();
+
+            found_parsed_file = parsed_file_path in ParsedFileMap;
+
+            if ( found_parsed_file is null )
+            {
+                parsed_file = new FILE( parsed_file_path, "" );
+                parsed_file.Parse( false );
+
+                ParsedFileMap[ parsed_file_path ] = parsed_file;
+            }
+            else
+            {
+                found_parsed_file.Parse( true );
+            }
+        }
+    }
+}
+
+// ~~
+
 void FindFiles(
     string input_folder_path,
     string output_folder_path
@@ -810,7 +918,7 @@ void FindFiles(
         input_file_path,
         output_file_path;
     FILE *
-        file;
+        found_file;
 
     foreach ( ref old_file; FileMap )
     {
@@ -831,15 +939,15 @@ void FindFiles(
                       ~ input_file_path[ input_folder_path.length .. $ - 3 ]
                       ~ GetOutputExtension();
 
-                file = input_file_path in FileMap;
+                found_file = input_file_path in FileMap;
 
-                if ( file is null )
+                if ( found_file is null )
                 {
                     FileMap[ input_file_path ] = new FILE( input_file_path, output_file_path );
                 }
                 else
                 {
-                    file.Exists = true;
+                    found_file.Exists = true;
                 }
             }
         }
@@ -854,6 +962,11 @@ void ProcessFiles(
     bool modification_time_is_used
     )
 {
+    foreach ( parsed_folder_path; ParsedFolderPathArray )
+    {
+        ParseFiles( parsed_folder_path );
+    }
+
     FindFiles( input_folder_path, output_folder_path );
 
     foreach ( ref file; FileMap )
@@ -899,6 +1012,7 @@ void main(
     Language = LANGUAGE.Ruby;
     CompactOptionIsEnabled = false;
     CaseOptionIsEnabled = false;
+    ParsedFolderPathArray = [];
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
@@ -925,6 +1039,14 @@ void main(
         else if ( option == "--case" )
         {
             CaseOptionIsEnabled = true;
+        }
+        else if ( option == "--parse"
+                  && argument_array.length >= 1
+                  && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
+        {
+            ParsedFolderPathArray ~= argument_array[ 0 ].GetLogicalPath();
+
+            argument_array = argument_array[ 1 .. $ ];
         }
         else if ( option == "--create" )
         {
@@ -971,6 +1093,7 @@ void main(
         writeln( "    --ruby" );
         writeln( "    --crystal" );
         writeln( "    --case" );
+        writeln( "    --parse INPUT_FOLDER/" );
         writeln( "    --compact" );
         writeln( "    --create" );
         writeln( "    --watch" );
