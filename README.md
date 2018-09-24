@@ -141,7 +141,7 @@ cibyl --crystal --replace dictionary.txt --convert --create --watch CB/ CR/
 ```
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder,
-replacing the identifiers defined in `dictionary.txt`, converting the uppercase and Pascal case identifiers,
+replacing the identifiers defined in the dictionary, converting the uppercase and Pascal case identifiers,
 and creating the Crystal folders if needed. Then watches the Cibyl files for modifications.
 
 ## Version
