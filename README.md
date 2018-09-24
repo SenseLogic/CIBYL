@@ -10,8 +10,6 @@ Cibyl is a lightweight language which allows to develop Ruby and Crystal applica
 
 ## Syntax
 
-### Blocks
-
 Most of the Ruby/Crystal syntax is kept unchanged, except that :
 
 *   `.cb` files contain Cibyl code
@@ -39,9 +37,9 @@ def fibonacci(
 puts fibonacci( 8 );
 ```
 
-### Case
+## Naming convention
 
-If the `--case` option is used, `PascalCase` identifiers are :
+Additionally, if the `--case` option is enabled, `PascalCase` identifiers will be :
 
 *   converted to `snake_case` if they :
     *   are prefixed with `@` or `.`
