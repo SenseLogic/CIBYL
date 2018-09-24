@@ -60,7 +60,6 @@ If the `--case` option is used, `PascalCase` identifiers are :
 *   converted to `snake_case` if they :
     *   are prefixed with `@` or `.`
     *   are suffixed with `(`
-    *   have been parsed as attribute or method names
 *   kept unchanged if they are prefixed with `#`
 
 ## Limitations
@@ -89,7 +88,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --ruby : generate Ruby files
 --crystal : generate Crystal files
 --case : convert PascalCase attributes and methods to snake_case
---parse INPUT_FOLDER/ : parse the attribute and method names of the Cibyl files from this folder
+--parse INPUT_FOLDER/ : find PascalCase attributes and methods in the Cibyl files of this folder
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
