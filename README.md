@@ -37,7 +37,7 @@ def fibonacci(
 puts fibonacci( 8 );
 ```
 
-## Naming convention
+## Case conversion
 
 Additionally, if the `--case` option is enabled, `PascalCase` identifiers will :
 
