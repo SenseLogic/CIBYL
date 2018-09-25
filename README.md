@@ -35,7 +35,7 @@ struct POINT
 {
     method Initialize(
         @Name : STRING,
-        @Position : VECTOR_3,
+        @Position : POSITION,
         @Color : COLOR
         )
     {
