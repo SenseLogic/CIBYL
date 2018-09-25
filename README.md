@@ -33,8 +33,6 @@ It also allows to customize the language keywords and to use alternative case co
 ```ruby
 struct POINT
 {
-    // -- CONSTRUCTORS
-
     method Initialize(
         @Name : STRING,
         @X : INT32,
@@ -44,8 +42,6 @@ struct POINT
         )
     {
     }
-
-    // -- INQUIRIES
 
     method IsRed(
         )
