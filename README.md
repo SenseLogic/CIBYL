@@ -6,16 +6,7 @@ Lightweight curly-bracket language which compiles to Ruby and Crystal.
 
 # Description
 
-Cibyl is a lightweight language which allows to develop Ruby and Crystal applications with a C-like syntax.
-
-## Syntax
-
-Most of the Ruby/Crystal syntax is kept unchanged, except that :
-
-*   `.cb` files contain Cibyl code
-*   a comment starts by `//`
-*   a block starts by `{` and ends by `}`
-*   a `do` block starts its own line
+Cibyl allows to develop Ruby and Crystal applications with a C-like syntax :
 
 ```ruby
 // Recursive Fibonacci function
@@ -26,7 +17,7 @@ def fibonacci(
 {
     if ( n <= 1 )
     {
-        return n;
+        return 1;
     }
     else
     {
@@ -34,26 +25,10 @@ def fibonacci(
     }
 }
 
-puts fibonacci( 8 );
+puts fibonacci( 5 );
 ```
 
-## Identifier substitution
-
-If the `--replace` option is used, identifiers defined in the dictionary files are replaced by their definitions.
-
-```ruby
-method : def
-HTTP
-```
-
-When several definitions are provided, only the last provided definition is applied.
-
-If the `--convert` option is used :
-
-*   `UPPER_CASE` identifiers are converted to `PascalCase`
-*   `PascalCase` identifiers are converted to `snake_case`
-
-Identifiers prefixed with `#` or located in string literals remain unchanged.
+It also allows to customize the language keywords or to use a different case convention :
 
 ```ruby
 struct POINT
@@ -81,25 +56,6 @@ struct POINT
 
 // ~~
 
-enum COLOR
-{
-    // -- CONSTANTS
-
-    #Red
-    #Green
-    #Blue
-
-    // -- INQUIRIES
-
-    method IsRed?(
-        )
-    {
-        return self == #Red;
-    }
-}
-
-// ~~
-
 require "http/server";
 
 server = HTTP::SERVER.New
@@ -113,6 +69,29 @@ address = server.BindTcp( 8080 );
 Puts( "Listening on http://#{address}" );
 server.Listen();
 ```
+
+## Syntax
+
+Most of the Ruby/Crystal syntax is kept unchanged, except that :
+
+*   `.cb` files contain Cibyl code
+*   a comment starts by `//`
+*   a block starts by `{` and ends by `}`
+*   a `do` block starts its own line
+
+If the `--replace` option is used, identifiers defined in the provided dictionaries are replaced by their definition.
+
+```ruby
+method : def
+HTTP
+```
+
+If the `--convert` option is used :
+
+*   `UPPER_CASE` identifiers are converted to `PascalCase`
+*   `PascalCase` identifiers are converted to `snake_case`
+
+Identifiers inside string literals or prefixed with `#` remain unchanged.
 
 ## Limitations
 
