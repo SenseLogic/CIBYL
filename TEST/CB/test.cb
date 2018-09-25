@@ -4,6 +4,27 @@ module CIBYL
 {
     // -- TYPES
 
+    abstract struct ABSTRACT
+    {
+    }
+
+    // ~~
+
+    struct POSITION
+    {
+        // -- CONSTRUCTORS
+
+        method Initialize(
+            @X : INT32,
+            @Y : INT32,
+            @Z : INT32
+            )
+        {
+        }
+    }
+
+    // ~~
+
     enum COLOR
     {
         // -- CONSTANTS
@@ -23,21 +44,13 @@ module CIBYL
 
     // ~~
 
-    abstract struct ABSTRACT
-    {
-    }
-
-    // ~~
-
     struct POINT
     {
         // -- CONSTRUCTORS
 
         method Initialize(
             @Name : STRING,
-            @X : INT32,
-            @Y : INT32,
-            @Z : INT32,
+            @Position : POSITION,
             @Color : COLOR
             )
         {
@@ -45,10 +58,11 @@ module CIBYL
 
         // -- INQUIRIES
 
-        method IsRed?(
+        method HasColor(
+            color : COLOR
             )
         {
-            return Color.IsRed?();
+            return @Color == color;
         }
     }
 

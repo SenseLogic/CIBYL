@@ -3,6 +3,24 @@
 module Cibyl
     # -- TYPES
 
+    abstract struct Abstract
+    end
+
+    # ~~
+
+    struct Position
+        # -- CONSTRUCTORS
+
+        def initialize(
+            @x : Int32,
+            @y : Int32,
+            @z : Int32
+            )
+        end
+    end
+
+    # ~~
+
     enum Color
         # -- CONSTANTS
 
@@ -20,28 +38,22 @@ module Cibyl
 
     # ~~
 
-    abstract struct Abstract
-    end
-
-    # ~~
-
     struct Point
         # -- CONSTRUCTORS
 
         def initialize(
             @name : String,
-            @x : Int32,
-            @y : Int32,
-            @z : Int32,
+            @position : Position,
             @color : Color
             )
         end
 
         # -- INQUIRIES
 
-        def is_red?(
+        def has_color(
+            color : Color
             )
-            return color.is_red?();
+            return @color == color;
         end
     end
 

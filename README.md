@@ -41,10 +41,11 @@ struct POINT
     {
     }
 
-    method IsRed(
+    method HasColor(
+        color : COLOR
         )
     {
-        return Color.IsRed();
+        return @Color == color;
     }
 }
 
