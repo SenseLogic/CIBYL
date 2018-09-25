@@ -29,10 +29,19 @@ module Cibyl
         # -- CONSTRUCTORS
 
         def initialize(
+            @name : String,
             @x : Int32,
             @y : Int32,
-            @z : Int32
+            @z : Int32,
+            @color : Color
             )
+        end
+
+        # -- INQUIRIES
+
+        def is_red?(
+            )
+            return color.is_red?();
         end
     end
 

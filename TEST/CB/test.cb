@@ -34,11 +34,21 @@ module CIBYL
         // -- CONSTRUCTORS
 
         method Initialize(
+            @Name : STRING,
             @X : INT32,
             @Y : INT32,
-            @Z : INT32
+            @Z : INT32,
+            @Color : COLOR
             )
         {
+        }
+
+        // -- INQUIRIES
+
+        method IsRed?(
+            )
+        {
+            return Color.IsRed?();
         }
     }
 

@@ -58,20 +58,38 @@ Identifiers prefixed with `#` or located in string literals remain unchanged.
 ```ruby
 struct POINT
 {
+    // -- CONSTRUCTORS
+
     method Initialize(
+        @Name : STRING,
         @X : INT32,
         @Y : INT32,
-        @Z : INT32
+        @Z : INT32,
+        @Color : COLOR
         )
     {
     }
+
+    // -- INQUIRIES
+
+    method IsRed?(
+        )
+    {
+        return Color.IsRed?();
+    }
 }
+
+// ~~
 
 enum COLOR
 {
+    // -- CONSTANTS
+
     #Red
     #Green
     #Blue
+
+    // -- INQUIRIES
 
     method IsRed?(
         )
@@ -79,6 +97,8 @@ enum COLOR
         return self == #Red;
     }
 }
+
+// ~~
 
 require "http/server";
 
