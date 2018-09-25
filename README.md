@@ -28,7 +28,7 @@ def fibonacci(
 puts fibonacci( 5 );
 ```
 
-It also allows to freely customize the language keywords and to use a different case convention :
+It also allows to customize the language keywords and to use a different case convention :
 
 ```ruby
 struct POINT
