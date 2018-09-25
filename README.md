@@ -47,10 +47,10 @@ struct POINT
 
     // -- INQUIRIES
 
-    method IsRed?(
+    method IsRed(
         )
     {
-        return Color.IsRed?();
+        return Color.IsRed();
     }
 }
 
