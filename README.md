@@ -50,8 +50,6 @@ struct POINT
     }
 }
 
-// ~~
-
 require "http/server";
 
 server = HTTP::SERVER.New
