@@ -28,7 +28,7 @@ def fibonacci(
 puts fibonacci( 5 );
 ```
 
-It also allows to customize the language keywords or to use a different case convention :
+It also allows to freely customize the language keywords and to use a different case convention :
 
 ```ruby
 struct POINT
@@ -79,7 +79,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a block starts by `{` and ends by `}`
 *   a `do` block starts its own line
 
-If the `--replace` option is used, identifiers defined in the provided dictionaries are replaced by their definition.
+If the `--replace` option is used, one or several dictionaries can be used to change the program keywords and identifiers.
 
 ```ruby
 method : def
