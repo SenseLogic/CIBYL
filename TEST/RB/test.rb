@@ -254,6 +254,7 @@ module Cibyl
             puts( %{Test #{@hello + %{ Test #{@hello} #{@world} Test } + @world} Test} );
             puts( %<Test #{@hello + %< Test #{@hello} #{@world} Test > + @world} Test> );
             puts( %|Test #{@hello + %| Test #{@hello} #{@world} Test | + @world} Test| );
+            puts( %(Test #{@hello + %[ Test #{@hello} #{@world} Test ] + @world} Test) );
             puts( %Q(Test #{@hello + %Q( Test #{@hello} #{@world} Test ) + @world} Test) );
             puts( %Q[Test #{@hello + %Q[ Test #{@hello} #{@world} Test ] + @world} Test] );
             puts( %Q{Test #{@hello + %Q{ Test #{@hello} #{@world} Test } + @world} Test} );
@@ -261,8 +262,11 @@ module Cibyl
             puts( %Q|Test #{@hello + %Q| Test #{@hello} #{@world} Test | + @world} Test| );
             puts( %Q(Test #{@hello + %Q[ Test #{@hello} #{@world} Test ] + @world} Test) );
 
-            puts( "Test \#{@Hello + \" Test #{@hello} #{@world} Test \" + @World} Test" );
+            puts( "Test \#{@Hello + \" Test \#{@Hello} \#{@World} Test \" + @World} Test" );
             puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            puts( %q[Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         end
     end

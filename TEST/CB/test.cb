@@ -324,6 +324,7 @@ module CIBYL
             Puts( %{Test #{@Hello + %{ Test #{@Hello} #{@World} Test } + @World} Test} );
             Puts( %<Test #{@Hello + %< Test #{@Hello} #{@World} Test > + @World} Test> );
             Puts( %|Test #{@Hello + %| Test #{@Hello} #{@World} Test | + @World} Test| );
+            Puts( %(Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test) );
             Puts( %Q(Test #{@Hello + %Q( Test #{@Hello} #{@World} Test ) + @World} Test) );
             Puts( %Q[Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
             Puts( %Q{Test #{@Hello + %Q{ Test #{@Hello} #{@World} Test } + @World} Test} );
@@ -331,8 +332,11 @@ module CIBYL
             Puts( %Q|Test #{@Hello + %Q| Test #{@Hello} #{@World} Test | + @World} Test| );
             Puts( %Q(Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
 
-            Puts( "Test \#{@Hello + \" Test #{@Hello} #{@World} Test \" + @World} Test" );
+            Puts( "Test \#{@Hello + \" Test \#{@Hello} \#{@World} Test \" + @World} Test" );
             Puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %q[Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             Puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         }
     }
