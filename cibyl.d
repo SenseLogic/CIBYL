@@ -406,6 +406,268 @@ class CODE
 
 // ~~
 
+class CONTEXT
+{
+    // -- ATTRIBUTES
+
+    INT
+        BraceLevel;
+    bool
+        IsInsideComment,
+        IsInsideInterpolatedExpression,
+        IsInsideInterpolatedString,
+        IsInsideString;
+    char
+        OpeningDelimiter,
+        ClosingDelimiter;
+    INT
+        DelimiterLevel;
+}
+
+// ~~
+
+class PROCESSOR
+{
+    // -- ATTRIBUTES
+
+    CONTEXT
+        Context;
+    CONTEXT[]
+        ContextArray;
+
+    // -- CONSTRUCTORS
+
+    this(
+        )
+    {
+        Context = new CONTEXT();
+        ContextArray ~= Context;
+    }
+
+    // -- OPERATIONS
+
+    string ProcessIdentifiers(
+        string text
+        )
+    {
+        char
+            character;
+        string
+            identifier;
+        string *
+            replaced_identifier;
+        INT
+            character_index,
+            line_index,
+            next_character_index;
+
+        line_index = 0;
+
+        for ( character_index = 0;
+              character_index < text.length;
+              ++character_index )
+        {
+            character = text[ character_index ];
+
+            if ( character == '\n' )
+            {
+                ++line_index;
+            }
+
+            if ( Context.IsInsideComment )
+            {
+                if ( character == '\n' )
+                {
+                    Context.IsInsideComment = false;
+                }
+            }
+            else if ( Context.IsInsideString
+                      && character == '\\' )
+            {
+                ++character_index;
+            }
+            else if ( Context.IsInsideInterpolatedString
+                      && character == '#'
+                      && character + 1 < text.length
+                      && text[ character_index + 1 ] == '{' )
+            {
+                Context = new CONTEXT();
+                Context.IsInsideInterpolatedExpression = true;
+                Context.BraceLevel = 1;
+                ContextArray ~= Context;
+
+                ++character_index;
+            }
+            else if ( Context.IsInsideString
+                      && character == Context.OpeningDelimiter )
+            {
+                ++Context.DelimiterLevel;
+            }
+            else if ( Context.IsInsideString
+                      && character == Context.ClosingDelimiter )
+            {
+                --Context.DelimiterLevel;
+
+                if ( Context.DelimiterLevel == 0 )
+                {
+                    Context.IsInsideString = false;
+                    Context.IsInsideInterpolatedString = false;
+                    Context.OpeningDelimiter = 0;
+                    Context.ClosingDelimiter = 0;
+                }
+            }
+            else if ( !Context.IsInsideString
+                      && character == '{' )
+            {
+                ++Context.BraceLevel;
+            }
+            else if ( !Context.IsInsideString
+                      && character == '}' )
+            {
+                --Context.BraceLevel;
+
+                if ( Context.IsInsideInterpolatedExpression
+                     && Context.BraceLevel == 0 )
+                {
+                    ContextArray = ContextArray[ 0 .. $ - 1 ];
+                    Context = ContextArray[ $ - 1 ];
+                }
+            }
+            else if ( !Context.IsInsideString
+                      && character == '/'
+                      && character + 1 < text.length
+                      && text[ character_index + 1 ] == '/' )
+            {
+                Context.IsInsideComment = true;
+
+                ++character_index;
+            }
+            else if ( !Context.IsInsideString
+                      && character == '"' )
+            {
+                Context.IsInsideString = true;
+                Context.IsInsideInterpolatedString = true;
+                Context.OpeningDelimiter = 0;
+                Context.ClosingDelimiter = '"';
+                Context.DelimiterLevel = 1;
+            }
+            else if ( !Context.IsInsideString
+                      && character == '%'
+                      && character + 1 < text.length
+                      && "([{<|".indexOf( text[ character_index + 1 ] ) >= 0 )
+            {
+                Context.IsInsideString = true;
+                Context.IsInsideInterpolatedString = true;
+                Context.OpeningDelimiter = text[ character_index + 1 ];
+                Context.ClosingDelimiter = ")]}>|"[ "([{<|".indexOf( Context.OpeningDelimiter ) ];
+                Context.DelimiterLevel = 1;
+
+                if ( Context.OpeningDelimiter == Context.ClosingDelimiter )
+                {
+                    Context.OpeningDelimiter = 0;
+                }
+
+                ++character_index;
+            }
+            else if ( !Context.IsInsideString
+                      && character == '%'
+                      && character + 2 < text.length
+                      && ( text[ character_index + 1 ] == 'q'
+                           || text[ character_index + 1 ] == 'Q' )
+                      && "([{<|".indexOf( text[ character_index + 2 ] ) >= 0 )
+            {
+                Context.IsInsideString = true;
+                Context.IsInsideInterpolatedString = ( text[ character_index + 1 ] == 'Q' );
+                Context.OpeningDelimiter = text[ character_index + 2 ];
+                Context.ClosingDelimiter = ")]}>|"[ "([{<|".indexOf( Context.OpeningDelimiter ) ];
+                Context.DelimiterLevel = 1;
+
+                if ( Context.OpeningDelimiter == Context.ClosingDelimiter )
+                {
+                    Context.OpeningDelimiter = 0;
+                }
+
+                character_index += 2;
+            }
+            else if ( ( ( character >= 'a' && character <= 'z' )
+                          || ( character >= 'A' && character <= 'Z' ) )
+                        && ( character_index == 0
+                             || !text[ character_index - 1 ].IsAlphaNumericCharacter() ) )
+            {
+                next_character_index = character_index + 1;
+
+                while ( next_character_index < text.length
+                        && text[ next_character_index ].IsAlphaNumericCharacter() )
+                {
+                    ++next_character_index;
+                }
+
+                if ( next_character_index < text.length
+                     && ( text[ next_character_index ] == '!'
+                          || text[ next_character_index ] == '?' ) )
+                {
+                    ++next_character_index;
+                }
+
+                identifier = text[ character_index .. next_character_index ];
+
+                if ( !Context.IsInsideString )
+                {
+                    if ( ( character_index >= 1
+                           && text[ character_index - 1 ] == '#' ) )
+                    {
+                        identifier = identifier.GetSnakeCaseIdentifier().toUpper();
+
+                        text = text[ 0 .. character_index - 1 ] ~ identifier ~ text [ next_character_index .. $ ];
+
+                        character_index = character_index + identifier.length - 2;
+                    }
+                    else
+                    {
+                        replaced_identifier = identifier in ReplacedIdentifierMap;
+
+                        if ( replaced_identifier !is null )
+                        {
+                            text = text[ 0 .. character_index ] ~ *replaced_identifier ~ text [ next_character_index .. $ ];
+
+                            character_index = character_index + replaced_identifier.length - 1;
+                        }
+                        else if ( ConvertOptionIsEnabled
+                                  && ( character >= 'A' && character <= 'Z' ) )
+                        {
+                            if ( identifier.IsUpperCaseIdentifier()
+                                 && identifier.length > 1 )
+                            {
+                                identifier = identifier.GetPascalCaseIdentifier();
+                            }
+                            else
+                            {
+                                identifier = identifier.GetSnakeCaseIdentifier();
+                            }
+
+                            text = text[ 0 .. character_index ] ~ identifier ~ text [ next_character_index .. $ ];
+
+                            character_index = character_index + identifier.length - 1;
+                        }
+                        else
+                        {
+                            character_index = next_character_index - 1;
+                        }
+                    }
+                }
+                else
+                {
+                    character_index = next_character_index - 1;
+                }
+            }
+        }
+
+        return text;
+    }
+}
+
+// ~~
+
 class FILE
 {
     string
@@ -498,136 +760,6 @@ class FILE
 
     // ~~
 
-    string ProcessIdentifiers(
-        string text
-        )
-    {
-        bool
-            it_is_attribute_access,
-            it_is_function_call,
-            it_is_inside_comment,
-            it_is_inside_string,
-            it_is_member_access;
-        char
-            character;
-        string
-            identifier;
-        string *
-            replaced_identifier;
-        INT
-            character_index,
-            next_character_index;
-
-        for ( character_index = 0;
-              character_index < text.length;
-              ++character_index )
-        {
-            character = text[ character_index ];
-
-            if ( it_is_inside_comment )
-            {
-                if ( character == '\n' )
-                {
-                    it_is_inside_comment = false;
-                }
-            }
-            else if ( it_is_inside_string )
-            {
-                if ( character == '\\' )
-                {
-                    ++character_index;
-                }
-                else if ( character == '"' )
-                {
-                    it_is_inside_string = false;
-                }
-            }
-            else if ( character == '/'
-                      && character + 1 < text.length
-                      && text[ character_index + 1 ] == '/' )
-            {
-                it_is_inside_comment = true;
-
-                ++character_index;
-            }
-            else if ( character == '"' )
-            {
-                it_is_inside_string = true;
-            }
-            else
-            {
-                if ( ( ( character >= 'a' && character <= 'z' )
-                       || ( character >= 'A' && character <= 'Z' ) )
-                     && ( character_index == 0
-                          || !text[ character_index - 1 ].IsAlphaNumericCharacter() ) )
-                {
-                    next_character_index = character_index + 1;
-
-                    while ( next_character_index < text.length
-                            && text[ next_character_index ].IsAlphaNumericCharacter() )
-                    {
-                        ++next_character_index;
-                    }
-
-                    if ( next_character_index < text.length
-                         && ( text[ next_character_index ] == '!'
-                              || text[ next_character_index ] == '?' ) )
-                    {
-                        ++next_character_index;
-                    }
-
-                    identifier = text[ character_index .. next_character_index ];
-
-                    if ( ( character_index >= 1
-                           && text[ character_index - 1 ] == '#' ) )
-                    {
-                        identifier = identifier.GetSnakeCaseIdentifier().toUpper();
-
-                        text = text[ 0 .. character_index - 1 ] ~ identifier ~ text [ next_character_index .. $ ];
-
-                        character_index = character_index + identifier.length - 2;
-                    }
-                    else
-                    {
-                        replaced_identifier = identifier in ReplacedIdentifierMap;
-
-                        if ( replaced_identifier !is null )
-                        {
-                            text = text[ 0 .. character_index ] ~ *replaced_identifier ~ text [ next_character_index .. $ ];
-
-                            character_index = character_index + replaced_identifier.length - 1;
-                        }
-                        else if ( ConvertOptionIsEnabled
-                                  && ( character >= 'A' && character <= 'Z' ) )
-                        {
-                            if ( identifier.IsUpperCaseIdentifier()
-                                 && identifier.length > 1 )
-                            {
-                                identifier = identifier.GetPascalCaseIdentifier();
-                            }
-                            else
-                            {
-                                identifier = identifier.GetSnakeCaseIdentifier();
-                            }
-
-                            text = text[ 0 .. character_index ] ~ identifier ~ text [ next_character_index .. $ ];
-
-                            character_index = character_index + identifier.length - 1;
-                        }
-                        else
-                        {
-                            character_index = next_character_index - 1;
-                        }
-                    }
-                }
-            }
-        }
-
-        return text;
-    }
-
-    // ~~
-
     void Process(
         bool modification_time_is_used
         )
@@ -637,6 +769,8 @@ class FILE
             output_file_text;
         CODE
             code;
+        PROCESSOR
+            processor;
 
         if ( Exists
              && ( !OutputPath.exists()
@@ -648,7 +782,9 @@ class FILE
             if ( ReplaceOptionIsEnabled
                  || ConvertOptionIsEnabled )
             {
-                input_file_text = ProcessIdentifiers( input_file_text );
+                processor = new PROCESSOR();
+
+                input_file_text = processor.ProcessIdentifiers( input_file_text );
             }
 
             code = new CODE( InputPath );

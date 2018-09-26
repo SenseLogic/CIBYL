@@ -54,7 +54,7 @@ server = HTTP::SERVER.New
     do |context|
     {
         context.Response.ContentType = "text/plain";
-        context.Response.Print( "Hello world! The time is #{Time.now}" );
+        context.Response.Print( "Hello world! The time is #{TIME.Now}" );
     }
 
 address = server.BindTcp( 8080 );
@@ -83,8 +83,6 @@ If the `--convert` option is used :
 *   Identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
-
-Identifiers inside string literals remain unchanged.
 
 ## Limitations
 

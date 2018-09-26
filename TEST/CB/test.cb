@@ -104,6 +104,15 @@ module CIBYL
 
     class TEST
     {
+        // -- CONSTRUCTORS
+
+        method Initialize(
+            @Hello : STRING,
+            @World : STRING
+            )
+        {
+        }
+
         // -- OPERATIONS
 
         method TestIf(
@@ -298,12 +307,38 @@ module CIBYL
 
         // ~~
 
-        method TestCase(
+        method TestType(
             )
         {
             data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New
         }
+
+        // ~~
+
+        method TestInterpolation(
+            )
+        {
+            Puts( "Test #{@Hello + " Test #{@Hello} #{@World} Test " + @World} Test" );
+            Puts( %(Test #{@Hello + %( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %[Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %{Test #{@Hello + %{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %<Test #{@Hello + %< Test #{@Hello} #{@World} Test > + @World} Test> );
+            Puts( %|Test #{@Hello + %| Test #{@Hello} #{@World} Test | + @World} Test| );
+            Puts( %Q(Test #{@Hello + %Q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %Q[Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %Q{Test #{@Hello + %Q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %Q<Test #{@Hello + %Q< Test #{@Hello} #{@World} Test > + @World} Test> );
+            Puts( %Q|Test #{@Hello + %Q| Test #{@Hello} #{@World} Test | + @World} Test| );
+
+            Puts( "Test \#{@Hello + \" Test #{@Hello} #{@World} Test \" + @World} Test" );
+            Puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+        }
     }
+
+    // -- STATEMENTS
+
+    test = TEST.New( "Hello", "World" );
+    test.TestInterpolation();
 }
 
 // -- STATEMENTS
@@ -314,7 +349,7 @@ server = HTTP::SERVER.New
     do |context|
     {
         context.Response.ContentType = "text/plain";
-        context.Response.Print( "Hello world! The time is #{Time.now}" );
+        context.Response.Print( "Hello world! The time is #{TIME.Now}" );
     }
 
 address = server.BindTcp( 8080 );

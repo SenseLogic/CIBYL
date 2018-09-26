@@ -90,6 +90,14 @@ module Cibyl
     # ~~
 
     class Test
+        # -- CONSTRUCTORS
+
+        def initialize(
+            @hello : String,
+            @world : String
+            )
+        end
+
         # -- OPERATIONS
 
         def test_if(
@@ -231,11 +239,36 @@ module Cibyl
 
         # ~~
 
-        def test_case(
+        def test_type(
             )
             data = Array( NamedTuple( id: Int32, message: String ) ).new
         end
+
+        # ~~
+
+        def test_interpolation(
+            )
+            puts( "Test #{@hello + " Test #{@hello} #{@world} Test " + @world} Test" );
+            puts( %(Test #{@hello + %( Test #{@hello} #{@world} Test ) + @world} Test) );
+            puts( %[Test #{@hello + %[ Test #{@hello} #{@world} Test ] + @world} Test] );
+            puts( %{Test #{@hello + %{ Test #{@hello} #{@world} Test } + @world} Test} );
+            puts( %<Test #{@hello + %< Test #{@hello} #{@world} Test > + @world} Test> );
+            puts( %|Test #{@hello + %| Test #{@hello} #{@world} Test | + @world} Test| );
+            puts( %Q(Test #{@hello + %Q( Test #{@hello} #{@world} Test ) + @world} Test) );
+            puts( %Q[Test #{@hello + %Q[ Test #{@hello} #{@world} Test ] + @world} Test] );
+            puts( %Q{Test #{@hello + %Q{ Test #{@hello} #{@world} Test } + @world} Test} );
+            puts( %Q<Test #{@hello + %Q< Test #{@hello} #{@world} Test > + @world} Test> );
+            puts( %Q|Test #{@hello + %Q| Test #{@hello} #{@world} Test | + @world} Test| );
+
+            puts( "Test \#{@Hello + \" Test #{@hello} #{@world} Test \" + @World} Test" );
+            puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+        end
     end
+
+    # -- STATEMENTS
+
+    test = Test.new( "Hello", "World" );
+    test.test_interpolation();
 end
 
 # -- STATEMENTS
