@@ -24,15 +24,15 @@ module Cibyl
     enum Color
         # -- CONSTANTS
 
-        Red
-        Green
-        Blue
+        RED
+        GREEN
+        BLUE
 
         # -- INQUIRIES
 
         def is_red?(
             )
-            return self == Red;
+            return self == RED;
         end
     end
 
@@ -50,10 +50,9 @@ module Cibyl
 
         # -- INQUIRIES
 
-        def has_color(
-            color : Color
+        def is_blue(
             )
-            return @color == color;
+            return @color == Color.BLUE;
         end
     end
 
@@ -77,7 +76,7 @@ module Cibyl
 
         def is_green?(
             )
-            return color == Color.Green;
+            return color == Color.GREEN;
         end
 
         # -- OPERATIONS

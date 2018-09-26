@@ -27,7 +27,7 @@ import std.datetime : Clock, SysTime;
 import std.file : dirEntries, exists, mkdirRecurse, readText, timeLastModified, write, FileException, SpanMode;
 import std.path : dirName;
 import std.stdio : writeln;
-import std.string : endsWith, indexOf, replace, split, startsWith, strip, stripLeft, stripRight;
+import std.string : endsWith, indexOf, replace, split, startsWith, strip, stripLeft, stripRight, toUpper;
 
 // -- TYPES
 
@@ -576,17 +576,19 @@ class FILE
                         ++next_character_index;
                     }
 
+                    identifier = text[ character_index .. next_character_index ];
+
                     if ( ( character_index >= 1
                            && text[ character_index - 1 ] == '#' ) )
                     {
-                        text = text[ 0 .. character_index - 1 ] ~ text [ character_index .. $ ];
+                        identifier = identifier.GetSnakeCaseIdentifier().toUpper();
 
-                        character_index = next_character_index;
+                        text = text[ 0 .. character_index - 1 ] ~ identifier ~ text [ next_character_index .. $ ];
+
+                        character_index = character_index + identifier.length - 2;
                     }
                     else
                     {
-                        identifier = text[ character_index .. next_character_index ];
-
                         replaced_identifier = identifier in ReplacedIdentifierMap;
 
                         if ( replaced_identifier !is null )

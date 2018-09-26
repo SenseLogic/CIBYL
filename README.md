@@ -41,11 +41,10 @@ struct POINT
     {
     }
 
-    method HasColor(
-        color : COLOR
+    method IsBlue(
         )
     {
-        return @Color == color;
+        return @Color == COLOR.#Blue;
     }
 }
 
@@ -81,10 +80,11 @@ HTTP
 
 If the `--convert` option is used :
 
+*   Identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
 
-Identifiers inside string literals or prefixed with `#` remain unchanged.
+Identifiers inside string literals remain unchanged.
 
 ## Limitations
 
@@ -112,7 +112,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --ruby : generate Ruby files
 --crystal : generate Crystal files
 --replace dictionary.txt : replace identifiers defined in this dictionary
---convert : convert the uppercase and Pascal case identifiers
+--convert : convert the identifier case
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
@@ -139,12 +139,12 @@ cibyl --crystal --replace dictionary.txt --convert --create --watch CB/ CR/
 ```
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder
-(replacing the identifiers defined in the dictionary, converting the uppercase and Pascal case identifiers,
+(replacing the identifiers defined in the dictionary, converting identifier case,
 and creating the Crystal folders if needed), then watches the Cibyl files for modifications.
 
 ## Version
 
-1.1
+1.2
 
 ## Author
 

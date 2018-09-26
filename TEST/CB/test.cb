@@ -58,11 +58,10 @@ module CIBYL
 
         // -- INQUIRIES
 
-        method HasColor(
-            color : COLOR
+        method IsBlue(
             )
         {
-            return @Color == color;
+            return @Color == COLOR.#Blue;
         }
     }
 
