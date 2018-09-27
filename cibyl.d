@@ -297,7 +297,7 @@ class CODE
 
         line = LineArray[ LineIndex ];
 
-        if ( line.HasCommand( "//" ) )
+        if ( line.Text.startsWith( "//" ) )
         {
             line.Text = "#" ~ line.Text[ 2 .. $ ];
 
@@ -746,41 +746,123 @@ class FILE
 
     // ~~
 
+    string ProcessCode(
+        string text
+        )
+    {
+        CODE
+            code;
+
+        if ( ReplaceOptionIsEnabled
+             || ConvertOptionIsEnabled )
+        {
+            text = ProcessIdentifiers( text );
+        }
+
+        code = new CODE( InputPath );
+        code.SetLineArray( text );
+        code.Process();
+
+        return code.GetText();
+    }
+
+    // ~~
+
+    string ProcessEmbeddedCode(
+        string text
+        )
+    {
+        string
+            processed_text;
+        INT
+            character_index,
+            next_character_index;
+
+        if ( ReplaceOptionIsEnabled
+             || ConvertOptionIsEnabled )
+        {
+            for ( character_index = 0;
+                  character_index < text.length;
+                  ++character_index )
+            {
+                if ( text[ character_index ] == '<'
+                     && character_index + 1 < text.length
+                     && text[ character_index + 1 ] == '%' )
+                {
+                    if ( character_index >= 1
+                         && text[ character_index - 1 ] == '\\' )
+                    {
+                        text = text[ 0 .. character_index - 1 ] ~ text[ character_index .. $ ];
+                    }
+                    else
+                    {
+                        for ( next_character_index = character_index + 2;
+                              next_character_index < text.length;
+                              ++next_character_index )
+                        {
+                            if ( text[ next_character_index ] == '%'
+                                 && next_character_index + 1 < text.length
+                                 && text[ next_character_index + 1 ] == '>' )
+                            {
+                                if ( next_character_index >= 1
+                                     && text[ next_character_index - 1 ] == '\\' )
+                                {
+                                    text = text[ 0 .. next_character_index - 1 ] ~ text[ next_character_index .. $ ];
+                                }
+                                else
+                                {
+                                    character_index += 2;
+
+                                    processed_text = ProcessIdentifiers( text[ character_index .. next_character_index ] );
+                                    text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
+
+                                    next_character_index = character_index + processed_text.length + 2;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        character_index = next_character_index - 1;
+                    }
+                }
+            }
+        }
+
+        return text;
+    }
+
+    // ~~
+
     void Process(
         bool modification_time_is_used
         )
     {
         string
-            input_file_text,
-            output_file_text;
-        CODE
-            code;
+            text;
 
         if ( Exists
              && ( !OutputPath.exists()
                   || !modification_time_is_used
                   || InputPath.timeLastModified() > OutputPath.timeLastModified() ) )
         {
-            input_file_text = ReadInputFile();
+            text = ReadInputFile();
 
-            if ( ReplaceOptionIsEnabled
-                 || ConvertOptionIsEnabled )
+            if ( InputPath.endsWith( ".cb" ) )
             {
-                input_file_text = ProcessIdentifiers( input_file_text );
+                text = ProcessCode( text );
             }
-
-            code = new CODE( InputPath );
-            code.SetLineArray( input_file_text );
-            code.Process();
-
-            output_file_text = code.GetText();
+            else if ( InputPath.endsWith( ".ecb" ) )
+            {
+                text = ProcessEmbeddedCode( text );
+            }
 
             if ( CreateOptionIsEnabled )
             {
                 CreateOutputFolder();
             }
 
-            WriteOutputFile( output_file_text );
+            WriteOutputFile( text );
         }
     }
 }
@@ -992,25 +1074,6 @@ string GetSnakeCaseIdentifier(
 
 // ~~
 
-string GetOutputExtension(
-    )
-{
-    if ( Language == LANGUAGE.Ruby )
-    {
-        return ".rb";
-    }
-    else if ( Language == LANGUAGE.Crystal )
-    {
-        return ".cr";
-    }
-
-    Abort( "Unknown language" );
-
-    return "";
-}
-
-// ~~
-
 void LoadDictionary(
     string dictionary_file_path
     )
@@ -1076,29 +1139,54 @@ void FindFiles(
         old_file.Exists = false;
     }
 
-    foreach ( input_folder_entry; dirEntries( input_folder_path, "*.cb", SpanMode.depth ) )
+    foreach ( input_file_extension; [ ".cb", ".ecb" ] )
     {
-        if ( input_folder_entry.isFile() )
+        foreach ( input_folder_entry; dirEntries( input_folder_path, "*" ~ input_file_extension, SpanMode.depth ) )
         {
-            input_file_path = input_folder_entry.name();
-
-            if ( input_file_path.startsWith( input_folder_path )
-                 && input_file_path.endsWith( ".cb" ) )
+            if ( input_folder_entry.isFile() )
             {
-                output_file_path
-                    = output_folder_path
-                      ~ input_file_path[ input_folder_path.length .. $ - 3 ]
-                      ~ GetOutputExtension();
+                input_file_path = input_folder_entry.name();
 
-                found_file = input_file_path in FileMap;
+                if ( input_file_path.startsWith( input_folder_path )
+                     && input_file_path.endsWith( input_file_extension ) )
+                {
+                    output_file_path
+                        = output_folder_path
+                          ~ input_file_path[ input_folder_path.length .. $ - input_file_extension.length ];
 
-                if ( found_file is null )
-                {
-                    FileMap[ input_file_path ] = new FILE( input_file_path, output_file_path );
-                }
-                else
-                {
-                    found_file.Exists = true;
+                    if ( input_file_extension == ".cb" )
+                    {
+                        if ( Language == LANGUAGE.Ruby )
+                        {
+                            output_file_path ~= ".rb";
+                        }
+                        else if ( Language == LANGUAGE.Crystal )
+                        {
+                            output_file_path ~= ".cr";
+                        }
+                    }
+                    else if ( input_file_extension == ".ecb" )
+                    {
+                        if ( Language == LANGUAGE.Ruby )
+                        {
+                            output_file_path ~= ".erb";
+                        }
+                        else if ( Language == LANGUAGE.Crystal )
+                        {
+                            output_file_path ~= ".ecr";
+                        }
+                    }
+
+                    found_file = input_file_path in FileMap;
+
+                    if ( found_file is null )
+                    {
+                        FileMap[ input_file_path ] = new FILE( input_file_path, output_file_path );
+                    }
+                    else
+                    {
+                        found_file.Exists = true;
+                    }
                 }
             }
         }

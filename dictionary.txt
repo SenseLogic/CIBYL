@@ -1,0 +1,9 @@
+method : def
+DB
+ECR
+HTML
+HTTP
+UINT16 : UInt16
+UINT32 : UInt32
+UINT64 : UInt64
+UINT8 : UInt8
