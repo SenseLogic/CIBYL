@@ -1,6 +1,11 @@
+// -- IMPORTS
+
+require "ecr"
+require "http/server";
+
 // -- MODULES
 
-module CIBYL
+module TEST
 {
     // -- TYPES
 
@@ -61,7 +66,7 @@ module CIBYL
         method IsBlue(
             )
         {
-            return @Color == COLOR.#Blue;
+            return @Color == COLOR::#Blue;
         }
     }
 
@@ -88,7 +93,7 @@ module CIBYL
         method IsGreen?(
             )
         {
-            return Color == COLOR.#Green;
+            return Color == COLOR::#Green;
         }
 
         // -- OPERATIONS
@@ -345,19 +350,46 @@ module CIBYL
 
     test = TEST.New( "Hello", "World" );
     test.TestInterpolation();
+
+    // ~~
+
+    person_array = ARRAY( PERSON ).New();
+    person_array.Push( PERSON.New( "Red", 1, COLOR::#Red ) );
+    person_array.Push( PERSON.New( "Green", 2, COLOR::#Green ) );
+    person_array.Push( PERSON.New( "Blue", 2, COLOR::#Blue ) );
+
+    // ~~
+
+    server = HTTP::SERVER.New
+        do |context|
+        {
+            response = context.Response;
+            request = context.Request;
+
+            response.Headers[ "Server" ] = "Crystal";
+            response.Headers[ "Date" ] = HTTP.FormatTime( TIME.Now );
+
+            case ( request.Path )
+            {
+                when "/"
+                {
+                    response.StatusCode = 200;
+                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    ECR.Embed "test.ecr", response
+                }
+                when "/time"
+                {
+                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    context.Response.Print( "The time is #{TIME.Now}<br/><a href=\"/\">Back</a>" );
+                }
+                else
+                {
+                    response.StatusCode = 404;
+                }
+            }
+        }
+
+    Puts( "Listening on http://127.0.0.1:8080" );
+
+    server.Listen( "127.0.0.1", 8080, reuse_port: true )
 }
-
-// -- STATEMENTS
-
-require "http/server";
-
-server = HTTP::SERVER.New
-    do |context|
-    {
-        context.Response.ContentType = "text/plain";
-        context.Response.Print( "Hello world! The time is #{TIME.Now}" );
-    }
-
-address = server.BindTcp( 8080 );
-Puts( "Listening on http://#{address}" );
-server.Listen();

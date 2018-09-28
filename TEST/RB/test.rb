@@ -1,6 +1,11 @@
+# -- IMPORTS
+
+require "ecr"
+require "http/server";
+
 # -- MODULES
 
-module Cibyl
+module Test
     # -- TYPES
 
     abstract struct Abstract
@@ -52,7 +57,7 @@ module Cibyl
 
         def is_blue(
             )
-            return @color == Color.BLUE;
+            return @color == Color::BLUE;
         end
     end
 
@@ -76,7 +81,7 @@ module Cibyl
 
         def is_green?(
             )
-            return color == Color.GREEN;
+            return color == Color::GREEN;
         end
 
         # -- OPERATIONS
@@ -275,19 +280,39 @@ module Cibyl
 
     test = Test.new( "Hello", "World" );
     test.test_interpolation();
+
+    # ~~
+
+    person_array = Array( Person ).new();
+    person_array.push( Person.new( "Red", 1, Color::RED ) );
+    person_array.push( Person.new( "Green", 2, Color::GREEN ) );
+    person_array.push( Person.new( "Blue", 2, Color::BLUE ) );
+
+    # ~~
+
+    server = HTTP::Server.new \
+        do |context|
+            response = context.response;
+            request = context.request;
+
+            response.headers[ "Server" ] = "Crystal";
+            response.headers[ "Date" ] = HTTP.format_time( Time.now );
+
+            case ( request.path )
+                when "/"
+                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    context.response.print( "<a href=\"/ecr\">Hello world!</a><br/>The time is #{Time.now}" );
+                when "/ecr"
+                    response.status_code = 200;
+                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    ECR.embed "test.ecr", response
+                else
+                    response.status_code = 404;
+            end
+        end
+
+    puts( "Listening on http://127.0.0.1:8080" );
+
+    server.listen( "127.0.0.1", 8080, reuse_port: true )
 end
-
-# -- STATEMENTS
-
-require "http/server";
-
-server = HTTP::Server.new \
-    do |context|
-        context.response.content_type = "text/plain";
-        context.response.print( "Hello world! The time is #{Time.now}" );
-    end
-
-address = server.bind_tcp( 8080 );
-puts( "Listening on http://#{address}" );
-server.listen();
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <table>
+        <tr id="<%%Ignored%>IGNORED%>" class="<%= Processed = "PROCESSED" %>">
+            <th>Name</th>
+            <th>Age</th>
+        </tr>
+        <% person_array.Each do |person| %>
+            <tr>
+                <td><%= HTML.Escape( person.@Name ) %></td>
+                <td><%= person.@Age %></td>
+            </tr>
+        <% end %>
+    </table>
+    <a href="/time">Time</a>
+</body>
+</html>

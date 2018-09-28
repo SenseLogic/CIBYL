@@ -1,3 +1,4 @@
 #!/bin/sh
 set -x
-crystal CR/test.cr
+cd CR/
+crystal test.cr

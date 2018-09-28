@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <table>
+        <tr id="<%%Ignored" class="IGNORED%>">
+            <th><%%Name%></th>
+            <th><%%Age%></th>
+        </tr>
+        <% person_array.each do |person| %>
+            <tr>
+                <td><%= HTML.escape( person.@name ) %></td>
+                <td><%= person.@age %></td>
+            </tr>
+        <% end %>
+    </table>
+    <a href="/">Back</a>
+</body>
+</html>

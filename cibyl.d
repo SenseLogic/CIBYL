@@ -789,10 +789,10 @@ class FILE
                      && character_index + 1 < text.length
                      && text[ character_index + 1 ] == '%' )
                 {
-                    if ( character_index >= 1
-                         && text[ character_index - 1 ] == '\\' )
+                    if ( character_index + 2 < text.length
+                         && text[ character_index + 2 ] == '%' )
                     {
-                        text = text[ 0 .. character_index - 1 ] ~ text[ character_index .. $ ];
+                        character_index += 2;
                     }
                     else
                     {
@@ -804,22 +804,14 @@ class FILE
                                  && next_character_index + 1 < text.length
                                  && text[ next_character_index + 1 ] == '>' )
                             {
-                                if ( next_character_index >= 1
-                                     && text[ next_character_index - 1 ] == '\\' )
-                                {
-                                    text = text[ 0 .. next_character_index - 1 ] ~ text[ next_character_index .. $ ];
-                                }
-                                else
-                                {
-                                    character_index += 2;
+                                character_index += 2;
 
-                                    processed_text = ProcessIdentifiers( text[ character_index .. next_character_index ] );
-                                    text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
+                                processed_text = ProcessIdentifiers( text[ character_index .. next_character_index ] );
+                                text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
 
-                                    next_character_index = character_index + processed_text.length + 2;
+                                next_character_index = character_index + processed_text.length + 2;
 
-                                    break;
-                                }
+                                break;
                             }
                         }
 
