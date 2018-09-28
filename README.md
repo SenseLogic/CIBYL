@@ -71,7 +71,6 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a comment starts by `//`
 *   a block starts by `{` and ends by `}`
 *   a `do` block starts its own line
-*   `<%` and `%>` tags are ignored if they are prefixed with `\`
 
 If the `--replace` option is used, one or several dictionaries can be used to change the program keywords and identifiers :
 
@@ -85,7 +84,6 @@ If the `--convert` option is used :
 *   Identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
-
 
 ## Limitations
 
