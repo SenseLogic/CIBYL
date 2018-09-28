@@ -344,6 +344,23 @@ module Test
             puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         end
+
+        # ~~
+
+        def test_server(
+            )
+
+            server = HTTP::Server.new \
+                do |context|
+
+                    context.response.content_type = "text/plain";
+                    context.response.print( "Hello world! The time is #{Time.now}" );
+                end
+
+            address = server.bind_tcp( 8080 );
+            puts( "Listening on http://#{address}" );
+            server.listen();
+        end
     end
 
     # -- STATEMENTS
