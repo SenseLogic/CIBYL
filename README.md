@@ -76,7 +76,6 @@ If the `--replace` option is used, one or several dictionaries can be used to ch
 
 ```ruby
 method : def
-HTTP
 ```
 
 If the `--convert` option is used :
