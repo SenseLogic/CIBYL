@@ -28,7 +28,7 @@ def fibonacci(
 puts fibonacci( 5 );
 ```
 
-Optionally, Cibyl can be customized to use alternative keywords and case conventions :
+Cibyl can be configured to use different keywords and case conventions :
 
 ```ruby
 struct POINT
