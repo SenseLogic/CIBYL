@@ -274,6 +274,21 @@ module Test
             puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         end
+
+        # ~~
+
+        def test_server(
+            )
+            server = HTTP::Server.new \
+                do |context|
+                    context.response.content_type = "text/plain";
+                    context.response.print( "Hello world! The time is #{Time.now}" );
+                end
+
+            address = server.bind_tcp( 8080 );
+            puts( "Listening on http://#{address}" );
+            server.listen();
+        end
     end
 
     # -- STATEMENTS
@@ -300,12 +315,12 @@ module Test
 
             case ( request.path )
                 when "/"
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "<a href=\"/ecr\">Hello world!</a><br/>The time is #{Time.now}" );
-                when "/ecr"
                     response.status_code = 200;
                     response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
                     ECR.embed "test.ecr", response
+                when "/time"
+                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    context.response.print( "The time is #{Time.now}<br/><a href=\"/\">Back</a>" );
                 else
                     response.status_code = 404;
             end
