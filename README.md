@@ -87,7 +87,7 @@ If the `--convert` option is used :
 ## Limitations
 
 *   Blocks must be properly aligned.
-*   Dictionaries are not updated dynamically.
+*   Dictionaries are not reloaded dynamically.
 *   Curly brackets are not available in embedded code.
 
 ## Installation
