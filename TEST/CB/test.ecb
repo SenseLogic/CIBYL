@@ -5,7 +5,7 @@
 </head>
 <body>
     <table>
-        <tr id="<%%Ignored%>IGNORED%>" class="<%= Processed = "PROCESSED" %>">
+        <tr id="<%%Ignored%>IGNORED%>" class="<%=Processed="PROCESSED"%>">
             <th>Name</th>
             <th>Age</th>
         </tr>
