@@ -28,12 +28,12 @@ def fibonacci(
 puts fibonacci( 5 );
 ```
 
-Optionally, Cibyl allows to use different keywords and case conventions :
+Optionally, Cibyl allows to use other case conventions :
 
 ```ruby
 struct POINT
 {
-    method Initialize(
+    def Initialize(
         @Name : STRING,
         @Position : POSITION,
         @Color : COLOR
@@ -41,7 +41,7 @@ struct POINT
     {
     }
 
-    method IsBlue(
+    def IsBlue(
         )
     {
         return @Color == COLOR.#Blue;
@@ -73,10 +73,6 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a `do` block starts its own line
 
 If the `--replace` option is used, one or several dictionaries can be used to change the program keywords and identifiers :
-
-```ruby
-method : def
-```
 
 If the `--convert` option is used :
 
