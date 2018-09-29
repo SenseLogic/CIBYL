@@ -705,7 +705,9 @@ class FILE
                     {
                         if ( ConvertOptionIsEnabled
                              && character_index >= 1
-                             && text[ character_index - 1 ] == '^' )
+                             && text[ character_index - 1 ] == '.'
+                             && ( character_index == 1
+                                  || " \n{[(".indexOf( text[ character_index - 2 ] ) >= 0 ) )
                         {
                             text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
                         }

@@ -34,9 +34,9 @@ Optionally, Cibyl allows to use other case conventions and attribute prefixes :
 struct POINT
 {
     def Initialize(
-        ^Name : STRING,
-        ^Position : POSITION,
-        ^Color : COLOR
+        .Name : STRING,
+        .Position : POSITION,
+        .Color : COLOR
         )
     {
     }
@@ -44,7 +44,7 @@ struct POINT
     def IsBlue(
         )
     {
-        return ^Color == COLOR.#Blue;
+        return .Color == COLOR.#Blue;
     }
 }
 
@@ -76,7 +76,7 @@ If the `--replace` option is used, dictionaries can be used to redefine keywords
 
 If the `--convert` option is used :
 
-*   `^` prefixes are converted to `@`
+*   `.` prefixes are converted to `@`
 *   identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
