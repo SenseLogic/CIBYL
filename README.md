@@ -76,10 +76,10 @@ If the `--replace` option is used, dictionaries can be used to redefine keywords
 
 If the `--convert` option is used :
 
+*   `^` prefixes are converted to `@`
 *   identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
-*   `^` prefixes are converted to `@`
 
 ## Limitations
 
