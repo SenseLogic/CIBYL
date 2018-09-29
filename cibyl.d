@@ -692,8 +692,8 @@ class FILE
 
                 if ( !context.IsInsideString )
                 {
-                    if ( ( character_index >= 1
-                           && text[ character_index - 1 ] == '#' ) )
+                    if ( character_index >= 1
+                         && text[ character_index - 1 ] == '#' )
                     {
                         identifier = identifier.GetSnakeCaseIdentifier().toUpper();
 
@@ -703,6 +703,13 @@ class FILE
                     }
                     else
                     {
+                        if ( ConvertOptionIsEnabled
+                             && character_index >= 1
+                             && text[ character_index - 1 ] == '^' )
+                        {
+                            text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
+                        }
+
                         replaced_identifier = identifier in ReplacedIdentifierMap;
 
                         if ( replaced_identifier !is null )

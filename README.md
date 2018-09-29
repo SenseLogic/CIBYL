@@ -34,9 +34,9 @@ Optionally, Cibyl allows to use other case conventions :
 struct POINT
 {
     def Initialize(
-        @Name : STRING,
-        @Position : POSITION,
-        @Color : COLOR
+        ^Name : STRING,
+        ^Position : POSITION,
+        ^Color : COLOR
         )
     {
     }
@@ -44,7 +44,7 @@ struct POINT
     def IsBlue(
         )
     {
-        return @Color == COLOR.#Blue;
+        return ^Color == COLOR.#Blue;
     }
 }
 
@@ -80,6 +80,7 @@ If the `--convert` option is used :
 *   Identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
+*   `^` prefixes are converted to `@`
 
 ## Limitations
 

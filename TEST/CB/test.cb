@@ -20,9 +20,9 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            @X : INT32,
-            @Y : INT32,
-            @Z : INT32
+            ^X : INT32,
+            ^Y : INT32,
+            ^Z : INT32
             )
         {
         }
@@ -54,9 +54,9 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            @Name : STRING,
-            @Position : POSITION,
-            @Color : COLOR
+            ^Name : STRING,
+            ^Position : POSITION,
+            ^Color : COLOR
             )
         {
         }
@@ -66,7 +66,7 @@ module TEST
         def IsBlue(
             )
         {
-            return @Color == COLOR::#Blue;
+            return ^Color == COLOR::#Blue;
         }
     }
 
@@ -81,9 +81,9 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            @Name : STRING,
-            @Age : INT32,
-            @Color : COLOR
+            ^Name : STRING,
+            ^Age : INT32,
+            ^Color : COLOR
             )
         {
         }
@@ -112,8 +112,8 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            @Hello : STRING,
-            @World : STRING
+            ^Hello : STRING,
+            ^World : STRING
             )
         {
         }
@@ -306,7 +306,7 @@ module TEST
             ].Each
                 do |key, value|
                 {
-                    Puts( "#{@key} : #{@value}" );
+                    Puts( "#{key} : #{value}" );
                 }
         }
 
@@ -323,26 +323,26 @@ module TEST
         def TestInterpolation(
             )
         {
-            Puts( "Test #{@Hello + " Test #{@Hello} #{@World} Test " + @World} Test" );
-            Puts( %(Test #{@Hello + %( Test #{@Hello} #{@World} Test ) + @World} Test) );
-            Puts( %[Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test] );
-            Puts( %{Test #{@Hello + %{ Test #{@Hello} #{@World} Test } + @World} Test} );
-            Puts( %<Test #{@Hello + %< Test #{@Hello} #{@World} Test > + @World} Test> );
-            Puts( %|Test #{@Hello + %| Test #{@Hello} #{@World} Test | + @World} Test| );
-            Puts( %(Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test) );
-            Puts( %Q(Test #{@Hello + %Q( Test #{@Hello} #{@World} Test ) + @World} Test) );
-            Puts( %Q[Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
-            Puts( %Q{Test #{@Hello + %Q{ Test #{@Hello} #{@World} Test } + @World} Test} );
-            Puts( %Q<Test #{@Hello + %Q< Test #{@Hello} #{@World} Test > + @World} Test> );
-            Puts( %Q|Test #{@Hello + %Q| Test #{@Hello} #{@World} Test | + @World} Test| );
-            Puts( %Q(Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
+            Puts( "Test #{^Hello + " Test #{^Hello} #{^World} Test " + ^World} Test" );
+            Puts( %(Test #{^Hello + %( Test #{^Hello} #{^World} Test ) + ^World} Test) );
+            Puts( %[Test #{^Hello + %[ Test #{^Hello} #{^World} Test ] + ^World} Test] );
+            Puts( %{Test #{^Hello + %{ Test #{^Hello} #{^World} Test } + ^World} Test} );
+            Puts( %<Test #{^Hello + %< Test #{^Hello} #{^World} Test > + ^World} Test> );
+            Puts( %|Test #{^Hello + %| Test #{^Hello} #{^World} Test | + ^World} Test| );
+            Puts( %(Test #{^Hello + %[ Test #{^Hello} #{^World} Test ] + ^World} Test) );
+            Puts( %Q(Test #{^Hello + %Q( Test #{^Hello} #{^World} Test ) + ^World} Test) );
+            Puts( %Q[Test #{^Hello + %Q[ Test #{^Hello} #{^World} Test ] + ^World} Test] );
+            Puts( %Q{Test #{^Hello + %Q{ Test #{^Hello} #{^World} Test } + ^World} Test} );
+            Puts( %Q<Test #{^Hello + %Q< Test #{^Hello} #{^World} Test > + ^World} Test> );
+            Puts( %Q|Test #{^Hello + %Q| Test #{^Hello} #{^World} Test | + ^World} Test| );
+            Puts( %Q(Test #{^Hello + %Q[ Test #{^Hello} #{^World} Test ] + ^World} Test) );
 
-            Puts( "Test \#{@Hello + \" Test \#{@Hello} \#{@World} Test \" + @World} Test" );
-            Puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
-            Puts( %q[Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
-            Puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
-            Puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
-            Puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
+            Puts( "Test \#{^Hello + \" Test \#{^Hello} \#{^World} Test \" + ^World} Test" );
+            Puts( %q(Test #{^Hello + %q( Test #{^Hello} #{^World} Test ) + ^World} Test) );
+            Puts( %q[Test #{^Hello + %q[ Test #{^Hello} #{^World} Test ] + ^World} Test] );
+            Puts( %q{Test #{^Hello + %q{ Test #{^Hello} #{^World} Test } + ^World} Test} );
+            Puts( %q<Test #{^Hello + %q< Test #{^Hello} #{^World} Test > + ^World} Test> );
+            Puts( %q(Test #{^Hello + %q[ Test #{^Hello} #{^World} Test ] + ^World} Test) );
         }
 
         // ~~

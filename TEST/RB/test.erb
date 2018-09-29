@@ -11,8 +11,8 @@
         </tr>
         <% person_array.each do |person| %>
             <tr>
-                <td><%= HTML.escape( person.@name ) %></td>
-                <td><%= person.@age %></td>
+                <td><%= HTML.escape( person.name ) %></td>
+                <td><%= person.age %></td>
             </tr>
         <% end %>
     </table>
