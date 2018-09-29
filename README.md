@@ -77,7 +77,7 @@ can be used to redefine specific keywords and identifiers.
 
 If the `--convert` option is used :
 
-*   Identifiers prefixed with `#` are converted to `UPPER_CASE`
+*   identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
 *   `^` prefixes are converted to `@`
