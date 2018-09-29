@@ -73,7 +73,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a `do` block starts its own line
 
 If the `--replace` option is used, one or several dictionaries
-can be used to change the program keywords and identifiers.
+can be used to redefine specific keywords and identifiers.
 
 If the `--convert` option is used :
 
