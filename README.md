@@ -51,7 +51,7 @@ struct POINT
 require "http/server";
 
 server = HTTP::SERVER.New
-    do |context|
+    do | context |
     {
         context.Response.ContentType = "text/plain";
         context.Response.Print( "Hello world! The time is #{TIME.Now}" );

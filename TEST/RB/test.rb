@@ -227,7 +227,7 @@ module Test
         def test_each(
             )
             "0123456789".each_char \
-                do |character|
+                do | character |
                     print( character );
                 end
 
@@ -237,7 +237,7 @@ module Test
                 {1, "A"},
                 {2, "B"}
             ].each \
-                do |key, value|
+                do | key, value |
                     puts( "#{key} : #{value}" );
                 end
         end
@@ -280,7 +280,7 @@ module Test
         def test_server(
             )
             server = HTTP::Server.new \
-                do |context|
+                do | context |
                     context.response.content_type = "text/plain";
                     context.response.print( "Hello world! The time is #{Time.now}" );
                 end
@@ -306,7 +306,7 @@ module Test
     # ~~
 
     server = HTTP::Server.new \
-        do |context|
+        do | context |
             response = context.response;
             request = context.request;
 
