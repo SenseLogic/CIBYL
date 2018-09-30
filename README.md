@@ -110,7 +110,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --crystal : generate Crystal files
 --replace dictionary.txt : replace identifiers defined in this dictionary
 --convert : convert the identifier case
---join : join broken lines
+--join : join split statements with line continuation characters
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
@@ -139,7 +139,7 @@ cibyl --crystal --replace dictionary.txt --convert --join --create --watch CB/ C
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder
 (replacing the identifiers defined in the dictionary, converting the identifier case,
-joining the broken lines and creating the Crystal folders if needed),
+joining the multi-line statements and creating the Crystal folders if needed),
 then watches the Cibyl files for modifications.
 
 ## Version

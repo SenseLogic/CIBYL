@@ -369,7 +369,7 @@ class CODE
 
     // ~~
 
-    void JoinBrokenLines(
+    void JoinSplitStatements(
         )
     {
         LINE
@@ -466,7 +466,7 @@ class CODE
 
         if ( JoinOptionIsEnabled )
         {
-            JoinBrokenLines();
+            JoinSplitStatements();
         }
     }
 }
