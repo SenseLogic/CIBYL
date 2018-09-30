@@ -72,8 +72,6 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   a block starts by `{` and ends by `}`
 *   a `do` block starts its own line
 
-If the `--replace` option is used, dictionaries can be used to redefine keywords and identifiers.
-
 If the `--convert` option is used :
 
 *   `.` prefixes are converted to `@`
