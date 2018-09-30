@@ -87,6 +87,8 @@ module TEST
             Name : STRING,
             Age : INT32,
             Color : COLOR;
+        class_property
+            MinimumAge : INT32 = -1;
 
         // -- CONSTRUCTORS
 
@@ -96,6 +98,7 @@ module TEST
             .Color
             )
         {
+            $MinimumAge = 0;
         }
 
         // -- INQUIRIES

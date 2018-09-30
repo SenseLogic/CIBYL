@@ -87,6 +87,8 @@ module Test
             name : String,
             age : Int32,
             color : Color;
+        class_property \
+            minimum_age : Int32 = -1;
 
         # -- CONSTRUCTORS
 
@@ -96,6 +98,7 @@ module Test
             @color
             )
 
+            @@minimum_age = 0;
         end
 
         # -- INQUIRIES

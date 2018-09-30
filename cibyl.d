@@ -398,7 +398,12 @@ class CODE
         {
             line = LineArray[ line_index ];
 
-            if ( line.IsCommand( "property", CommandPrefixArray ) )
+            if ( line.IsCommand( "property", CommandPrefixArray )
+                 || line.IsCommand( "getter", CommandPrefixArray )
+                 || line.IsCommand( "setter", CommandPrefixArray )
+                 || line.IsCommand( "class_property", CommandPrefixArray )
+                 || line.IsCommand( "class_getter", CommandPrefixArray )
+                 || line.IsCommand( "class_setter", CommandPrefixArray ) )
             {
                 line.Text ~= " \\";
             }
@@ -783,12 +788,21 @@ class FILE
                     else
                     {
                         if ( ConvertOptionIsEnabled
-                             && character_index >= 1
-                             && text[ character_index - 1 ] == '.'
-                             && ( character_index == 1
-                                  || " \n{[(:;,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
+                             && character_index >= 1 )
                         {
-                            text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
+                            if ( text[ character_index - 1 ] == '.'
+                                 && ( character_index == 1
+                                      || " \n{[(:;,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
+                            {
+                                text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
+                            }
+                            else if ( text[ character_index - 1 ] == '$' )
+                            {
+                                text = text[ 0 .. character_index - 1 ] ~ "@@" ~ text [ character_index .. $ ];
+
+                                ++character_index;
+                                ++next_character_index;
+                            }
                         }
 
                         replaced_identifier = identifier in ReplacedIdentifierMap;
