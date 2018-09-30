@@ -108,7 +108,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --crystal : generate Crystal files
 --replace dictionary.txt : replace identifiers defined in this dictionary
 --convert : convert the identifier case
---join : join split statements with line continuation characters
+--join : join split statements
 --compact : remove unused lines
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
