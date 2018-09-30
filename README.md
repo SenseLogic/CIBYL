@@ -139,7 +139,7 @@ cibyl --crystal --replace dictionary.txt --convert --join --create --watch CB/ C
 
 Converts the Cibyl files of the input folder into matching Crystal files in the output folder
 (replacing the identifiers defined in the dictionary, converting the identifier case,
-joining the multi-line statements and creating the Crystal folders if needed),
+joining split statements and creating the Crystal folders if needed),
 then watches the Cibyl files for modifications.
 
 ## Version
