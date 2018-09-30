@@ -104,9 +104,10 @@ class LINE
         text = Text.RemoveCommandPrefix( command_prefix_array );
 
         return
-            text == command
-            || ( text.startsWith( command )
-                 && text[ command.length ] == ' ' );
+            text.length >= command.length
+            && text.startsWith( command )
+            && ( text.length == command.length
+                 || text[ command.length ] == ' ' );
     }
 
     // ~~
@@ -368,6 +369,71 @@ class CODE
 
     // ~~
 
+    void JoinBrokenLines(
+        )
+    {
+        LINE
+            line;
+        INT
+            line_index;
+
+        for ( line_index = 0;
+              line_index < LineArray.length;
+              ++line_index )
+        {
+            line = LineArray[ line_index ];
+
+            if ( line.Text == "property" )
+            {
+                line.Text ~= " \\";
+            }
+            else if ( line_index >= 1
+                      && !LineArray[ line_index - 1 ].Text.endsWith( '\\' ) )
+            {
+                if ( line.HasCommand( "=" )
+                     || line.HasCommand( "+=" )
+                     || line.HasCommand( "-=" )
+                     || line.HasCommand( "*=" )
+                     || line.HasCommand( "/=" )
+                     || line.HasCommand( "%=" )
+                     || line.HasCommand( "**=" )
+                     || line.HasCommand( "==" )
+                     || line.HasCommand( "!=" )
+                     || line.HasCommand( ">" )
+                     || line.HasCommand( "<" )
+                     || line.HasCommand( ">=" )
+                     || line.HasCommand( "<=" )
+                     || line.HasCommand( "<=>" )
+                     || line.HasCommand( "===" )
+                     || line.HasCommand( "+" )
+                     || line.HasCommand( "-" )
+                     || line.HasCommand( "*" )
+                     || line.HasCommand( "/" )
+                     || line.HasCommand( "%" )
+                     || line.HasCommand( "**" )
+                     || line.HasCommand( "&" )
+                     || line.HasCommand( "|" )
+                     || line.HasCommand( "^" )
+                     || line.HasCommand( "~" )
+                     || line.HasCommand( "<<" )
+                     || line.HasCommand( ">>" )
+                     || line.HasCommand( "&&" )
+                     || line.HasCommand( "||" )
+                     || line.HasCommand( "!" )
+                     || line.HasCommand( "not" )
+                     || ( ( Language & LANGUAGE.Ruby ) != 0
+                          && ( line.HasCommand( "and" )
+                               || line.HasCommand( "or" )
+                               || line.HasCommand( "not" ) ) ) )
+                {
+                    LineArray[ line_index - 1 ].Text ~= " \\";
+                }
+            }
+        }
+    }
+
+    // ~~
+
     void Process(
         )
     {
@@ -400,6 +466,11 @@ class CODE
                  || ProcessBlock( "do", null, null, LANGUAGE.Any ) )
             {
             }
+        }
+
+        if ( JoinOptionIsEnabled )
+        {
+            JoinBrokenLines();
         }
     }
 }
@@ -707,7 +778,7 @@ class FILE
                              && character_index >= 1
                              && text[ character_index - 1 ] == '.'
                              && ( character_index == 1
-                                  || " \n{[(:,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
+                                  || " \n{[(:;,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
                         {
                             text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
                         }
@@ -871,9 +942,10 @@ class FILE
 // -- VARIABLES
 
 bool
-    ConvertOptionIsEnabled,
     CompactOptionIsEnabled,
+    ConvertOptionIsEnabled,
     CreateOptionIsEnabled,
+    JoinOptionIsEnabled,
     ReplaceOptionIsEnabled,
     WatchOptionIsEnabled;
 string
@@ -1248,6 +1320,7 @@ void main(
     ReplaceOptionIsEnabled = false;
     ReplacedIdentifierMap = null;
     ConvertOptionIsEnabled = false;
+    JoinOptionIsEnabled = false;
     CompactOptionIsEnabled = false;
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
@@ -1280,6 +1353,10 @@ void main(
         else if ( option == "--convert" )
         {
             ConvertOptionIsEnabled = true;
+        }
+        else if ( option == "--join" )
+        {
+            JoinOptionIsEnabled = true;
         }
         else if ( option == "--compact" )
         {
@@ -1331,6 +1408,7 @@ void main(
         writeln( "    --crystal" );
         writeln( "    --replace dictionary.txt" );
         writeln( "    --convert" );
+        writeln( "    --join" );
         writeln( "    --compact" );
         writeln( "    --create" );
         writeln( "    --watch" );

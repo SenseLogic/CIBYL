@@ -17,12 +17,19 @@ module TEST
 
     struct POSITION
     {
+        // -- ATTRIBUTES
+
+        property
+            X : FLOAT32,
+            Y : FLOAT32,
+            Z : FLOAT32;
+
         // -- CONSTRUCTORS
 
         def Initialize(
-            .X : INT32,
-            .Y : INT32,
-            .Z : INT32
+            .X,
+            .Y,
+            .Z
             )
         {
         }
@@ -76,14 +83,17 @@ module TEST
     {
         // -- ATTRIBUTES
 
-        property Name, Age, Color;
+        property
+            Name : STRING,
+            Age : INT32,
+            Color : COLOR;
 
         // -- CONSTRUCTORS
 
         def Initialize(
-            .Name : STRING,
-            .Age : INT32,
-            .Color : COLOR
+            .Name,
+            .Age,
+            .Color
             )
         {
         }
@@ -149,6 +159,17 @@ module TEST
             else
             {
                 return 30;
+            }
+
+            if ( count >= 1
+                 && count * 2
+                    < count * 3 - 5 )
+            {
+                count
+                    += TestUnless(
+                           count * 3 - 5
+                           - count * 2
+                           );
             }
         }
 

@@ -14,12 +14,19 @@ module Test
     # ~~
 
     struct Position
+        # -- ATTRIBUTES
+
+        property \
+            x : Float32,
+            y : Float32,
+            z : Float32;
+
         # -- CONSTRUCTORS
 
         def initialize(
-            @x : Int32,
-            @y : Int32,
-            @z : Int32
+            @x,
+            @y,
+            @z
             )
         end
     end
@@ -66,14 +73,17 @@ module Test
     struct Person
         # -- ATTRIBUTES
 
-        property name, age, color;
+        property \
+            name : String,
+            age : Int32,
+            color : Color;
 
         # -- CONSTRUCTORS
 
         def initialize(
-            @name : String,
-            @age : Int32,
-            @color : Color
+            @name,
+            @age,
+            @color
             )
         end
 
@@ -124,6 +134,16 @@ module Test
                 return 20;
             else
                 return 30;
+            end
+
+            if ( count >= 1 \
+                 && count * 2 \
+                    < count * 3 - 5 )
+                count \
+                    += test_unless(
+                           count * 3 - 5 \
+                           - count * 2
+                           );
             end
         end
 
