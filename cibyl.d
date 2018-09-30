@@ -414,17 +414,13 @@ class CODE
                      || line.HasCommand( "&" )
                      || line.HasCommand( "|" )
                      || line.HasCommand( "^" )
-                     || line.HasCommand( "~" )
                      || line.HasCommand( "<<" )
                      || line.HasCommand( ">>" )
                      || line.HasCommand( "&&" )
                      || line.HasCommand( "||" )
-                     || line.HasCommand( "!" )
-                     || line.HasCommand( "not" )
                      || ( ( Language & LANGUAGE.Ruby ) != 0
                           && ( line.HasCommand( "and" )
-                               || line.HasCommand( "or" )
-                               || line.HasCommand( "not" ) ) ) )
+                               || line.HasCommand( "or" ) ) ) )
                 {
                     LineArray[ line_index - 1 ].Text ~= " \\";
                 }
