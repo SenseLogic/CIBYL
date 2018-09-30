@@ -336,7 +336,7 @@ module TEST
         def TestType(
             )
         {
-            data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New
+            data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New();
         }
 
         // ~~

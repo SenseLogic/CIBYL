@@ -336,7 +336,7 @@ module Test
         def test_type(
             )
 
-            data = Array( NamedTuple( id: Int32, message: String ) ).new
+            data = Array( NamedTuple( id: Int32, message: String ) ).new();
         end
 
         # ~~
