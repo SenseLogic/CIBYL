@@ -19,7 +19,7 @@ module TEST
     {
         // -- ATTRIBUTES
 
-        property
+        protected property
             X : FLOAT32,
             Y : FLOAT32,
             Z : FLOAT32;

@@ -93,6 +93,21 @@ class LINE
 
     // ~~
 
+    bool IsCommand(
+        string command,
+        string[] command_prefix_array = null
+        )
+    {
+        string
+            text;
+
+        text = Text.RemoveCommandPrefix( command_prefix_array );
+
+        return text == command;
+    }
+
+    // ~~
+
     bool HasCommand(
         string command,
         string[] command_prefix_array = null
@@ -383,7 +398,7 @@ class CODE
         {
             line = LineArray[ line_index ];
 
-            if ( line.Text == "property" )
+            if ( line.IsCommand( "property", CommandPrefixArray ) )
             {
                 line.Text ~= " \\";
             }
@@ -433,20 +448,17 @@ class CODE
     void Process(
         )
     {
-        string[]
-            command_prefix_array = [ "private ", "protected ", "abstract " ];
-
         for ( LineIndex = 0;
               LineIndex < LineArray.length;
               ++LineIndex )
         {
             if ( ProcessComment()
-                 || ProcessBlock( "module", null, command_prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "lib", null, command_prefix_array, LANGUAGE.Crystal )
-                 || ProcessBlock( "enum", null, command_prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "struct", null, command_prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "class", null, command_prefix_array, LANGUAGE.Any )
-                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], command_prefix_array, LANGUAGE.Any )
+                 || ProcessBlock( "module", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "lib", null, CommandPrefixArray, LANGUAGE.Crystal )
+                 || ProcessBlock( "enum", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "struct", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "class", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], CommandPrefixArray, LANGUAGE.Any )
                  || ProcessBlock( "if", [ "elsif", "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "elsif", [ "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "else", [ "ensure" ], null, LANGUAGE.Any )
@@ -956,6 +968,8 @@ INT
     PauseDuration;
 LANGUAGE
     Language;
+string[]
+    CommandPrefixArray = [ "private ", "protected ", "abstract " ];
 
 // -- FUNCTIONS
 

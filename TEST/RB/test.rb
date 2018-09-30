@@ -16,7 +16,7 @@ module Test
     struct Position
         # -- ATTRIBUTES
 
-        property \
+        protected property \
             x : Float32,
             y : Float32,
             z : Float32;
