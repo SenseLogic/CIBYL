@@ -98,7 +98,7 @@ module TEST
             .Color
             )
         {
-            $MinimumAge = 0;
+            ^MinimumAge = 0;
         }
 
         // -- INQUIRIES

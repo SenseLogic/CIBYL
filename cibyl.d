@@ -607,7 +607,8 @@ class FILE
         )
     {
         char
-            character;
+            character,
+            prior_character;
         string
             identifier;
         string *
@@ -790,18 +791,23 @@ class FILE
                         if ( ConvertOptionIsEnabled
                              && character_index >= 1 )
                         {
-                            if ( text[ character_index - 1 ] == '.'
+                            prior_character = text[ character_index - 1 ];
+
+                            if ( ( prior_character == '.' || prior_character == '^' )
                                  && ( character_index == 1
                                       || " \n{[(:;,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
                             {
-                                text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
-                            }
-                            else if ( text[ character_index - 1 ] == '$' )
-                            {
-                                text = text[ 0 .. character_index - 1 ] ~ "@@" ~ text [ character_index .. $ ];
+                                if ( prior_character == '.' )
+                                {
+                                    text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
+                                }
+                                else if ( prior_character == '^' )
+                                {
+                                    text = text[ 0 .. character_index - 1 ] ~ "@@" ~ text [ character_index .. $ ];
 
-                                ++character_index;
-                                ++next_character_index;
+                                    ++character_index;
+                                    ++next_character_index;
+                                }
                             }
                         }
 
