@@ -28,15 +28,15 @@ def fibonacci(
 puts fibonacci( 5 );
 ```
 
-Optionally, Cibyl allows to use other case conventions and attribute prefixes :
+Optionally, Cibyl allows to use other case conventions :
 
 ```ruby
 struct POINT
 {
     def Initialize(
-        .Name : STRING,
-        .Position : POSITION,
-        .Color : COLOR
+        @Name : STRING,
+        @Position : POSITION,
+        @Color : COLOR
         )
     {
     }
@@ -44,7 +44,7 @@ struct POINT
     def IsBlue(
         )
     {
-        return .Color == COLOR.#Blue;
+        return @Color == COLOR.#Blue;
     }
 }
 
@@ -74,8 +74,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 
 If the `--convert` option is used :
 
-*   `.` prefixes are converted to `@`
-*   `^` prefixes are converted to `@@`
+*   `$` prefixes are converted to `@@`
 *   identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`

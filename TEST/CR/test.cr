@@ -23,6 +23,8 @@ module Test
             x : Float64,
             y : Float64,
             z : Float64;
+        class_property \
+            zero = Position.new( 0.0, 0.0, 0.0 );
 
         # -- CONSTRUCTORS
 
@@ -33,6 +35,18 @@ module Test
             ) : \
             Void
 
+        end
+
+        # -- INQUIRIES
+
+        def is_zero(
+            ) : \
+            Bool
+
+            return
+                x == @@zero.x \
+                && y == @@zero.y \
+                && z == @@zero.z;
         end
     end
 
@@ -108,7 +122,7 @@ module Test
                 puts( "Studying" );
 
             elsif ( @age >= @@minimum_age \
-                      && @age < @@maximum_age )
+                    && @age < @@maximum_age )
 
                 puts( "Working" );
 
@@ -391,12 +405,12 @@ module Test
             puts( %Q|Test #{@hello + %Q| Test #{@hello} #{@world} Test | + @world} Test| );
             puts( %Q(Test #{@hello + %Q[ Test #{@hello} #{@world} Test ] + @world} Test) );
 
-            puts( "Test \#{.Hello + \" Test \#{.Hello} \#{.World} Test \" + .World} Test" );
-            puts( %q(Test #{.Hello + %q( Test #{.Hello} #{.World} Test ) + .World} Test) );
-            puts( %q[Test #{.Hello + %q[ Test #{.Hello} #{.World} Test ] + .World} Test] );
-            puts( %q{Test #{.Hello + %q{ Test #{.Hello} #{.World} Test } + .World} Test} );
-            puts( %q<Test #{.Hello + %q< Test #{.Hello} #{.World} Test > + .World} Test> );
-            puts( %q(Test #{.Hello + %q[ Test #{.Hello} #{.World} Test ] + .World} Test) );
+            puts( "Test \#{@Hello + \" Test \#{@Hello} \#{@World} Test \" + @World} Test" );
+            puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            puts( %q[Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
+            puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         end
 
         # ~~

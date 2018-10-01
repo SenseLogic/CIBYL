@@ -23,16 +23,30 @@ module TEST
             X : FLOAT64,
             Y : FLOAT64,
             Z : FLOAT64;
+        class_property
+            Zero = POSITION.New( 0.0, 0.0, 0.0 );
 
         // -- CONSTRUCTORS
 
         def Initialize(
-            .X,
-            .Y,
-            .Z
+            @X,
+            @Y,
+            @Z
             ) :
             VOID
         {
+        }
+
+        // -- INQUIRIES
+
+        def IsZero(
+            ) :
+            BOOL
+        {
+            return
+                X == $Zero.X
+                && Y == $Zero.Y
+                && Z == $Zero.Z;
         }
     }
 
@@ -63,9 +77,9 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            .Name : STRING,
-            .Position : POSITION,
-            .Color : COLOR
+            @Name : STRING,
+            @Position : POSITION,
+            @Color : COLOR
             ) :
             VOID
         {
@@ -76,7 +90,7 @@ module TEST
         def IsBlue(
             )
         {
-            return .Color == COLOR::#Blue;
+            return @Color == COLOR::#Blue;
         }
     }
 
@@ -97,18 +111,18 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            .Name,
-            .Age,
-            .Color
+            @Name,
+            @Age,
+            @Color
             ) :
             VOID
         {
-            if ( .Age < ^MinimumAge )
+            if ( @Age < $MinimumAge )
             {
                 Puts( "Studying" );
             }
-            elsif ( .Age >= ^MinimumAge
-                      && .Age < ^MaximumAge )
+            elsif ( @Age >= $MinimumAge
+                    && @Age < $MaximumAge )
             {
                 Puts( "Working" );
             }
@@ -144,8 +158,8 @@ module TEST
         // -- CONSTRUCTORS
 
         def Initialize(
-            .Hello : STRING,
-            .World : STRING
+            @Hello : STRING,
+            @World : STRING
             ) :
             VOID
         {
@@ -377,26 +391,26 @@ module TEST
             ) :
             VOID
         {
-            Puts( "Test #{.Hello + " Test #{.Hello} #{.World} Test " + .World} Test" );
-            Puts( %(Test #{.Hello + %( Test #{.Hello} #{.World} Test ) + .World} Test) );
-            Puts( %[Test #{.Hello + %[ Test #{.Hello} #{.World} Test ] + .World} Test] );
-            Puts( %{Test #{.Hello + %{ Test #{.Hello} #{.World} Test } + .World} Test} );
-            Puts( %<Test #{.Hello + %< Test #{.Hello} #{.World} Test > + .World} Test> );
-            Puts( %|Test #{.Hello + %| Test #{.Hello} #{.World} Test | + .World} Test| );
-            Puts( %(Test #{.Hello + %[ Test #{.Hello} #{.World} Test ] + .World} Test) );
-            Puts( %Q(Test #{.Hello + %Q( Test #{.Hello} #{.World} Test ) + .World} Test) );
-            Puts( %Q[Test #{.Hello + %Q[ Test #{.Hello} #{.World} Test ] + .World} Test] );
-            Puts( %Q{Test #{.Hello + %Q{ Test #{.Hello} #{.World} Test } + .World} Test} );
-            Puts( %Q<Test #{.Hello + %Q< Test #{.Hello} #{.World} Test > + .World} Test> );
-            Puts( %Q|Test #{.Hello + %Q| Test #{.Hello} #{.World} Test | + .World} Test| );
-            Puts( %Q(Test #{.Hello + %Q[ Test #{.Hello} #{.World} Test ] + .World} Test) );
+            Puts( "Test #{@Hello + " Test #{@Hello} #{@World} Test " + @World} Test" );
+            Puts( %(Test #{@Hello + %( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %[Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %{Test #{@Hello + %{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %<Test #{@Hello + %< Test #{@Hello} #{@World} Test > + @World} Test> );
+            Puts( %|Test #{@Hello + %| Test #{@Hello} #{@World} Test | + @World} Test| );
+            Puts( %(Test #{@Hello + %[ Test #{@Hello} #{@World} Test ] + @World} Test) );
+            Puts( %Q(Test #{@Hello + %Q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %Q[Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %Q{Test #{@Hello + %Q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %Q<Test #{@Hello + %Q< Test #{@Hello} #{@World} Test > + @World} Test> );
+            Puts( %Q|Test #{@Hello + %Q| Test #{@Hello} #{@World} Test | + @World} Test| );
+            Puts( %Q(Test #{@Hello + %Q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
 
-            Puts( "Test \#{.Hello + \" Test \#{.Hello} \#{.World} Test \" + .World} Test" );
-            Puts( %q(Test #{.Hello + %q( Test #{.Hello} #{.World} Test ) + .World} Test) );
-            Puts( %q[Test #{.Hello + %q[ Test #{.Hello} #{.World} Test ] + .World} Test] );
-            Puts( %q{Test #{.Hello + %q{ Test #{.Hello} #{.World} Test } + .World} Test} );
-            Puts( %q<Test #{.Hello + %q< Test #{.Hello} #{.World} Test > + .World} Test> );
-            Puts( %q(Test #{.Hello + %q[ Test #{.Hello} #{.World} Test ] + .World} Test) );
+            Puts( "Test \#{@Hello + \" Test \#{@Hello} \#{@World} Test \" + @World} Test" );
+            Puts( %q(Test #{@Hello + %q( Test #{@Hello} #{@World} Test ) + @World} Test) );
+            Puts( %q[Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test] );
+            Puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
+            Puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
+            Puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
         }
 
         // ~~
@@ -433,9 +447,9 @@ module TEST
               );
 
     Puts(
-        point..Position.X,
-        point..Position.Y,
-        point..Position.Z,
+        point.@Position.X,
+        point.@Position.Y,
+        point.@Position.Z,
         PERSON.MinimumAge,
         PERSON.MaximumAge
         );
