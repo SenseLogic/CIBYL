@@ -17,9 +17,9 @@ module Test
         # -- ATTRIBUTES
 
         protected property \
-            x : Float32,
-            y : Float32,
-            z : Float32;
+            x : Float64,
+            y : Float64,
+            z : Float64;
 
         # -- CONSTRUCTORS
 
@@ -318,6 +318,17 @@ module Test
 
     test = Test.new( "Hello", "World" );
     test.test_interpolation();
+
+    # ~~
+
+    point \
+        = Point.new(
+              "point",
+              Position.new( 1.0, 2.0, 3.0 ),
+              Color::BLUE
+              );
+
+    puts( point.@position.x, point.@position.y, point.@position.z );
 
     # ~~
 

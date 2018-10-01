@@ -75,7 +75,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 If the `--convert` option is used :
 
 *   `.` prefixes are converted to `@`
-*   `^` prefixes are converted to `@@`
+*   `@` prefixes are converted to `@@`
 *   identifiers prefixed with `#` are converted to `UPPER_CASE`
 *   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`

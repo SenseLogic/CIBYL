@@ -20,9 +20,9 @@ module Test
         # -- ATTRIBUTES
 
         protected property \
-            x : Float32,
-            y : Float32,
-            z : Float32;
+            x : Float64,
+            y : Float64,
+            z : Float64;
 
         # -- CONSTRUCTORS
 
@@ -88,7 +88,8 @@ module Test
             age : Int32,
             color : Color;
         class_property \
-            minimum_age : Int32 = -1;
+            minimum_age : Int32 = 25,
+            maximum_age : Int32 = 70;
 
         # -- CONSTRUCTORS
 
@@ -98,7 +99,19 @@ module Test
             @color
             )
 
-            @@minimum_age = 0;
+            if ( @age < @@minimum_age )
+
+                puts( "Studying" );
+
+            elsif ( @age >= @@minimum_age \
+                      && @age < @@maximum_age )
+
+                puts( "Working" );
+
+            else
+
+                puts( "Retreated" );
+            end
         end
 
         # -- INQUIRIES
@@ -394,10 +407,27 @@ module Test
 
     # ~~
 
+    point \
+        = Point.new(
+              "point",
+              Position.new( 1.0, 2.0, 3.0 ),
+              Color::BLUE
+              );
+
+    puts(
+        point.@position.x,
+        point.@position.y,
+        point.@position.z,
+        Person.minimum_age,
+        Person.maximum_age
+        );
+
+    # ~~
+
     person_array = Array( Person ).new();
-    person_array.push( Person.new( "Red", 1, Color::RED ) );
-    person_array.push( Person.new( "Green", 2, Color::GREEN ) );
-    person_array.push( Person.new( "Blue", 2, Color::BLUE ) );
+    person_array.push( Person.new( "Red", 15, Color::RED ) );
+    person_array.push( Person.new( "Green", 35, Color::GREEN ) );
+    person_array.push( Person.new( "Blue", 75, Color::BLUE ) );
 
     # ~~
 

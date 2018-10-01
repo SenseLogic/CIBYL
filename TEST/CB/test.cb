@@ -20,9 +20,9 @@ module TEST
         // -- ATTRIBUTES
 
         protected property
-            X : FLOAT32,
-            Y : FLOAT32,
-            Z : FLOAT32;
+            X : FLOAT64,
+            Y : FLOAT64,
+            Z : FLOAT64;
 
         // -- CONSTRUCTORS
 
@@ -88,7 +88,8 @@ module TEST
             Age : INT32,
             Color : COLOR;
         class_property
-            MinimumAge : INT32 = -1;
+            MinimumAge : INT32 = 25,
+            MaximumAge : INT32 = 70;
 
         // -- CONSTRUCTORS
 
@@ -98,7 +99,19 @@ module TEST
             .Color
             )
         {
-            ^MinimumAge = 0;
+            if ( .Age < @MinimumAge )
+            {
+                Puts( "Studying" );
+            }
+            elsif ( .Age >= @MinimumAge
+                      && .Age < @MaximumAge )
+            {
+                Puts( "Working" );
+            }
+            else
+            {
+                Puts( "Retreated" );
+            }
         }
 
         // -- INQUIRIES
@@ -394,10 +407,27 @@ module TEST
 
     // ~~
 
+    point
+        = POINT.New(
+              "point",
+              POSITION.New( 1.0, 2.0, 3.0 ),
+              COLOR::#Blue
+              );
+
+    Puts(
+        point..Position.X,
+        point..Position.Y,
+        point..Position.Z,
+        PERSON.MinimumAge,
+        PERSON.MaximumAge
+        );
+
+    // ~~
+
     person_array = ARRAY( PERSON ).New();
-    person_array.Push( PERSON.New( "Red", 1, COLOR::#Red ) );
-    person_array.Push( PERSON.New( "Green", 2, COLOR::#Green ) );
-    person_array.Push( PERSON.New( "Blue", 2, COLOR::#Blue ) );
+    person_array.Push( PERSON.New( "Red", 15, COLOR::#Red ) );
+    person_array.Push( PERSON.New( "Green", 35, COLOR::#Green ) );
+    person_array.Push( PERSON.New( "Blue", 75, COLOR::#Blue ) );
 
     // ~~
 

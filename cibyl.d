@@ -793,15 +793,15 @@ class FILE
                         {
                             prior_character = text[ character_index - 1 ];
 
-                            if ( ( prior_character == '.' || prior_character == '^' )
+                            if ( ( prior_character == '.' || prior_character == '@' )
                                  && ( character_index == 1
-                                      || " \n{[(:;,".indexOf( text[ character_index - 2 ] ) >= 0 ) )
+                                      || " \n{[(:;,.".indexOf( text[ character_index - 2 ] ) >= 0 ) )
                             {
                                 if ( prior_character == '.' )
                                 {
                                     text = text[ 0 .. character_index - 1 ] ~ '@' ~ text [ character_index .. $ ];
                                 }
-                                else if ( prior_character == '^' )
+                                else if ( prior_character == '@' )
                                 {
                                     text = text[ 0 .. character_index - 1 ] ~ "@@" ~ text [ character_index .. $ ];
 
