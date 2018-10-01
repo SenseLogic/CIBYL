@@ -30,7 +30,8 @@ module TEST
             .X,
             .Y,
             .Z
-            )
+            ) :
+            VOID
         {
         }
     }
@@ -48,7 +49,8 @@ module TEST
         // -- INQUIRIES
 
         def IsRed?(
-            )
+            ) :
+            BOOL
         {
             return self == #Red;
         }
@@ -64,7 +66,8 @@ module TEST
             .Name : STRING,
             .Position : POSITION,
             .Color : COLOR
-            )
+            ) :
+            VOID
         {
         }
 
@@ -97,7 +100,8 @@ module TEST
             .Name,
             .Age,
             .Color
-            )
+            ) :
+            VOID
         {
             if ( .Age < ^MinimumAge )
             {
@@ -117,7 +121,8 @@ module TEST
         // -- INQUIRIES
 
         def IsGreen?(
-            )
+            ) :
+            BOOL
         {
             return Color == COLOR::#Green;
         }
@@ -125,7 +130,8 @@ module TEST
         // -- OPERATIONS
 
         protected def Print(
-            )
+            ) :
+            VOID
         {
             Puts( "#{age} - #{name}" );
         }
@@ -140,15 +146,17 @@ module TEST
         def Initialize(
             .Hello : STRING,
             .World : STRING
-            )
+            ) :
+            VOID
         {
         }
 
         // -- OPERATIONS
 
         def TestIf(
-            count : INT
-            ) : INT
+            count : INT32
+            ) :
+            INT32
         {
             if ( count <= 1 )
             {
@@ -192,8 +200,9 @@ module TEST
         // ~~
 
         def TestUnless(
-            count : INT
-            ) : INT
+            count : INT32
+            ) :
+            INT32
         {
             unless ( count > 1 )
             {
@@ -213,8 +222,9 @@ module TEST
         // ~~
 
         def TestWhile(
-            count : INT
-            )
+            count : INT32
+            ) :
+            VOID
         {
             index = 0;
 
@@ -227,8 +237,9 @@ module TEST
         // ~~
 
         def TestUntil(
-            count : INT
-            )
+            count : INT32
+            ) :
+            VOID
         {
             index = 0;
 
@@ -241,8 +252,9 @@ module TEST
         // ~~
 
         def TestCase(
-            count : INT
-            )
+            count : INT32
+            ) :
+            INT32
         {
             case ( count )
             {
@@ -284,7 +296,8 @@ module TEST
         // ~~
 
         def TestBegin(
-            )
+            ) :
+            INT32
         {
             begin
             {
@@ -307,7 +320,8 @@ module TEST
         // ~~
 
         def TestRescue(
-            )
+            ) :
+            INT32
         {
             result = 1;
         }
@@ -327,7 +341,8 @@ module TEST
         // ~~
 
         def TestEach(
-            )
+            ) :
+            VOID
         {
             "0123456789".EachChar
                 do | character |
@@ -350,7 +365,8 @@ module TEST
         // ~~
 
         def TestType(
-            )
+            ) :
+            VOID
         {
             data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New();
         }
@@ -358,7 +374,8 @@ module TEST
         // ~~
 
         def TestInterpolation(
-            )
+            ) :
+            VOID
         {
             Puts( "Test #{.Hello + " Test #{.Hello} #{.World} Test " + .World} Test" );
             Puts( %(Test #{.Hello + %( Test #{.Hello} #{.World} Test ) + .World} Test) );
@@ -385,7 +402,8 @@ module TEST
         // ~~
 
         def TestServer(
-            )
+            ) :
+            VOID
         {
             server = HTTP::SERVER.New
                 do | context |

@@ -27,7 +27,8 @@ module Test
             @x,
             @y,
             @z
-            )
+            ) : \
+            Void
         end
     end
 
@@ -43,7 +44,8 @@ module Test
         # -- INQUIRIES
 
         def is_red?(
-            )
+            ) : \
+            Bool
             return self == RED;
         end
     end
@@ -57,7 +59,8 @@ module Test
             @name : String,
             @position : Position,
             @color : Color
-            )
+            ) : \
+            Void
         end
 
         # -- INQUIRIES
@@ -87,7 +90,8 @@ module Test
             @name,
             @age,
             @color
-            )
+            ) : \
+            Void
             if ( @age < @@minimum_age )
                 puts( "Studying" );
             elsif ( @age >= @@minimum_age \
@@ -101,14 +105,16 @@ module Test
         # -- INQUIRIES
 
         def is_green?(
-            )
+            ) : \
+            Bool
             return color == Color::GREEN;
         end
 
         # -- OPERATIONS
 
         protected def print(
-            )
+            ) : \
+            Void
             puts( "#{age} - #{name}" );
         end
     end
@@ -121,14 +127,16 @@ module Test
         def initialize(
             @hello : String,
             @world : String
-            )
+            ) : \
+            Void
         end
 
         # -- OPERATIONS
 
         def test_if(
-            count : Int
-            ) : Int
+            count : Int32
+            ) : \
+            Int32
             if ( count <= 1 )
                 return 10;
             end
@@ -161,8 +169,9 @@ module Test
         # ~~
 
         def test_unless(
-            count : Int
-            ) : Int
+            count : Int32
+            ) : \
+            Int32
             unless ( count > 1 )
                 return 10;
             end
@@ -177,8 +186,9 @@ module Test
         # ~~
 
         def test_while(
-            count : Int
-            )
+            count : Int32
+            ) : \
+            Void
             index = 0;
 
             while ( index < count )
@@ -189,8 +199,9 @@ module Test
         # ~~
 
         def test_until(
-            count : Int
-            )
+            count : Int32
+            ) : \
+            Void
             index = 0;
 
             until ( index >= count )
@@ -201,8 +212,9 @@ module Test
         # ~~
 
         def test_case(
-            count : Int
-            )
+            count : Int32
+            ) : \
+            Int32
             case ( count )
                 when 1
                     return 10;
@@ -228,7 +240,8 @@ module Test
         # ~~
 
         def test_begin(
-            )
+            ) : \
+            Int32
             begin
                 result = 1;
             rescue
@@ -243,7 +256,8 @@ module Test
         # ~~
 
         def test_rescue(
-            )
+            ) : \
+            Int32
             result = 1;
         rescue
             result = 2;
@@ -256,7 +270,8 @@ module Test
         # ~~
 
         def test_each(
-            )
+            ) : \
+            Void
             "0123456789".each_char \
                 do | character |
                     print( character );
@@ -276,14 +291,16 @@ module Test
         # ~~
 
         def test_type(
-            )
+            ) : \
+            Void
             data = Array( NamedTuple( id: Int32, message: String ) ).new();
         end
 
         # ~~
 
         def test_interpolation(
-            )
+            ) : \
+            Void
             puts( "Test #{@hello + " Test #{@hello} #{@world} Test " + @world} Test" );
             puts( %(Test #{@hello + %( Test #{@hello} #{@world} Test ) + @world} Test) );
             puts( %[Test #{@hello + %[ Test #{@hello} #{@world} Test ] + @world} Test] );
@@ -309,7 +326,8 @@ module Test
         # ~~
 
         def test_server(
-            )
+            ) : \
+            Void
             server = HTTP::Server.new \
                 do | context |
                     context.response.content_type = "text/plain";
