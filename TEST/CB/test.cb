@@ -99,12 +99,12 @@ module TEST
             .Color
             )
         {
-            if ( .Age < @MinimumAge )
+            if ( .Age < ^MinimumAge )
             {
                 Puts( "Studying" );
             }
-            elsif ( .Age >= @MinimumAge
-                      && .Age < @MaximumAge )
+            elsif ( .Age >= ^MinimumAge
+                      && .Age < ^MaximumAge )
             {
                 Puts( "Working" );
             }
