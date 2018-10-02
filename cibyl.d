@@ -701,13 +701,31 @@ class FILE
             else if ( context.IsInsideLongComment )
             {
                 if ( character == '*'
-                     && character + 1 < text.length
+                     && character_index + 1 < text.length
                      && text[ character_index + 1 ] == '/' )
                 {
                     context.IsInsideLongComment = false;
 
                     ++character_index;
                 }
+            }
+            else if ( !context.IsInsideString
+                      && character == '/'
+                      && character_index + 1 < text.length
+                      && text[ character_index + 1 ] == '/' )
+            {
+                context.IsInsideShortComment = true;
+
+                ++character_index;
+            }
+            else if ( !context.IsInsideString
+                      && character == '/'
+                      && character_index + 1 < text.length
+                      && text[ character_index + 1 ] == '*' )
+            {
+                context.IsInsideLongComment = true;
+
+                ++character_index;
             }
             else if ( context.IsInsideString
                       && character == '\\' )
@@ -716,7 +734,7 @@ class FILE
             }
             else if ( context.IsInsideInterpolatedString
                       && character == '#'
-                      && character + 1 < text.length
+                      && character_index + 1 < text.length
                       && text[ character_index + 1 ] == '{' )
             {
                 context = new CONTEXT();
@@ -762,24 +780,6 @@ class FILE
                 }
             }
             else if ( !context.IsInsideString
-                      && character == '/'
-                      && character + 1 < text.length
-                      && text[ character_index + 1 ] == '/' )
-            {
-                context.IsInsideShortComment = true;
-
-                ++character_index;
-            }
-            else if ( !context.IsInsideString
-                      && character == '/'
-                      && character + 1 < text.length
-                      && text[ character_index + 1 ] == '*' )
-            {
-                context.IsInsideLongComment = true;
-
-                ++character_index;
-            }
-            else if ( !context.IsInsideString
                       && character == '"' )
             {
                 context.IsInsideString = true;
@@ -790,7 +790,7 @@ class FILE
             }
             else if ( !context.IsInsideString
                       && character == '%'
-                      && character + 1 < text.length
+                      && character_index + 1 < text.length
                       && "([{<|".indexOf( text[ character_index + 1 ] ) >= 0 )
             {
                 context.IsInsideString = true;
@@ -808,7 +808,7 @@ class FILE
             }
             else if ( !context.IsInsideString
                       && character == '%'
-                      && character + 2 < text.length
+                      && character_index + 2 < text.length
                       && ( text[ character_index + 1 ] == 'q'
                            || text[ character_index + 1 ] == 'Q' )
                       && "([{<|".indexOf( text[ character_index + 2 ] ) >= 0 )
