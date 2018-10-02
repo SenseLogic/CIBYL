@@ -409,6 +409,7 @@ class CODE
                 line.Text ~= " \\";
             }
             else if ( line_index >= 1
+                      && LineArray[ line_index - 1 ].Text != ""
                       && !LineArray[ line_index - 1 ].Text.endsWith( '\\' ) )
             {
                 if ( line.HasCommand( "=" )
