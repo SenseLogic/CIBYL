@@ -83,7 +83,7 @@ If the `--convert` option is used :
 
 *   Blocks must be properly aligned.
 *   Dictionaries are not reloaded dynamically.
-*   Curly brackets are not available in embedded code.
+*   C-like blocks can't be used in embedded code.
 
 ## Installation
 
