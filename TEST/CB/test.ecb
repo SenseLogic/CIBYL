@@ -5,6 +5,15 @@
     <title>Test</title>
 </head>
 <body>
+    <a href="/time">Time</a>
+    <p>
+        <%= if ( person_array.Size
+                 > 0 )
+                person_array.Size.ToS() + " persons.";
+            else
+                "Nobody.";
+            end %>
+    </p>
     <table>
         <tr id="<%%Ignored%>IGNORED%>" class="<%=Processed="PROCESSED"%>">
             <th>Name</th>
@@ -17,7 +26,6 @@
             </tr>
         <% end %>
     </table>
-    <a href="/time">Time</a>
 </body>
 </html>
 <% // This is a comment. %>
