@@ -167,6 +167,27 @@ module Test
 
         # -- OPERATIONS
 
+        def test_comment(
+            )
+
+            #****************
+            # This is
+            #  a single-line
+            #   comment.
+            #****************
+            # this is a single-line comment.
+            # this is
+            #  a multi-line
+            #   comment.
+            # this
+            #is
+            #another
+            # multi-line
+            #  comment.
+        end
+
+        # ~~
+
         def test_if(
             count : Int32
             ) : \

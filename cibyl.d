@@ -72,13 +72,7 @@ class LINE
     {
         text = text.stripRight();
 
-        SpaceCount = 0;
-
-        while ( SpaceCount < text.length
-                && text[ SpaceCount ] == ' ' )
-        {
-            ++SpaceCount;
-        }
+        SpaceCount = text.GetSpaceCount();
 
         Text = text[ SpaceCount .. $ ];
     }
@@ -305,23 +299,56 @@ class CODE
 
     // ~~
 
-    bool ProcessComment(
+    void ProcessComments(
         )
     {
+        string
+            text;
+        INT
+            line_index,
+            space_count_offset;
         LINE
+            first_line,
             line;
 
-        line = LineArray[ LineIndex ];
-
-        if ( line.Text.startsWith( "//" ) )
+        for ( line_index = 0;
+              line_index < LineArray.length;
+              ++line_index )
         {
-            line.Text = "#" ~ line.Text[ 2 .. $ ];
+            line = LineArray[ line_index ];
 
-            return true;
-        }
-        else
-        {
-            return false;
+            if ( line.Text.startsWith( "//" ) )
+            {
+                line.Text = "#" ~ line.Text[ 2 .. $ ];
+            }
+            else if ( line.Text.startsWith( "/*" ) )
+            {
+                line.Text = "#" ~ line.Text[ 2 .. $ ];
+
+                first_line = line;
+
+                while ( line_index < LineArray.length )
+                {
+                    line = LineArray[ line_index ];
+
+                    if ( !line.Text.startsWith( '#' ) )
+                    {
+                        space_count_offset = line.SpaceCount - first_line.SpaceCount - 2;
+
+                        line.Text = "#" ~ GetSpaceText( space_count_offset ) ~ line.Text;
+                        line.SpaceCount = first_line.SpaceCount;
+                    }
+
+                    if ( line.Text.endsWith( "*/" ) )
+                    {
+                        line.Text = line.Text[ 0 .. $ - 2 ].stripRight();
+
+                        break;
+                    }
+
+                    ++line_index;
+                }
+            }
         }
     }
 
@@ -384,7 +411,40 @@ class CODE
 
     // ~~
 
-    void JoinSplitStatements(
+    void ProcessBlocks(
+        )
+    {
+        for ( LineIndex = 0;
+              LineIndex < LineArray.length;
+              ++LineIndex )
+        {
+            if ( ProcessBlock( "module", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "lib", null, CommandPrefixArray, LANGUAGE.Crystal )
+                 || ProcessBlock( "enum", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "struct", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "class", null, CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], CommandPrefixArray, LANGUAGE.Any )
+                 || ProcessBlock( "if", [ "elsif", "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "elsif", [ "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "else", [ "ensure" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "unless", [ "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "case", [ "when", "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "when", [ "when", "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "while", null, null, LANGUAGE.Any )
+                 || ProcessBlock( "until", null, null, LANGUAGE.Any )
+                 || ProcessBlock( "for", null, null, LANGUAGE.Ruby )
+                 || ProcessBlock( "begin", [ "rescue", "else", "ensure" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "rescue", [ "else", "ensure" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "ensure", null, null, LANGUAGE.Any )
+                 || ProcessBlock( "do", null, null, LANGUAGE.Any ) )
+            {
+            }
+        }
+    }
+
+    // ~~
+
+    void ProcessSplitStatements(
         )
     {
         LINE
@@ -455,37 +515,12 @@ class CODE
     void Process(
         )
     {
-        for ( LineIndex = 0;
-              LineIndex < LineArray.length;
-              ++LineIndex )
-        {
-            if ( ProcessComment()
-                 || ProcessBlock( "module", null, CommandPrefixArray, LANGUAGE.Any )
-                 || ProcessBlock( "lib", null, CommandPrefixArray, LANGUAGE.Crystal )
-                 || ProcessBlock( "enum", null, CommandPrefixArray, LANGUAGE.Any )
-                 || ProcessBlock( "struct", null, CommandPrefixArray, LANGUAGE.Any )
-                 || ProcessBlock( "class", null, CommandPrefixArray, LANGUAGE.Any )
-                 || ProcessBlock( "def", [ "rescue", "else", "ensure" ], CommandPrefixArray, LANGUAGE.Any )
-                 || ProcessBlock( "if", [ "elsif", "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "elsif", [ "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "else", [ "ensure" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "unless", [ "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "case", [ "when", "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "when", [ "when", "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "while", null, null, LANGUAGE.Any )
-                 || ProcessBlock( "until", null, null, LANGUAGE.Any )
-                 || ProcessBlock( "for", null, null, LANGUAGE.Ruby )
-                 || ProcessBlock( "begin", [ "rescue", "else", "ensure" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "rescue", [ "else", "ensure" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "ensure", null, null, LANGUAGE.Any )
-                 || ProcessBlock( "do", null, null, LANGUAGE.Any ) )
-            {
-            }
-        }
+        ProcessComments();
+        ProcessBlocks();
 
         if ( JoinOptionIsEnabled )
         {
-            JoinSplitStatements();
+            ProcessSplitStatements();
         }
     }
 }
@@ -1010,6 +1045,26 @@ void Abort(
     PrintError( file_exception.msg );
 
     exit( -1 );
+}
+
+// ~~
+
+INT GetSpaceCount(
+    string text
+    )
+{
+    INT
+        space_count;
+
+    space_count = 0;
+
+    while ( space_count < text.length
+            && text[ space_count ] == ' ' )
+    {
+        ++space_count;
+    }
+
+    return space_count;
 }
 
 // ~~

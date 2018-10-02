@@ -68,9 +68,10 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 
 *   `.cb` files contain Cibyl code
 *   `.ecb` files contain embedded Cibyl code
-*   a comment starts by `//`
-*   a block starts by `{` and ends by `}`
-*   a `do` block starts its own line
+*   blocks start by a `{` line and end by a `}` line
+*   `do` blocks start their own lines
+*   short comment lines start by `//`
+*   long comment lines start by `/*` and end by `*/`
 
 If the `--convert` option is used :
 
@@ -82,8 +83,9 @@ If the `--convert` option is used :
 ## Limitations
 
 *   Blocks must be properly aligned.
+*   Multi-line strings are not supported.
 *   Dictionaries are not reloaded dynamically.
-*   C-like blocks can't be used in embedded code.
+*   C-like features can't be used in embedded code.
 
 ## Installation
 

@@ -167,6 +167,27 @@ module TEST
 
         // -- OPERATIONS
 
+        def TestComment(
+            )
+        {
+            //****************
+            // This is
+            //  a single-line
+            //   comment.
+            //****************
+            /* This is a single-line comment. */
+            /* This is
+                a multi-line
+                 comment. */
+            /* This
+             is
+              another
+               multi-line
+                comment. */
+        }
+
+        // ~~
+
         def TestIf(
             count : INT32
             ) :
