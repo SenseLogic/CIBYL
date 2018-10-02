@@ -85,7 +85,7 @@ If the `--convert` option is used :
 *   Blocks must be properly aligned.
 *   Multi-line strings are not supported.
 *   Dictionaries are not reloaded dynamically.
-*   The C-like syntax is not available in embedded code.
+*   The C-like blocks are not processed in embedded code.
 
 ## Installation
 

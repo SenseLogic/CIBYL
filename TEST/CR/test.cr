@@ -175,11 +175,11 @@ module Test
             #  a single-line
             #   comment.
             #****************
-            # this is a single-line comment.
-            # this is
+            # This is a single-line comment.
+            # This is
             #  a multi-line
             #   comment.
-            # this
+            # This
             #is
             #another
             # multi-line
@@ -517,4 +517,3 @@ module Test
 
     server.listen( "127.0.0.1", 8080, reuse_port: true )
 end
-

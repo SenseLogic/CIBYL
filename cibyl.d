@@ -58,7 +58,8 @@ class LINE
     // -- ATTRIBUTES
 
     INT
-        SpaceCount;
+        FirstSpaceCount,
+        LastSpaceCount;
     string
         Text;
     bool
@@ -70,11 +71,16 @@ class LINE
         string text
         )
     {
+        INT
+            character_count;
+
+        character_count = text.length;
         text = text.stripRight();
 
-        SpaceCount = text.GetSpaceCount();
+        FirstSpaceCount = text.GetSpaceCount();
+        LastSpaceCount = character_count - text.length;
 
-        Text = text[ SpaceCount .. $ ];
+        Text = text[ FirstSpaceCount .. $ ];
     }
 
     // -- INQUIRIES
@@ -157,7 +163,7 @@ class LINE
         }
         else
         {
-            indented_text = GetSpaceText( SpaceCount );
+            indented_text = GetSpaceText( FirstSpaceCount );
             indented_text ~= Text;
             indented_text ~= '\n';
 
@@ -216,12 +222,12 @@ class CODE
         {
             line = LineArray[ line_index ];
 
-            if ( line.SpaceCount < space_count
+            if ( line.FirstSpaceCount < space_count
                  && line.Text != "" )
             {
                 return false;
             }
-            else if ( line.SpaceCount == space_count
+            else if ( line.FirstSpaceCount == space_count
                       && line.HasCommand( command ) )
             {
                 return true;
@@ -249,12 +255,12 @@ class CODE
         {
             line = LineArray[ line_index ];
 
-            if ( line.SpaceCount < space_count
+            if ( line.FirstSpaceCount < space_count
                  && line.Text != "" )
             {
                 return false;
             }
-            else if ( line.SpaceCount == space_count
+            else if ( line.FirstSpaceCount == space_count
                       && line.Text == brace )
             {
                 return true;
@@ -272,9 +278,14 @@ class CODE
         string
             file_text;
 
-        foreach ( line; LineArray )
+        foreach ( line_index, line; LineArray )
         {
             file_text ~= line.GetIndentedText();
+        }
+
+        if ( file_text.endsWith( '\n' ) )
+        {
+            file_text = file_text[ 0 .. $ - 1 ] ~ GetSpaceText( LineArray[ $ - 1 ].LastSpaceCount );
         }
 
         return file_text;
@@ -333,10 +344,10 @@ class CODE
 
                     if ( !line.Text.startsWith( '#' ) )
                     {
-                        space_count_offset = line.SpaceCount - first_line.SpaceCount - 2;
+                        space_count_offset = line.FirstSpaceCount - first_line.FirstSpaceCount - 2;
 
                         line.Text = "#" ~ GetSpaceText( space_count_offset ) ~ line.Text;
-                        line.SpaceCount = first_line.SpaceCount;
+                        line.FirstSpaceCount = first_line.FirstSpaceCount;
                     }
 
                     if ( line.Text.endsWith( "*/" ) )
@@ -372,8 +383,8 @@ class CODE
         if ( ( Language & language ) != 0
              && line.HasCommand( command, command_prefix_array ) )
         {
-            if ( FindBrace( opening_line_index, "{", LineIndex + 1, line.SpaceCount )
-                 && FindBrace( closing_line_index, "}", opening_line_index + 1, line.SpaceCount ) )
+            if ( FindBrace( opening_line_index, "{", LineIndex + 1, line.FirstSpaceCount )
+                 && FindBrace( closing_line_index, "}", opening_line_index + 1, line.FirstSpaceCount ) )
             {
                 LineArray[ opening_line_index ].Remove();
 
@@ -382,7 +393,7 @@ class CODE
                        && LineArray[ closing_line_index + 1 ].HasCommand( closing_command_array ) )
                      || command == "when"
                      || ( command == "else"
-                          && HasPriorCommand( "when", LineIndex - 1, line.SpaceCount ) ) )
+                          && HasPriorCommand( "when", LineIndex - 1, line.FirstSpaceCount ) ) )
                 {
                     LineArray[ closing_line_index ].Remove();
                 }
@@ -444,7 +455,7 @@ class CODE
 
     // ~~
 
-    void ProcessSplitStatements(
+    void JoinStatements(
         )
     {
         LINE
@@ -513,14 +524,19 @@ class CODE
     // ~~
 
     void Process(
+        bool blocks_are_processed = true
         )
     {
         ProcessComments();
-        ProcessBlocks();
+
+        if ( blocks_are_processed )
+        {
+            ProcessBlocks();
+        }
 
         if ( JoinOptionIsEnabled )
         {
-            ProcessSplitStatements();
+            JoinStatements();
         }
     }
 }
@@ -534,7 +550,8 @@ class CONTEXT
     INT
         BraceLevel;
     bool
-        IsInsideComment,
+        IsInsideShortComment,
+        IsInsideLongComment,
         IsInsideInterpolatedExpression,
         IsInsideInterpolatedString,
         IsInsideString;
@@ -674,11 +691,22 @@ class FILE
                 ++line_index;
             }
 
-            if ( context.IsInsideComment )
+            if ( context.IsInsideShortComment )
             {
                 if ( character == '\n' )
                 {
-                    context.IsInsideComment = false;
+                    context.IsInsideShortComment = false;
+                }
+            }
+            else if ( context.IsInsideLongComment )
+            {
+                if ( character == '*'
+                     && character + 1 < text.length
+                     && text[ character_index + 1 ] == '/' )
+                {
+                    context.IsInsideLongComment = false;
+
+                    ++character_index;
                 }
             }
             else if ( context.IsInsideString
@@ -738,7 +766,16 @@ class FILE
                       && character + 1 < text.length
                       && text[ character_index + 1 ] == '/' )
             {
-                context.IsInsideComment = true;
+                context.IsInsideShortComment = true;
+
+                ++character_index;
+            }
+            else if ( !context.IsInsideString
+                      && character == '/'
+                      && character + 1 < text.length
+                      && text[ character_index + 1 ] == '*' )
+            {
+                context.IsInsideLongComment = true;
 
                 ++character_index;
             }
@@ -877,8 +914,9 @@ class FILE
 
     // ~~
 
-    string ProcessCode(
-        string text
+    string ProcessText(
+        string text,
+        bool blocks_are_processed = true
         )
     {
         CODE
@@ -892,14 +930,14 @@ class FILE
 
         code = new CODE( InputPath );
         code.SetLineArray( text );
-        code.Process();
+        code.Process( blocks_are_processed );
 
         return code.GetText();
     }
 
     // ~~
 
-    string ProcessEmbeddedCode(
+    string ProcessEmbeddedText(
         string text
         )
     {
@@ -937,7 +975,7 @@ class FILE
                             {
                                 character_index += 2;
 
-                                processed_text = ProcessIdentifiers( text[ character_index .. next_character_index ] );
+                                processed_text = ProcessText( text[ character_index .. next_character_index ], false );
                                 text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
 
                                 next_character_index = character_index + processed_text.length + 2;
@@ -973,11 +1011,11 @@ class FILE
 
             if ( InputPath.endsWith( ".cb" ) )
             {
-                text = ProcessCode( text );
+                text = ProcessText( text );
             }
             else if ( InputPath.endsWith( ".ecb" ) )
             {
-                text = ProcessEmbeddedCode( text );
+                text = ProcessEmbeddedText( text );
             }
 
             if ( CreateOptionIsEnabled )
