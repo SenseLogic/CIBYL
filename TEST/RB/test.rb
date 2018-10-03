@@ -313,8 +313,8 @@ module Test
             print( '\n' );
 
             [
-                {1, "A"},
-                {2, "B"}
+                { 1, "A" },
+                { 2, "B" }
             ].each \
                 do | key, value |
                     puts( "#{key} : #{value}" );
@@ -326,7 +326,13 @@ module Test
         def test_type(
             ) : \
             Void
-            data = Array( NamedTuple( id: Int32, message: String ) ).new();
+            data = Array( NamedTuple( id: Int32, name: String ) ).new();
+            data.push( { id: 1, name: "Toto" } );
+            data.push( { id: 2, name: "Tutu" } );
+            data.push( { id: 3, name: "Tata" } );
+            data.push( { id: 4, name: "Titi" } );
+
+            puts( data );
         end
 
         # ~~
@@ -354,6 +360,13 @@ module Test
             puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
             puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
+
+            [ "", " ", "x", "x x", "  Hello  World !  " ].each \
+                do | old_text |
+                    part_array = old_text.split( ' ' );
+                    new_text = part_array.join( ' ' );
+                    puts( "'#{old_text}' => #{part_array} => '#{new_text}'" );
+                end
         end
 
         # ~~
@@ -376,6 +389,7 @@ module Test
     # -- STATEMENTS
 
     test = Test.new( "Hello", "World" );
+    test.test_type();
     test.test_interpolation();
 
     # ~~
@@ -406,9 +420,9 @@ module Test
 
     server = HTTP::Server.new \
         do | context |
-            response = context.response;
             request = context.request;
 
+            response = context.response;
             response.headers[ "Server" ] = "Crystal";
             response.headers[ "Date" ] = HTTP.format_time( Time.now );
 
@@ -418,10 +432,13 @@ module Test
                     response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
                     ECR.embed "test.ecr", response
                 when "/time"
+                    response.status_code = 200;
                     response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "The time is #{Time.now}<br/><a href=\"/\">Back</a>" );
+                    context.response.print( "<p>The time is #{Time.now}</p><p><a href=\"/\">Back</a></p>" );
                 else
                     response.status_code = 404;
+                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    context.response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
             end
         end
 

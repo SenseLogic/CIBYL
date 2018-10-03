@@ -388,8 +388,8 @@ module TEST
             Print( '\n' );
 
             [
-                {1, "A"},
-                {2, "B"}
+                { 1, "A" },
+                { 2, "B" }
             ].Each
                 do | key, value |
                 {
@@ -403,7 +403,13 @@ module TEST
             ) :
             VOID
         {
-            data = ARRAY( NAMED_TUPLE( Id: INT32, Message: STRING ) ).New();
+            data = ARRAY( NAMED_TUPLE( Id: INT32, Name: STRING ) ).New();
+            data.Push( { Id: 1, Name: "Toto" } );
+            data.Push( { Id: 2, Name: "Tutu" } );
+            data.Push( { Id: 3, Name: "Tata" } );
+            data.Push( { Id: 4, Name: "Titi" } );
+
+            Puts( data );
         }
 
         // ~~
@@ -432,6 +438,14 @@ module TEST
             Puts( %q{Test #{@Hello + %q{ Test #{@Hello} #{@World} Test } + @World} Test} );
             Puts( %q<Test #{@Hello + %q< Test #{@Hello} #{@World} Test > + @World} Test> );
             Puts( %q(Test #{@Hello + %q[ Test #{@Hello} #{@World} Test ] + @World} Test) );
+
+            [ "", " ", "x", "x x", "  Hello  World !  " ].Each
+                do | old_text |
+                {
+                    part_array = old_text.Split( ' ' );
+                    new_text = part_array.Join( ' ' );
+                    Puts( "'#{old_text}' => #{part_array} => '#{new_text}'" );
+                }
         }
 
         // ~~
@@ -456,6 +470,7 @@ module TEST
     // -- STATEMENTS
 
     test = TEST.New( "Hello", "World" );
+    test.TestType();
     test.TestInterpolation();
 
     // ~~
@@ -487,9 +502,9 @@ module TEST
     server = HTTP::SERVER.New
         do | context |
         {
-            response = context.Response;
             request = context.Request;
 
+            response = context.Response;
             response.Headers[ "Server" ] = "Crystal";
             response.Headers[ "Date" ] = HTTP.FormatTime( TIME.Now );
 
@@ -503,12 +518,15 @@ module TEST
                 }
                 when "/time"
                 {
+                    response.StatusCode = 200;
                     response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.Response.Print( "The time is #{TIME.Now}<br/><a href=\"/\">Back</a>" );
+                    context.Response.Print( "<p>The time is #{TIME.Now}</p><p><a href=\"/\">Back</a></p>" );
                 }
                 else
                 {
                     response.StatusCode = 404;
+                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+                    context.Response.Print( "<h1>Oops...</h1><p>#{request.Path}</p>" );
                 }
             }
         }
