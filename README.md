@@ -17,7 +17,7 @@ def fibonacci(
 {
     if ( n <= 1 )
     {
-        return 1;
+        return n;
     }
     else
     {
@@ -25,7 +25,7 @@ def fibonacci(
     }
 }
 
-puts fibonacci( 5 );
+puts fibonacci( 8 );
 ```
 
 Optionally, Cibyl allows to use other case conventions :

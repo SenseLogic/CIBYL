@@ -433,35 +433,25 @@ module Test
                     ECR.embed "test.ecr", response
                 when "/get"
                     response.print( "<p>#{request.path}</p>" );
-
                     request.query_params.each \
                         do | name, value |
-                            case ( name )
-                                when "name"
-                                    response.print( "<p>Name : #{value}</p>" );
-                                when "message"
-                                    response.print( "<p>Message : #{value}</p>" );
-                            end
+                            response.print( "<p>#{name} : #{value}</p>" );
                         end
                 when "/post"
                     response.print( "<p>#{request.path}</p>" );
+                    request_body = request.body;
 
-                    if ( request.body.class == IO )
-                        HTTP::Params.parse( request.body.gets_to_end ).each \
+                    if ( request_body )
+                        HTTP::Params.parse( request_body.gets_to_end ).each \
                             do | name, value |
-                                case ( name )
-                                    when "name"
-                                        response.print( "<p>Name : #{value}</p>" );
-                                    when "message"
-                                        response.print( "<p>Message : #{value}</p>" );
-                                end
+                                response.print( "<p>#{name} : #{value}</p>" );
                             end
                     end
                 when "/time"
                     response.print( "<p>The time is #{Time.now}</p>" );
                 else
-                    response.status_code = 404;
                     response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
+                    response.status_code = 404;
             end
 
             response.print( "<p><a href=\"/\">Back</a></p>" );
