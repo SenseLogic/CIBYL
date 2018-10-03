@@ -5,11 +5,28 @@
     <title>Test</title>
 </head>
 <body>
-    <a href="/time">Time</a>
+    <p>
+        <a href="/time">Time</a>
+    </p>
+    <form action="/get" method="get">
+        <label for="name">Name :</label><br/>
+        <input id="name" name="name" type="text"><br/>
+        <label for="message">Message :</label><br/>
+        <textarea id="message" name="message"></textarea><br/>
+        <input type="submit" value="Get">
+    </form>
+    <br/>
+    <form action="/post" method="post">
+        <label for="name">Name :</label><br/>
+        <input id="name" name="name" type="text"><br/>
+        <label for="message">Message :</label><br/>
+        <textarea id="message" name="message"></textarea><br/>
+        <input type="submit" value="Post">
+    </form>
     <p>
         <%= if ( person_array.size \
                  > 0 )
-                person_array.size.to_s() + " persons.";
+                person_array.size.to_s() + " persons :";
             else
                 "Nobody.";
             end %>

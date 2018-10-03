@@ -425,21 +425,46 @@ module Test
             response = context.response;
             response.headers[ "Server" ] = "Crystal";
             response.headers[ "Date" ] = HTTP.format_time( Time.now );
+            response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+            response.status_code = 200;
 
             case ( request.path )
                 when "/"
-                    response.status_code = 200;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
                     ECR.embed "test.ecr", response
+                when "/get"
+                    response.print( "<p>#{request.path}</p>" );
+
+                    request.query_params.each \
+                        do | name, value |
+                            case ( name )
+                                when "name"
+                                    response.print( "<p>Name : #{value}</p>" );
+                                when "message"
+                                    response.print( "<p>Message : #{value}</p>" );
+                            end
+                        end
+                when "/post"
+                    response.print( "<p>#{request.path}</p>" );
+
+                    if ( request.body.class == IO )
+                        HTTP::Params.parse( request.body.gets_to_end ).each \
+                            do | name, value |
+                                case ( name )
+                                    when "name"
+                                        response.print( "<p>Name : #{value}</p>" );
+                                    when "message"
+                                        response.print( "<p>Message : #{value}</p>" );
+                                end
+                            end
+                    end
                 when "/time"
-                    response.status_code = 200;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "<p>The time is #{Time.now}</p><p><a href=\"/\">Back</a></p>" );
+                    response.print( "<p>The time is #{Time.now}</p>" );
                 else
                     response.status_code = 404;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
+                    response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
             end
+
+            response.print( "<p><a href=\"/\">Back</a></p>" );
         end
 
     puts( "Listening on http://127.0.0.1:8080" );

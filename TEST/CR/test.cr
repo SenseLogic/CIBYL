@@ -507,28 +507,50 @@ module Test
             response = context.response;
             response.headers[ "Server" ] = "Crystal";
             response.headers[ "Date" ] = HTTP.format_time( Time.now );
+            response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+            response.status_code = 200;
 
             case ( request.path )
 
                 when "/"
 
-                    response.status_code = 200;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
                     ECR.embed "test.ecr", response
+
+                when "/get"
+
+                    response.print( "<p>#{request.path}</p>" );
+                    request.query_params.each \
+                        do | name, value |
+
+                            response.print( "<p>#{name} : #{value}</p>" );
+                        end
+
+                when "/post"
+
+                    response.print( "<p>#{request.path}</p>" );
+                    request_body = request.body;
+
+                    if ( request_body )
+
+                        HTTP::Params.parse( request_body.gets_to_end ).each \
+                            do | name, value |
+
+                                response.print( "<p>#{name} : #{value}</p>" );
+                            end
+                    end
 
                 when "/time"
 
-                    response.status_code = 200;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "<p>The time is #{Time.now}</p><p><a href=\"/\">Back</a></p>" );
+                    response.print( "<p>The time is #{Time.now}</p>" );
 
                 else
 
+                    response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
                     response.status_code = 404;
-                    response.headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.response.print( "<h1>Oops...</h1><p>#{request.path}</p>" );
 
             end
+
+            response.print( "<p><a href=\"/\">Back</a></p>" );
         end
 
     puts( "Listening on http://127.0.0.1:8080" );

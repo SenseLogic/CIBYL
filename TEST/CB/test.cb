@@ -507,28 +507,50 @@ module TEST
             response = context.Response;
             response.Headers[ "Server" ] = "Crystal";
             response.Headers[ "Date" ] = HTTP.FormatTime( TIME.Now );
+            response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
+            response.StatusCode = 200;
 
             case ( request.Path )
             {
                 when "/"
                 {
-                    response.StatusCode = 200;
-                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
                     ECR.Embed "test.ecr", response
+                }
+                when "/get"
+                {
+                    response.Print( "<p>#{request.Path}</p>" );
+                    request.QueryParams.Each
+                        do | name, value |
+                        {
+                            response.Print( "<p>#{name} : #{value}</p>" );
+                        }
+                }
+                when "/post"
+                {
+                    response.Print( "<p>#{request.Path}</p>" );
+                    request_body = request.Body;
+
+                    if ( request_body )
+                    {
+                        HTTP::PARAMS.Parse( request_body.GetsToEnd ).Each
+                            do | name, value |
+                            {
+                                response.Print( "<p>#{name} : #{value}</p>" );
+                            }
+                    }
                 }
                 when "/time"
                 {
-                    response.StatusCode = 200;
-                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.Response.Print( "<p>The time is #{TIME.Now}</p><p><a href=\"/\">Back</a></p>" );
+                    response.Print( "<p>The time is #{TIME.Now}</p>" );
                 }
                 else
                 {
+                    response.Print( "<h1>Oops...</h1><p>#{request.Path}</p>" );
                     response.StatusCode = 404;
-                    response.Headers[ "Content-Type" ] = "text/html; charset=UTF-8";
-                    context.Response.Print( "<h1>Oops...</h1><p>#{request.Path}</p>" );
                 }
             }
+
+            response.Print( "<p><a href=\"/\">Back</a></p>" );
         }
 
     Puts( "Listening on http://127.0.0.1:8080" );
