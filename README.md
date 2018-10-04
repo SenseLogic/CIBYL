@@ -76,16 +76,18 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 If the `--convert` option is used :
 
 *   `$` prefixes are converted to `@@`
-*   identifiers prefixed with `#` are converted to `UPPER_CASE`
-*   `UPPER_CASE` identifiers are converted to `PascalCase`
 *   `PascalCase` identifiers are converted to `snake_case`
+*   `UPPER_CASE` identifiers are converted to `PascalCase`
+*   `PascalCase` identifiers prefixed with `#` are converted to `UPPER_CASE`
+*   `snake_case` identifiers prefixed with `#` are converted to `PascalCase`
+
+Characters and identifiers prefixed with `\` are kept unchanged.
 
 ## Limitations
 
 *   Blocks must be properly aligned.
 *   Multi-line strings are not supported.
-*   Dictionaries are not reloaded dynamically.
-*   The C-like blocks are not processed in embedded code.
+*   Curly bracket blocks can't be used in embedded code.
 
 ## Installation
 

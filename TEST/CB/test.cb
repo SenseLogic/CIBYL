@@ -465,6 +465,18 @@ module TEST
             Puts( "Listening on http://#{address}" );
             server.Listen();
         }
+
+        // ~~
+
+        def TestConversion(
+            ) :
+            VOID
+        {
+            # \snake_case \PascalCase \UPPER_CASE
+            # SnakeCase PASCAL_CASE \UPPER_CASE
+            # snake_case #pascal_case #UpperCase
+            # \// \\ \$SnakeCase \#SnakeCase \UINT32 UINT32
+        }
     }
 
     // -- STATEMENTS

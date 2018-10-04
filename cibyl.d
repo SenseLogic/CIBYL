@@ -566,11 +566,26 @@ class CONTEXT
 
 class FILE
 {
+    // -- ATTRIBUTES
+
     string
         InputPath,
         OutputPath;
     bool
         Exists;
+    SysTime
+        SystemTime;
+
+    // -- CONSTRUCTORS
+
+    this(
+        string input_file_path
+        )
+    {
+        InputPath = input_file_path;
+        OutputPath = "";
+        Exists = false;
+    }
 
     // ~~
 
@@ -584,7 +599,38 @@ class FILE
         Exists = true;
     }
 
-    // ~~
+    // -- INQUIRIES
+
+    bool HasChanged(
+        )
+    {
+        SysTime
+            old_system_time;
+
+        old_system_time = SystemTime;
+
+        try
+        {
+            SystemTime = InputPath.timeLastModified();
+        }
+        catch ( FileException file_exception )
+        {
+            Abort( "Can't read file : " ~ InputPath, file_exception );
+        }
+
+        if ( !Exists )
+        {
+            Exists = true;
+
+            return true;
+        }
+        else
+        {
+            return SystemTime > old_system_time;
+        }
+    }
+
+    // -- OPERATIONS
 
     string ReadInputFile(
         )
@@ -656,6 +702,41 @@ class FILE
 
     // ~~
 
+    void LoadDictionary(
+        )
+    {
+        string[]
+            identifier_array,
+            line_array;
+
+        line_array = ReadInputFile().replace( "\r", "" ).replace( "\t", " " ).split( "\n" );
+
+        foreach ( line_index, line; line_array )
+        {
+            line = line.strip();
+
+            if ( line.length > 0 )
+            {
+                identifier_array = line.split( ':' );
+
+                if ( identifier_array.length == 2 )
+                {
+                    ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 1 ].strip();
+                }
+                else if ( identifier_array.length == 1 )
+                {
+                    ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 0 ].strip();
+                }
+                else
+                {
+                    PrintError( "Invalid definition : " ~ line );
+                }
+            }
+        }
+    }
+
+    // ~~
+
     string ProcessIdentifiers(
         string text
         )
@@ -672,6 +753,7 @@ class FILE
             context_array;
         INT
             character_index,
+            escaped_character_index,
             line_index,
             next_character_index;
 
@@ -679,6 +761,7 @@ class FILE
         context_array ~= context;
 
         line_index = 0;
+        escaped_character_index = -1;
 
         for ( character_index = 0;
               character_index < text.length;
@@ -726,6 +809,20 @@ class FILE
                 context.IsInsideLongComment = true;
 
                 ++character_index;
+            }
+            else if ( !context.IsInsideString
+                      && character == '\\' )
+            {
+                text = text[ 0 .. character_index ] ~ text [ character_index + 1 .. $ ];
+
+                while ( character_index + 1 < text.length
+                        && text[ character_index ].IsAlphaNumericCharacter()
+                        && text[ character_index + 1 ].IsAlphaNumericCharacter() )
+                {
+                    ++character_index;
+                }
+
+                escaped_character_index = character_index;
             }
             else if ( context.IsInsideString
                       && character == '\\' )
@@ -851,9 +948,17 @@ class FILE
                 if ( !context.IsInsideString )
                 {
                     if ( character_index >= 1
+                         && character_index - 1 != escaped_character_index
                          && text[ character_index - 1 ] == '#' )
                     {
-                        identifier = identifier.GetSnakeCaseIdentifier().toUpper();
+                        if ( identifier.IsLowerCaseIdentifier() )
+                        {
+                            identifier = identifier.toUpper().GetPascalCaseIdentifier();
+                        }
+                        else
+                        {
+                            identifier = identifier.GetSnakeCaseIdentifier().toUpper();
+                        }
 
                         text = text[ 0 .. character_index - 1 ] ~ identifier ~ text [ next_character_index .. $ ];
 
@@ -863,6 +968,7 @@ class FILE
                     {
                         if ( ConvertOptionIsEnabled
                              && character_index >= 1
+                             && character_index - 1 != escaped_character_index
                              && text[ character_index - 1 ] == '$' )
                         {
                             text = text[ 0 .. character_index - 1 ] ~ "@@" ~ text [ character_index .. $ ];
@@ -1043,6 +1149,8 @@ string
     SpaceText;
 string[ string ]
     ReplacedIdentifierMap;
+FILE[]
+    DictionaryFileArray;
 FILE[ string ]
     FileMap;
 INT
@@ -1170,6 +1278,23 @@ bool IsAlphaNumericCharacter(
 
 // ~~
 
+bool IsLowerCaseIdentifier(
+    string text
+    )
+{
+    foreach ( character; text )
+    {
+        if ( character >= 'A' && character <= 'Z' )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// ~~
+
 bool IsUpperCaseIdentifier(
     string text
     )
@@ -1258,51 +1383,33 @@ string GetSnakeCaseIdentifier(
 
 // ~~
 
-void LoadDictionary(
-    string dictionary_file_path
+bool LoadDictionaries(
     )
 {
-    string
-        dictionary_file_text;
-    string[]
-        identifier_array,
-        line_array;
+    bool
+        dictionaries_are_loaded;
 
-    writeln( "Loading file : ", dictionary_file_path );
+    dictionaries_are_loaded = false;
 
-    try
+    foreach ( dictionary_file; DictionaryFileArray )
     {
-        dictionary_file_text = dictionary_file_path.readText();
-    }
-    catch ( FileException file_exception )
-    {
-        Abort( "Can't load file : " ~ dictionary_file_path, file_exception );
-    }
-
-    line_array = dictionary_file_text.replace( "\r", "" ).replace( "\t", " " ).split( "\n" );
-
-    foreach ( line_index, line; line_array )
-    {
-        line = line.strip();
-
-        if ( line.length > 0 )
+        if ( dictionary_file.HasChanged() )
         {
-            identifier_array = line.split( ':' );
-
-            if ( identifier_array.length == 2 )
-            {
-                ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 1 ].strip();
-            }
-            else if ( identifier_array.length == 1 )
-            {
-                ReplacedIdentifierMap[ identifier_array[ 0 ].strip() ] = identifier_array[ 0 ].strip();
-            }
-            else
-            {
-                PrintError( "Invalid definition : " ~ line );
-            }
+            dictionaries_are_loaded = true;
         }
     }
+
+    if ( dictionaries_are_loaded )
+    {
+        ReplacedIdentifierMap = null;
+
+        foreach ( dictionary_file; DictionaryFileArray )
+        {
+            dictionary_file.LoadDictionary();
+        }
+    }
+
+    return dictionaries_are_loaded;
 }
 
 // ~~
@@ -1385,6 +1492,11 @@ void ProcessFiles(
     bool modification_time_is_used
     )
 {
+    if ( LoadDictionaries() )
+    {
+        modification_time_is_used = false;
+    }
+
     FindFiles( input_folder_path, output_folder_path );
 
     foreach ( ref file; FileMap )
@@ -1429,7 +1541,6 @@ void main(
 
     Language = LANGUAGE.Ruby;
     ReplaceOptionIsEnabled = false;
-    ReplacedIdentifierMap = null;
     ConvertOptionIsEnabled = false;
     JoinOptionIsEnabled = false;
     CompactOptionIsEnabled = false;
@@ -1457,7 +1568,7 @@ void main(
         {
             ReplaceOptionIsEnabled = true;
 
-            LoadDictionary( argument_array[ 0 ].GetLogicalPath() );
+            DictionaryFileArray ~= new FILE( argument_array[ 0 ].GetLogicalPath() );
 
             argument_array = argument_array[ 1 .. $ ];
         }

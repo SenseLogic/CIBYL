@@ -310,7 +310,7 @@ module Test
                     print( character );
                 end
 
-            print( '\n' );
+            print( 'n' );
 
             [
                 { 1, "A" },
@@ -383,6 +383,17 @@ module Test
             address = server.bind_tcp( 8080 );
             puts( "Listening on http://#{address}" );
             server.listen();
+        end
+
+        # ~~
+
+        def test_conversion(
+            ) : \
+            Void
+            # snake_case PascalCase UPPER_CASE
+            # snake_case PascalCase UPPER_CASE
+            # snake_case PascalCase UPPER_CASE
+            # // \ $snake_case #snake_case UINT32 UInt32
         end
     end
 
