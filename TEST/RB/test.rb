@@ -147,7 +147,9 @@ module Test
         # -- OPERATIONS
 
         def test_comment(
-            )
+            count : Int32
+            ) : \
+            Void
             #****************
             # This is
             #  a single-line
@@ -162,6 +164,12 @@ module Test
             #another
             # multi-line
             #  comment.
+
+            if ( count <= 1 )    # This is a comment.
+                return 10;    # This is a comment.
+            else
+                return 0;    # This is a comment.
+            end
         end
 
         # ~~
@@ -387,7 +395,7 @@ module Test
 
         # ~~
 
-        def test_conversion(
+        def test_letter_case(
             ) : \
             Void
             # snake_case PascalCase UPPER_CASE

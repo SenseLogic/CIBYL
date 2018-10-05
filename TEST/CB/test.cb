@@ -168,7 +168,9 @@ module TEST
         // -- OPERATIONS
 
         def TestComment(
-            )
+            count : INT32
+            ) :
+            VOID
         {
             //****************
             // This is
@@ -184,6 +186,15 @@ module TEST
               another
                multi-line
                 comment. */
+
+            if ( count <= 1 )    // This is a comment.
+            {
+                return 10;    // This is a comment.
+            }
+            else
+            {
+                return 0;    // This is a comment.
+            }
         }
 
         // ~~
@@ -468,7 +479,7 @@ module TEST
 
         // ~~
 
-        def TestConversion(
+        def TestLetterCase(
             ) :
             VOID
         {

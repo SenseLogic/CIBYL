@@ -328,11 +328,7 @@ class CODE
         {
             line = LineArray[ line_index ];
 
-            if ( line.Text.startsWith( "//" ) )
-            {
-                line.Text = "#" ~ line.Text[ 2 .. $ ];
-            }
-            else if ( line.Text.startsWith( "/*" ) )
+            if ( line.Text.startsWith( "/*" ) )
             {
                 line.Text = "#" ~ line.Text[ 2 .. $ ];
 
@@ -799,7 +795,7 @@ class FILE
             {
                 context.IsInsideShortComment = true;
 
-                ++character_index;
+                text = text[ 0 .. character_index ] ~ '#' ~ text[ character_index + 2 .. $ ];
             }
             else if ( !context.IsInsideString
                       && character == '/'
@@ -1028,11 +1024,7 @@ class FILE
         CODE
             code;
 
-        if ( ReplaceOptionIsEnabled
-             || ConvertOptionIsEnabled )
-        {
-            text = ProcessIdentifiers( text );
-        }
+        text = ProcessIdentifiers( text );
 
         code = new CODE( InputPath );
         code.SetLineArray( text );

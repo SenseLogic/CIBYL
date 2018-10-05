@@ -70,7 +70,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   `.ecb` files contain embedded Cibyl code
 *   blocks start by a `{` line and end by a `}` line
 *   `do` blocks start their own lines
-*   short comment lines start by `//`
+*   short comments start by `//`
 *   long comment lines start by `/*` and end by `*/`
 
 If the `--convert` option is used :
