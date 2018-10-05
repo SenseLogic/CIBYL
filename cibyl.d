@@ -31,8 +31,6 @@ import std.string : endsWith, indexOf, replace, split, startsWith, strip, stripL
 
 // -- TYPES
 
-// .. INT
-
 version ( X86 )
 {
     alias INT = int;
@@ -42,10 +40,12 @@ else
     alias INT = long;
 }
 
-// .. CODE
+// ~~
 
 enum LANGUAGE
 {
+    // -- CONSTANTS
+
     Ruby = 1,
     Crystal = 2,
     Any = Ruby | Crystal
