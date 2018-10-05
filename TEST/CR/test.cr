@@ -32,16 +32,14 @@ module Test
             @x,
             @y,
             @z
-            ) : \
-            Void
+            ) : Void
 
         end
 
         # -- INQUIRIES
 
         def is_zero(
-            ) : \
-            Bool
+            ) : Bool
 
             return
                 x == @@zero.x \
@@ -63,8 +61,7 @@ module Test
         # -- INQUIRIES
 
         def is_red?(
-            ) : \
-            Bool
+            ) : Bool
 
             return self == RED;
         end
@@ -80,15 +77,14 @@ module Test
             @name : String,
             @position : Position,
             @color : Color
-            ) : \
-            Void
+            ) : Void
 
         end
 
         # -- INQUIRIES
 
         def is_blue(
-            )
+            ) : Bool
 
             return @color == Color::BLUE;
         end
@@ -114,8 +110,7 @@ module Test
             @name,
             @age,
             @color
-            ) : \
-            Void
+            ) : Void
 
             if ( @age < @@minimum_age )
 
@@ -135,8 +130,7 @@ module Test
         # -- INQUIRIES
 
         def is_green?(
-            ) : \
-            Bool
+            ) : Bool
 
             return color == Color::GREEN;
         end
@@ -144,8 +138,7 @@ module Test
         # -- OPERATIONS
 
         protected def print(
-            ) : \
-            Void
+            ) : Void
 
             puts( "#{age} - #{name}" );
         end
@@ -160,8 +153,7 @@ module Test
         def initialize(
             @hello : String,
             @world : String
-            ) : \
-            Void
+            ) : Void
 
         end
 
@@ -169,8 +161,7 @@ module Test
 
         def test_comment(
             count : Int32
-            ) : \
-            Void
+            ) : Void
 
             #****************
             # This is
@@ -201,8 +192,7 @@ module Test
 
         def test_if(
             count : Int32
-            ) : \
-            Int32
+            ) : Int32
 
             if ( count <= 1 )
 
@@ -247,8 +237,7 @@ module Test
 
         def test_unless(
             count : Int32
-            ) : \
-            Int32
+            ) : Int32
 
             unless ( count > 1 )
 
@@ -269,8 +258,7 @@ module Test
 
         def test_while(
             count : Int32
-            ) : \
-            Void
+            ) : Void
 
             index = 0;
 
@@ -284,8 +272,7 @@ module Test
 
         def test_until(
             count : Int32
-            ) : \
-            Void
+            ) : Void
 
             index = 0;
 
@@ -299,8 +286,7 @@ module Test
 
         def test_case(
             count : Int32
-            ) : \
-            Int32
+            ) : Int32
 
             case ( count )
 
@@ -342,8 +328,7 @@ module Test
         # ~~
 
         def test_begin(
-            ) : \
-            Int32
+            ) : Int32
 
             begin
 
@@ -366,8 +351,7 @@ module Test
         # ~~
 
         def test_rescue(
-            ) : \
-            Int32
+            ) : Int32
 
             result = 1;
 
@@ -387,8 +371,7 @@ module Test
         # ~~
 
         def test_each(
-            ) : \
-            Void
+            ) : Void
 
             "0123456789".each_char \
                 do | character |
@@ -411,8 +394,7 @@ module Test
         # ~~
 
         def test_type(
-            ) : \
-            Void
+            ) : Void
 
             data = Array( NamedTuple( id: Int32, name: String ) ).new();
             data.push( { id: 1, name: "Toto" } );
@@ -426,8 +408,7 @@ module Test
         # ~~
 
         def test_interpolation(
-            ) : \
-            Void
+            ) : Void
 
             puts( "Test #{@hello + " Test #{@hello} #{@world} Test " + @world} Test" );
             puts( %(Test #{@hello + %( Test #{@hello} #{@world} Test ) + @world} Test) );
@@ -462,8 +443,7 @@ module Test
         # ~~
 
         def test_server(
-            ) : \
-            Void
+            ) : Void
 
             server = HTTP::Server.new \
                 do | context |
@@ -480,8 +460,7 @@ module Test
         # ~~
 
         def test_letter_case(
-            ) : \
-            Void
+            ) : Void
 
             # snake_case PascalCase UPPER_CASE
             # snake_case PascalCase UPPER_CASE

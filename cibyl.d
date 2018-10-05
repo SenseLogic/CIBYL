@@ -470,8 +470,7 @@ class CODE
                  || line.IsCommand( "setter", CommandPrefixArray )
                  || line.IsCommand( "class_property", CommandPrefixArray )
                  || line.IsCommand( "class_getter", CommandPrefixArray )
-                 || line.IsCommand( "class_setter", CommandPrefixArray )
-                 || line.IsCommand( ") :" ) )
+                 || line.IsCommand( "class_setter", CommandPrefixArray ) )
             {
                 line.Text ~= " \\";
             }

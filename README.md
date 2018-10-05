@@ -31,23 +31,6 @@ puts fibonacci( 8 );
 Optionally, Cibyl allows to use other case conventions :
 
 ```ruby
-struct POINT
-{
-    def Initialize(
-        @Name : STRING,
-        @Position : POSITION,
-        @Color : COLOR
-        )
-    {
-    }
-
-    def IsBlue(
-        )
-    {
-        return @Color == COLOR.#Blue;
-    }
-}
-
 require "http/server";
 
 server = HTTP::SERVER.New

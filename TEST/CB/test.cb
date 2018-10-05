@@ -32,16 +32,14 @@ module TEST
             @X,
             @Y,
             @Z
-            ) :
-            VOID
+            ) : VOID
         {
         }
 
         // -- INQUIRIES
 
         def IsZero(
-            ) :
-            BOOL
+            ) : BOOL
         {
             return
                 X == $Zero.X
@@ -63,8 +61,7 @@ module TEST
         // -- INQUIRIES
 
         def IsRed?(
-            ) :
-            BOOL
+            ) : BOOL
         {
             return self == #Red;
         }
@@ -80,15 +77,14 @@ module TEST
             @Name : STRING,
             @Position : POSITION,
             @Color : COLOR
-            ) :
-            VOID
+            ) : VOID
         {
         }
 
         // -- INQUIRIES
 
         def IsBlue(
-            )
+            ) : BOOL
         {
             return @Color == COLOR::#Blue;
         }
@@ -114,8 +110,7 @@ module TEST
             @Name,
             @Age,
             @Color
-            ) :
-            VOID
+            ) : VOID
         {
             if ( @Age < $MinimumAge )
             {
@@ -135,8 +130,7 @@ module TEST
         // -- INQUIRIES
 
         def IsGreen?(
-            ) :
-            BOOL
+            ) : BOOL
         {
             return Color == COLOR::#Green;
         }
@@ -144,8 +138,7 @@ module TEST
         // -- OPERATIONS
 
         protected def Print(
-            ) :
-            VOID
+            ) : VOID
         {
             Puts( "#{age} - #{name}" );
         }
@@ -160,8 +153,7 @@ module TEST
         def Initialize(
             @Hello : STRING,
             @World : STRING
-            ) :
-            VOID
+            ) : VOID
         {
         }
 
@@ -169,8 +161,7 @@ module TEST
 
         def TestComment(
             count : INT32
-            ) :
-            VOID
+            ) : VOID
         {
             //****************
             // This is
@@ -201,8 +192,7 @@ module TEST
 
         def TestIf(
             count : INT32
-            ) :
-            INT32
+            ) : INT32
         {
             if ( count <= 1 )
             {
@@ -247,8 +237,7 @@ module TEST
 
         def TestUnless(
             count : INT32
-            ) :
-            INT32
+            ) : INT32
         {
             unless ( count > 1 )
             {
@@ -269,8 +258,7 @@ module TEST
 
         def TestWhile(
             count : INT32
-            ) :
-            VOID
+            ) : VOID
         {
             index = 0;
 
@@ -284,8 +272,7 @@ module TEST
 
         def TestUntil(
             count : INT32
-            ) :
-            VOID
+            ) : VOID
         {
             index = 0;
 
@@ -299,8 +286,7 @@ module TEST
 
         def TestCase(
             count : INT32
-            ) :
-            INT32
+            ) : INT32
         {
             case ( count )
             {
@@ -342,8 +328,7 @@ module TEST
         // ~~
 
         def TestBegin(
-            ) :
-            INT32
+            ) : INT32
         {
             begin
             {
@@ -366,8 +351,7 @@ module TEST
         // ~~
 
         def TestRescue(
-            ) :
-            INT32
+            ) : INT32
         {
             result = 1;
         }
@@ -387,8 +371,7 @@ module TEST
         // ~~
 
         def TestEach(
-            ) :
-            VOID
+            ) : VOID
         {
             "0123456789".EachChar
                 do | character |
@@ -411,8 +394,7 @@ module TEST
         // ~~
 
         def TestType(
-            ) :
-            VOID
+            ) : VOID
         {
             data = ARRAY( NAMED_TUPLE( Id: INT32, Name: STRING ) ).New();
             data.Push( { Id: 1, Name: "Toto" } );
@@ -426,8 +408,7 @@ module TEST
         // ~~
 
         def TestInterpolation(
-            ) :
-            VOID
+            ) : VOID
         {
             Puts( "Test #{@Hello + " Test #{@Hello} #{@World} Test " + @World} Test" );
             Puts( %(Test #{@Hello + %( Test #{@Hello} #{@World} Test ) + @World} Test) );
@@ -462,8 +443,7 @@ module TEST
         // ~~
 
         def TestServer(
-            ) :
-            VOID
+            ) : VOID
         {
             server = HTTP::SERVER.New
                 do | context |
@@ -480,8 +460,7 @@ module TEST
         // ~~
 
         def TestLetterCase(
-            ) :
-            VOID
+            ) : VOID
         {
             # \snake_case \PascalCase \UPPER_CASE
             # SnakeCase PASCAL_CASE \UPPER_CASE
