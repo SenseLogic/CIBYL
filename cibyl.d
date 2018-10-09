@@ -547,9 +547,9 @@ class CONTEXT
     bool
         IsInsideShortComment,
         IsInsideLongComment,
-        IsInsideInterpolatedExpression,
+        IsInsideString,
         IsInsideInterpolatedString,
-        IsInsideString;
+        IsInsideInterpolatedExpression;
     char
         OpeningDelimiter,
         ClosingDelimiter;
@@ -870,6 +870,15 @@ class FILE
                     context_array = context_array[ 0 .. $ - 1 ];
                     context = context_array[ $ - 1 ];
                 }
+            }
+            else if ( !context.IsInsideString
+                      && character == '\'' )
+            {
+                context.IsInsideString = true;
+                context.IsInsideInterpolatedString = false;
+                context.OpeningDelimiter = 0;
+                context.ClosingDelimiter = '\'';
+                context.DelimiterLevel = 1;
             }
             else if ( !context.IsInsideString
                       && character == '"' )

@@ -161,7 +161,7 @@ module Test
 
         def test_comment(
             count : Int32
-            ) : Void
+            ) : Int32
 
             #****************
             # This is
@@ -184,7 +184,7 @@ module Test
 
             else
 
-                return 0;    # This is a comment.
+                return 20;    # This is a comment.
             end
         end
 
@@ -258,7 +258,7 @@ module Test
 
         def test_while(
             count : Int32
-            ) : Void
+            ) : Int32
 
             index = 0;
 
@@ -266,13 +266,15 @@ module Test
 
                 index = index + 1;
             end
+
+            return index;
         end
 
         # ~~
 
         def test_until(
             count : Int32
-            ) : Void
+            ) : Int32
 
             index = 0;
 
@@ -280,6 +282,8 @@ module Test
 
                 index = index + 1;
             end
+
+            return index;
         end
 
         # ~~
@@ -332,19 +336,19 @@ module Test
 
             begin
 
-                result = 1;
+                result = 10;
 
             rescue
 
-                result = 2;
+                result = 20;
 
             else
 
-                result = 3;
+                result = 30;
 
             ensure
 
-                result = 4;
+                result = 40;
             end
         end
 
@@ -353,25 +357,25 @@ module Test
         def test_rescue(
             ) : Int32
 
-            result = 1;
+            result = 10;
 
         rescue
 
-            result = 2;
+            result = 20;
 
         else
 
-            result = 3;
+            result = 30;
 
         ensure
 
-            result = 4;
+            result = 40;
         end
 
         # ~~
 
         def test_each(
-            ) : Void
+            ) : Bool
 
             "0123456789".each_char \
                 do | character |
@@ -379,7 +383,7 @@ module Test
                     print( character );
                 end
 
-            print( 'n' );
+            print( '\n' );
 
             [
                 { 1, "A" },
@@ -389,12 +393,14 @@ module Test
 
                     puts( "#{key} : #{value}" );
                 end
+
+            return true;
         end
 
         # ~~
 
         def test_type(
-            ) : Void
+            ) : Bool
 
             data = Array( NamedTuple( id: Int32, name: String ) ).new();
             data.push( { id: 1, name: "Toto" } );
@@ -403,12 +409,29 @@ module Test
             data.push( { id: 4, name: "Titi" } );
 
             puts( data );
+
+            return true;
         end
 
         # ~~
 
-        def test_interpolation(
-            ) : Void
+        def test_character(
+            ) : Bool
+
+            puts( '\'' );
+            puts( '\\' );
+            puts( '\u0041' );
+            puts( '\u{41}' );
+            puts( 'a' );
+            puts( 'あ' );
+
+            return true;
+        end
+
+        # ~~
+
+        def test_string(
+            ) : Bool
 
             puts( "Test #{@hello + " Test #{@hello} #{@world} Test " + @world} Test" );
             puts( %(Test #{@hello + %( Test #{@hello} #{@world} Test ) + @world} Test) );
@@ -438,42 +461,72 @@ module Test
                     new_text = part_array.join( ' ' );
                     puts( "'#{old_text}' => #{part_array} => '#{new_text}'" );
                 end
-        end
 
-        # ~~
-
-        def test_server(
-            ) : Void
-
-            server = HTTP::Server.new \
-                do | context |
-
-                    context.response.content_type = "text/plain";
-                    context.response.print( "Hello world! The time is #{Time.now}" );
-                end
-
-            address = server.bind_tcp( 8080 );
-            puts( "Listening on http://#{address}" );
-            server.listen();
+            return true;
         end
 
         # ~~
 
         def test_letter_case(
-            ) : Void
+            ) : Bool
 
             # snake_case PascalCase UPPER_CASE
             # snake_case PascalCase UPPER_CASE
             # snake_case PascalCase UPPER_CASE
             # // \ $snake_case #snake_case UINT32 UInt32
+
+            return true;
+        end
+
+        # ~~
+
+        def test_server(
+            server_is_run
+            ) : Bool
+
+            if ( server_is_run )
+
+                server = HTTP::Server.new \
+                    do | context |
+
+                        context.response.content_type = "text/plain";
+                        context.response.print( "Hello world! The time is #{Time.now}" );
+                    end
+
+                address = server.bind_tcp( 8080 );
+                puts( "Listening on http://#{address}" );
+                server.listen();
+            end
+
+            return true;
+        end
+
+        # ~~
+
+        def run(
+            ) : Void
+
+            puts( test_comment( 1 ) );
+            puts( test_if( 1 ) );
+            puts( test_unless( 1 ) );
+            puts( test_while( 10 ) );
+            puts( test_until( 10 ) );
+            puts( test_case( 1 ) );
+            puts( test_begin() );
+            puts( test_rescue() );
+            puts( test_each() );
+            puts( test_type() );
+            puts( test_character() );
+            puts( test_string() );
+            puts( test_letter_case() );
+            puts( test_server( false ) );
         end
     end
 
     # -- STATEMENTS
 
     test = Test.new( "Hello", "World" );
-    test.test_type();
-    test.test_interpolation();
+    test.run();
 
     # ~~
 

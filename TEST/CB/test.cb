@@ -161,7 +161,7 @@ module TEST
 
         def TestComment(
             count : INT32
-            ) : VOID
+            ) : INT32
         {
             //****************
             // This is
@@ -184,7 +184,7 @@ module TEST
             }
             else
             {
-                return 0;    // This is a comment.
+                return 20;    // This is a comment.
             }
         }
 
@@ -258,7 +258,7 @@ module TEST
 
         def TestWhile(
             count : INT32
-            ) : VOID
+            ) : INT32
         {
             index = 0;
 
@@ -266,13 +266,15 @@ module TEST
             {
                 index = index + 1;
             }
+
+            return index;
         }
 
         // ~~
 
         def TestUntil(
             count : INT32
-            ) : VOID
+            ) : INT32
         {
             index = 0;
 
@@ -280,6 +282,8 @@ module TEST
             {
                 index = index + 1;
             }
+
+            return index;
         }
 
         // ~~
@@ -332,19 +336,19 @@ module TEST
         {
             begin
             {
-                result = 1;
+                result = 10;
             }
             rescue
             {
-                result = 2;
+                result = 20;
             }
             else
             {
-                result = 3;
+                result = 30;
             }
             ensure
             {
-                result = 4;
+                result = 40;
             }
         }
 
@@ -353,25 +357,25 @@ module TEST
         def TestRescue(
             ) : INT32
         {
-            result = 1;
+            result = 10;
         }
         rescue
         {
-            result = 2;
+            result = 20;
         }
         else
         {
-            result = 3;
+            result = 30;
         }
         ensure
         {
-            result = 4;
+            result = 40;
         }
 
         // ~~
 
         def TestEach(
-            ) : VOID
+            ) : BOOL
         {
             "0123456789".EachChar
                 do | character |
@@ -389,12 +393,14 @@ module TEST
                 {
                     Puts( "#{key} : #{value}" );
                 }
+
+            return true;
         }
 
         // ~~
 
         def TestType(
-            ) : VOID
+            ) : BOOL
         {
             data = ARRAY( NAMED_TUPLE( Id: INT32, Name: STRING ) ).New();
             data.Push( { Id: 1, Name: "Toto" } );
@@ -403,12 +409,29 @@ module TEST
             data.Push( { Id: 4, Name: "Titi" } );
 
             Puts( data );
+
+            return true;
         }
 
         // ~~
 
-        def TestInterpolation(
-            ) : VOID
+        def TestCharacter(
+            ) : BOOL
+        {
+            Puts( '\'' );
+            Puts( '\\' );
+            Puts( '\u0041' );
+            Puts( '\u{41}' );
+            Puts( 'a' );
+            Puts( 'あ' );
+
+            return true;
+        }
+
+        // ~~
+
+        def TestString(
+            ) : BOOL
         {
             Puts( "Test #{@Hello + " Test #{@Hello} #{@World} Test " + @World} Test" );
             Puts( %(Test #{@Hello + %( Test #{@Hello} #{@World} Test ) + @World} Test) );
@@ -438,42 +461,72 @@ module TEST
                     new_text = part_array.Join( ' ' );
                     Puts( "'#{old_text}' => #{part_array} => '#{new_text}'" );
                 }
-        }
 
-        // ~~
-
-        def TestServer(
-            ) : VOID
-        {
-            server = HTTP::SERVER.New
-                do | context |
-                {
-                    context.Response.ContentType = "text/plain";
-                    context.Response.Print( "Hello world! The time is #{TIME.Now}" );
-                }
-
-            address = server.BindTcp( 8080 );
-            Puts( "Listening on http://#{address}" );
-            server.Listen();
+            return true;
         }
 
         // ~~
 
         def TestLetterCase(
-            ) : VOID
+            ) : BOOL
         {
             # \snake_case \PascalCase \UPPER_CASE
             # SnakeCase PASCAL_CASE \UPPER_CASE
             # snake_case #pascal_case #UpperCase
             # \// \\ \$SnakeCase \#SnakeCase \UINT32 UINT32
+
+            return true;
+        }
+
+        // ~~
+
+        def TestServer(
+            server_is_run
+            ) : BOOL
+        {
+            if ( server_is_run )
+            {
+                server = HTTP::SERVER.New
+                    do | context |
+                    {
+                        context.Response.ContentType = "text/plain";
+                        context.Response.Print( "Hello world! The time is #{TIME.Now}" );
+                    }
+
+                address = server.BindTcp( 8080 );
+                Puts( "Listening on http://#{address}" );
+                server.Listen();
+            }
+
+            return true;
+        }
+
+        // ~~
+
+        def Run(
+            ) : VOID
+        {
+            Puts( TestComment( 1 ) );
+            Puts( TestIf( 1 ) );
+            Puts( TestUnless( 1 ) );
+            Puts( TestWhile( 10 ) );
+            Puts( TestUntil( 10 ) );
+            Puts( TestCase( 1 ) );
+            Puts( TestBegin() );
+            Puts( TestRescue() );
+            Puts( TestEach() );
+            Puts( TestType() );
+            Puts( TestCharacter() );
+            Puts( TestString() );
+            Puts( TestLetterCase() );
+            Puts( TestServer( false ) );
         }
     }
 
     // -- STATEMENTS
 
     test = TEST.New( "Hello", "World" );
-    test.TestType();
-    test.TestInterpolation();
+    test.Run();
 
     // ~~
 
