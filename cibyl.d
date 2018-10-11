@@ -27,7 +27,7 @@ import std.datetime : Clock, SysTime;
 import std.file : dirEntries, exists, mkdirRecurse, readText, timeLastModified, write, FileException, SpanMode;
 import std.path : dirName;
 import std.stdio : writeln;
-import std.string : endsWith, indexOf, replace, split, startsWith, strip, stripLeft, stripRight, toUpper;
+import std.string : endsWith, indexOf, join, replace, split, startsWith, strip, stripLeft, stripRight, toUpper;
 
 // -- TYPES
 
@@ -300,62 +300,11 @@ class CODE
         string[]
             line_array;
 
-        line_array = file_text.replace( "\r", "" ).replace( "\t", "    " ).split( "\n" );
+        line_array = file_text.split( "\n" );
 
         foreach ( line_index; 0 .. line_array.length )
         {
             LineArray ~= new LINE( line_array[ line_index ] );
-        }
-    }
-
-    // ~~
-
-    void ProcessComments(
-        )
-    {
-        string
-            text;
-        INT
-            line_index,
-            space_count_offset;
-        LINE
-            first_line,
-            line;
-
-        for ( line_index = 0;
-              line_index < LineArray.length;
-              ++line_index )
-        {
-            line = LineArray[ line_index ];
-
-            if ( line.Text.startsWith( "/*" ) )
-            {
-                line.Text = "#" ~ line.Text[ 2 .. $ ];
-
-                first_line = line;
-
-                while ( line_index < LineArray.length )
-                {
-                    line = LineArray[ line_index ];
-
-                    if ( !line.Text.startsWith( '#' ) )
-                    {
-                        space_count_offset = line.FirstSpaceCount - first_line.FirstSpaceCount - 2;
-
-                        line.Text = "#" ~ GetSpaceText( space_count_offset ) ~ line.Text;
-                        line.FirstSpaceCount = first_line.FirstSpaceCount;
-                    }
-
-                    if ( line.Text.endsWith( "*/" ) )
-                    {
-                        line.Text = line.Text[ 0 .. $ - 2 ].stripRight();
-
-                        break;
-                    }
-
-                    ++line_index;
-                }
-            }
         }
     }
 
@@ -522,8 +471,6 @@ class CODE
         bool blocks_are_processed = true
         )
     {
-        ProcessComments();
-
         if ( blocks_are_processed )
         {
             ProcessBlocks();
@@ -570,6 +517,8 @@ class FILE
         Exists;
     SysTime
         SystemTime;
+    bool
+        UsesCarriageReturn;
 
     // -- CONSTRUCTORS
 
@@ -644,7 +593,14 @@ class FILE
             Abort( "Can't read file : " ~ InputPath, file_exception );
         }
 
-        return input_file_text;
+        UsesCarriageReturn = ( input_file_text.indexOf( '\r' ) >= 0 );
+
+        if ( UsesCarriageReturn )
+        {
+            input_file_text = input_file_text.replace( "\r", "" );
+        }
+
+        return input_file_text.replace( "\t", GetSpaceText( TabulationSpaceCount ) );
     }
 
     // ~~
@@ -685,6 +641,11 @@ class FILE
     {
         writeln( "Writing file : ", OutputPath );
 
+        if ( UsesCarriageReturn )
+        {
+            output_file_text = output_file_text.replace( "\n", "\r\n" );
+        }
+
         try
         {
             OutputPath.write( output_file_text );
@@ -704,7 +665,7 @@ class FILE
             identifier_array,
             line_array;
 
-        line_array = ReadInputFile().replace( "\r", "" ).replace( "\t", " " ).split( "\n" );
+        line_array = ReadInputFile().split( "\n" );
 
         foreach ( line_index, line; line_array )
         {
@@ -733,7 +694,8 @@ class FILE
     // ~~
 
     string ProcessIdentifiers(
-        string text
+        string text,
+        INT line_index
         )
     {
         char
@@ -749,23 +711,30 @@ class FILE
         INT
             character_index,
             escaped_character_index,
-            line_index,
-            next_character_index;
+            line_character_index,
+            line_first_character_index,
+            long_comment_space_count,
+            next_character_index,
+            space_count;
 
         context = new CONTEXT();
         context_array ~= context;
 
-        line_index = 0;
+        line_first_character_index = 0;
         escaped_character_index = -1;
+        long_comment_space_count = 0;
 
         for ( character_index = 0;
               character_index < text.length;
               ++character_index )
         {
             character = text[ character_index ];
+            line_character_index = character_index - line_first_character_index;
 
             if ( character == '\n' )
             {
+                line_first_character_index = character_index + 1;
+
                 ++line_index;
             }
 
@@ -778,13 +747,52 @@ class FILE
             }
             else if ( context.IsInsideLongComment )
             {
-                if ( character == '*'
-                     && character_index + 1 < text.length
-                     && text[ character_index + 1 ] == '/' )
+                if ( line_character_index == long_comment_space_count )
+                {
+                    text = text[ 0 .. character_index ] ~ "#" ~ text[ character_index .. $ ];
+
+                    if ( character_index + 2 < text.length
+                         && text[ character_index + 1 ] == ' '
+                         && text[ character_index + 2 ] == ' ' )
+                    {
+                        text = text[ 0 .. character_index + 1 ] ~ text[ character_index + 3 .. $ ];
+                    }
+                }
+                else if ( character == '*'
+                          && character_index + 1 < text.length
+                          && text[ character_index + 1 ] == '/' )
                 {
                     context.IsInsideLongComment = false;
 
-                    ++character_index;
+                    text = text[ 0 .. character_index ] ~ text[ character_index + 2 .. $ ];
+
+                    --character_index;
+
+                    if ( character_index + 1 < text.length
+                         && text[ character_index + 1 ] != '\n' )
+                    {
+                        for ( next_character_index = character_index + 1;
+                              next_character_index < text.length
+                              && text[ next_character_index ] != '\n';
+                              ++next_character_index )
+                        {
+                            if ( text[ next_character_index ] != ' ' )
+                            {
+                                PrintError( InputPath ~ "(" ~ ( line_index + 1 ).to!string() ~ ") : long comment not ending line" );
+
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if ( character != ' '
+                          && line_character_index < long_comment_space_count )
+                {
+                    space_count = long_comment_space_count - line_character_index;
+
+                    text = text[ 0 .. character_index ] ~ GetSpaceText( space_count ) ~ text[ character_index .. $ ];
+
+                    character_index += space_count - 1;
                 }
             }
             else if ( !context.IsInsideString
@@ -803,7 +811,9 @@ class FILE
             {
                 context.IsInsideLongComment = true;
 
-                ++character_index;
+                text = text[ 0 .. character_index ] ~ '#' ~ text[ character_index + 2 .. $ ];
+
+                long_comment_space_count = line_character_index;
             }
             else if ( !context.IsInsideString
                       && character == '\\' )
@@ -1026,13 +1036,14 @@ class FILE
 
     string ProcessText(
         string text,
-        bool blocks_are_processed = true
+        bool blocks_are_processed,
+        INT line_index
         )
     {
         CODE
             code;
 
-        text = ProcessIdentifiers( text );
+        text = ProcessIdentifiers( text, line_index );
 
         code = new CODE( InputPath );
         code.SetLineArray( text );
@@ -1051,47 +1062,58 @@ class FILE
             processed_text;
         INT
             character_index,
+            line_count,
+            line_index,
             next_character_index;
 
-        if ( ReplaceOptionIsEnabled
-             || ConvertOptionIsEnabled )
+        line_index = 0;
+
+        for ( character_index = 0;
+              character_index < text.length;
+              ++character_index )
         {
-            for ( character_index = 0;
-                  character_index < text.length;
-                  ++character_index )
+            if ( text[ character_index ] == '\n' )
             {
-                if ( text[ character_index ] == '<'
-                     && character_index + 1 < text.length
-                     && text[ character_index + 1 ] == '%' )
+                ++line_index;
+            }
+            else if ( text[ character_index ] == '<'
+                 && character_index + 1 < text.length
+                 && text[ character_index + 1 ] == '%' )
+            {
+                if ( character_index + 2 < text.length
+                     && text[ character_index + 2 ] == '%' )
                 {
-                    if ( character_index + 2 < text.length
-                         && text[ character_index + 2 ] == '%' )
+                    character_index += 2;
+                }
+                else
+                {
+                    line_count = 0;
+
+                    for ( next_character_index = character_index + 2;
+                          next_character_index < text.length;
+                          ++next_character_index )
                     {
-                        character_index += 2;
-                    }
-                    else
-                    {
-                        for ( next_character_index = character_index + 2;
-                              next_character_index < text.length;
-                              ++next_character_index )
+                        if ( text[ next_character_index ] == '\n' )
                         {
-                            if ( text[ next_character_index ] == '%'
-                                 && next_character_index + 1 < text.length
-                                 && text[ next_character_index + 1 ] == '>' )
-                            {
-                                character_index += 2;
-
-                                processed_text = ProcessText( text[ character_index .. next_character_index ], false );
-                                text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
-
-                                next_character_index = character_index + processed_text.length + 2;
-
-                                break;
-                            }
+                            ++line_count;
                         }
+                        else if ( text[ next_character_index ] == '%'
+                                  && next_character_index + 1 < text.length
+                                  && text[ next_character_index + 1 ] == '>' )
+                        {
+                            character_index += 2;
 
-                        character_index = next_character_index - 1;
+                            processed_text = ProcessText( text[ character_index .. next_character_index ], false, line_index );
+                            text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
+
+                            next_character_index = character_index + processed_text.length + 2;
+
+                            break;
+                        }
                     }
+
+                    character_index = next_character_index - 1;
+                    line_index += line_count;
                 }
             }
         }
@@ -1117,7 +1139,7 @@ class FILE
 
             if ( InputPath.endsWith( ".cb" ) )
             {
-                text = ProcessText( text );
+                text = ProcessText( text, true, 0 );
             }
             else if ( InputPath.endsWith( ".ecb" ) )
             {
@@ -1154,7 +1176,8 @@ FILE[]
 FILE[ string ]
     FileMap;
 INT
-    PauseDuration;
+    PauseDuration,
+    TabulationSpaceCount;
 LANGUAGE
     Language;
 string[]
@@ -1547,6 +1570,7 @@ void main(
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
+    TabulationSpaceCount = 4;
 
     while ( argument_array.length >= 1
             && argument_array[ 0 ].startsWith( "--" ) )
@@ -1599,6 +1623,13 @@ void main(
 
             argument_array = argument_array[ 1 .. $ ];
         }
+        else if ( option == "--tabulation"
+                  && argument_array.length >= 1 )
+        {
+            TabulationSpaceCount = argument_array[ 0 ].to!INT();
+
+            argument_array = argument_array[ 1 .. $ ];
+        }
         else
         {
             PrintError( "Invalid option : " ~ option );
@@ -1635,6 +1666,7 @@ void main(
         writeln( "    --create" );
         writeln( "    --watch" );
         writeln( "    --pause 500" );
+        writeln( "    --tabulation 4" );
         writeln( "Examples :" );
         writeln( "    cibyl --crystal CB/ CR/" );
         writeln( "    cibyl --crystal --create CB/ CR/" );

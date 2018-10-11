@@ -170,13 +170,26 @@ module Test
             #****************
             # This is a single-line comment.
             # This is
+            # a multi-line
+            # comment.
+            #
+            # This is
+            # a multi-line
+            # comment.
+            #
+            # This is
             #  a multi-line
             #   comment.
+            # This is
+            #a multi-line
+            #comment.
             # This
-            #is
-            #another
-            # multi-line
-            #  comment.
+            # is
+            #a multi-line
+            # comment.
+            #   This is
+            #   a multi-line
+            #   comment.
 
             if ( count <= 1 )    # This is a comment.
 

@@ -54,7 +54,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   blocks start by a `{` line and end by a `}` line
 *   `do` blocks start their own lines
 *   short comments start by `//`
-*   long comment lines start by `/*` and end by `*/`
+*   long comments start by `/*` and end by `*/`
 
 If the `--convert` option is used :
 
@@ -100,6 +100,7 @@ cibyl [options] INPUT_FOLDER/ OUTPUT_FOLDER/
 --create : create the output folders if needed
 --watch : watch the Cibyl files for modifications
 --pause 500 : time to wait before checking the Cibyl files again
+--tabulation 4 : set the tabulation space count
 ```
 
 ### Examples
