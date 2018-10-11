@@ -961,7 +961,8 @@ class FILE
 
                 if ( !context.IsInsideString )
                 {
-                    if ( character_index >= 1
+                    if ( ConvertOptionIsEnabled
+                         && character_index >= 1
                          && character_index - 1 != escaped_character_index
                          && text[ character_index - 1 ] == '#' )
                     {
@@ -993,7 +994,8 @@ class FILE
 
                         replaced_identifier = identifier in ReplacedIdentifierMap;
 
-                        if ( replaced_identifier !is null )
+                        if ( ReplaceOptionIsEnabled
+                             && replaced_identifier !is null )
                         {
                             text = text[ 0 .. character_index ] ~ *replaced_identifier ~ text [ next_character_index .. $ ];
 
