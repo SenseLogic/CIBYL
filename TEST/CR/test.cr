@@ -229,9 +229,15 @@ module Test
 
                 return 20;
 
-            else
+            elsif ( count <= 3 \
+                    && count != 1 \
+                    && count != 2 )
 
                 return 30;
+
+            else
+
+                return 40;
             end
 
             if ( count >= 1 \

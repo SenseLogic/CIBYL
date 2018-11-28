@@ -381,7 +381,7 @@ class CODE
                  || ProcessBlock( "class", null, CommandPrefixArray, LANGUAGE.Any )
                  || ProcessBlock( "def", [ "rescue", "else", "ensure" ], CommandPrefixArray, LANGUAGE.Any )
                  || ProcessBlock( "if", [ "elsif", "else" ], null, LANGUAGE.Any )
-                 || ProcessBlock( "elsif", [ "else" ], null, LANGUAGE.Any )
+                 || ProcessBlock( "elsif", [ "elsif", "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "else", [ "ensure" ], null, LANGUAGE.Any )
                  || ProcessBlock( "unless", [ "else" ], null, LANGUAGE.Any )
                  || ProcessBlock( "case", [ "when", "else" ], null, LANGUAGE.Any )
