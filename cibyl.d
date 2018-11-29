@@ -749,14 +749,14 @@ class FILE
             {
                 if ( line_character_index == long_comment_space_count )
                 {
-                    text = text[ 0 .. character_index ] ~ "#" ~ text[ character_index .. $ ];
-
-                    if ( character_index + 2 < text.length
-                         && text[ character_index + 1 ] == ' '
-                         && text[ character_index + 2 ] == ' ' )
+                    if ( character == ' '
+                         && character_index + 1 < text.length
+                         && text[ character_index + 1 ] == ' ' )
                     {
-                        text = text[ 0 .. character_index + 1 ] ~ text[ character_index + 3 .. $ ];
+                        text = text[ 0 .. character_index ] ~ text[ character_index + 2 .. $ ];
                     }
+
+                    text = text[ 0 .. character_index ] ~ "#" ~ text[ character_index .. $ ];
                 }
                 else if ( character == '*'
                           && character_index + 1 < text.length
@@ -792,7 +792,19 @@ class FILE
 
                     text = text[ 0 .. character_index ] ~ GetSpaceText( space_count ) ~ text[ character_index .. $ ];
 
-                    character_index += space_count - 1;
+                    if ( character == '\n' )
+                    {
+                        character_index += space_count;
+
+                        text = text[ 0 .. character_index ] ~ "#" ~ text[ character_index .. $ ];
+                        ++character_index;
+
+                        line_first_character_index = character_index + 1;
+                    }
+                    else
+                    {
+                        character_index += space_count - 1;
+                    }
                 }
             }
             else if ( !context.IsInsideString
