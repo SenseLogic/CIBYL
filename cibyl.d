@@ -1068,6 +1068,37 @@ class FILE
 
     // ~~
 
+    string EscapeText(
+        string text
+        )
+    {
+        if ( text.startsWith( '~' )
+             || text.startsWith( "-~" ) )
+        {
+            if ( text.startsWith( '~' ) )
+            {
+                text = "= HTML.escape(" ~ text[ 1 .. $ ];
+            }
+            else
+            {
+                text = "-= HTML.escape(" ~ text[ 2 .. $ ];
+            }
+
+            if ( text.endsWith( '-' ) )
+            {
+                text = text[ 0 .. $ - 1 ] ~ ") -";
+            }
+            else
+            {
+                text ~= ") ";
+            }
+        }
+
+        return text;
+    }
+
+    // ~~
+
     string ProcessEmbeddedText(
         string text
         )
@@ -1117,7 +1148,8 @@ class FILE
                         {
                             character_index += 2;
 
-                            processed_text = ProcessText( text[ character_index .. next_character_index ], false, line_index );
+                            processed_text = EscapeText( ProcessText( text[ character_index .. next_character_index ], false, line_index ) );
+
                             text = text[ 0 .. character_index ] ~ processed_text ~ text[ next_character_index .. $ ];
 
                             next_character_index = character_index + processed_text.length + 2;

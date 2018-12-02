@@ -55,6 +55,7 @@ Most of the Ruby/Crystal syntax is kept unchanged, except that :
 *   `do` blocks start their own lines
 *   short comments start by `//`
 *   long comments start by `/*` and end by `*/`
+*   `<%~` `%>` blocks apply `HTML.escape` to their content
 
 If the `--convert` option is used :
 

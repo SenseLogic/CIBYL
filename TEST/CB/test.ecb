@@ -38,7 +38,7 @@
         </tr>
         <% person_array.Each do | person | %>
             <tr>
-                <td><%= HTML.Escape( person.Name ) %></td>
+                <td><%-~ person.Name -%></td>
                 <td><%= person.Age %></td>
             </tr>
         <% end %>
