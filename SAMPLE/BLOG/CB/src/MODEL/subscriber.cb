@@ -1,0 +1,108 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class SUBSCRIBER
+    {
+        // -- ATTRIBUTES
+
+        property
+            Id : INT32,
+            Email : STRING;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            @Id = 0,
+            @Email = ""
+            ) : VOID
+        {
+        }
+    }
+
+    // -- FUNCTIONS
+
+    def GetSubscriber(
+        result_set : DB::RESULT_SET
+        ) : SUBSCRIBER
+    {
+        return SUBSCRIBER.New(
+            result_set.Read( INT32 ),
+            result_set.Read( STRING )
+            );
+    }
+
+    // ~~
+
+    def GetSubscriberArray(
+        ) : ARRAY( SUBSCRIBER )
+    {
+        subscriber_array = ARRAY( SUBSCRIBER ).New();
+
+        Database.QueryEach "select * from SUBSCRIBER order by Email asc"
+            do | result_set |
+            {
+                subscriber_array.Push( GetSubscriber( result_set ) );
+            }
+
+        return subscriber_array;
+    }
+
+    // ~~
+
+    def GetSubscriberById(
+        id : INT32
+        ) : SUBSCRIBER | NIL
+    {
+        Database.QueryEach "select * from SUBSCRIBER where Id = ?", id
+            do | result_set |
+            {
+                return GetSubscriber( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def ChangeSubscriber(
+        id : INT32,
+        email : STRING
+        ) : VOID
+    {
+        Database.Exec(
+            "update SUBSCRIBER set Id = ?, Email = ? where Id = ?",
+            id,
+            email,
+            id
+            );
+    }
+
+    // ~~
+
+    def AddSubscriber(
+        email : STRING
+        ) : INT32
+    {
+        Database.Exec(
+            "insert into SUBSCRIBER ( Email ) values ( ? )",
+            email
+            );
+
+        return GetLastInsertId();
+    }
+
+    // ~~
+
+    def RemoveSubscriber(
+        id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "delete from SUBSCRIBER where Id = ?",
+            id
+            );
+    }
+}

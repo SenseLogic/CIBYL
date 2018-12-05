@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css"/>
+        <title>
+            Blog
+        </title>
+    </head>
+    <body class="container">
+        <div class="row">
+            <nav class="col m12">
+                <ul>
+                    <% if ( session.user_is_connected && session.user_is_administrator ) %>
+                        <li>
+                            <a href="/administration">
+                                Administration
+                            </a>
+                        </li>
+                    <% end %>
+                    <% section_array.each do | section | %>
+                        <li>
+                            <a href="/show_section/<%= section.id %>">
+                                <%= HTML.escape( section.name ) %>
+                            </a>
+                        </li>
+                    <% end %>
+                </ul>
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col m9">
+                <h1>
+                    Blog
+                </h1>
+                <%= content %>
+            </div>
+            <div class="col m3">
+                <% if ( session.user_is_connected ) %>
+                    <div class="card">
+                        <div class="card-content">
+                            <form action="/disconnect_user" method="post">
+                                <input id="path" name="path" type="hidden" value="<%= session.path %>"/>
+                                <input class="btn" type="submit" value="Log Out"/>
+                            </form>
+                        </div>
+                    </div>
+                <% else %>
+                    <div class="card">
+                        <div class="card-content">
+                            <h5>
+                                Connection
+                            </h5>
+                            <form action="/connect_user" method="post">
+                                <label for="pseudonym">
+                                    Pseudonym :
+                                    <input id="pseudonym" name="pseudonym" type="text"/>
+                                </label>
+                                <label for="password">
+                                    Password :
+                                    <input id="password" name="password" type="password"/>
+                                </label>
+                                <input class="btn" type="submit" value="Log In"/>
+                            </form>
+                        </div>
+                    </div>
+                <% end %>
+                <% if ( !session.user_has_subscribed ) %>
+                    <div class="card">
+                        <div class="card-content">
+                            <h5>
+                                Newsletter
+                            </h5>
+                            <form action="/add_subscriber" method="post"/>
+                                <label for="email">
+                                    Email :
+                                    <input id="email" name="email" type="text"/>
+                                </label>
+                                <input class="btn" type="submit" value="Subscribe">
+                            </form>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+        <script>
+            $( document ).ready(
+                function()
+                {
+                    $( 'select' ).material_select();
+                    <%
+                    if ( session.message != "" )
+                        __kilt_io__ << "Materialize.toast( \"" + session.message + "\", 3000 );";
+
+                        session.message = "";
+                        session.store( context );
+                    end
+                    %>
+                }
+                );
+        </script>
+    </body>
+</html>

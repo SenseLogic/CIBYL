@@ -1,0 +1,41 @@
+<h2>
+    <a href="/show_section/<%= section.id %>">
+        <%= HTML.escape( section.name ) %>
+    </a>
+</h2>
+<h4>
+    <a href="/show_article/<%= article.id %>">
+        <%= HTML.escape( article.title ) %>
+    </a>
+</h4>
+<h5>
+    <% article_user = article.user; %>
+    <%= HTML.escape( article_user ? article_user.pseudonym : "" ) %> - <%= HTML.escape( article.date.to_s() ) %>
+</h5>
+<img class="responsive-img" src="/static/img/<%= article.image_index %>.jpg"/>
+<p>
+    <%= HTML.escape( article.text ) %>
+</p>
+<hr/>
+<% if ( session.user_is_connected ) %>
+    <h4>
+        Comment
+    </h4>
+    <form action="/add_comment/<%= article.id %>/" method="post">
+        <label for="text">
+            Text :
+        </label>
+        <textarea id="text" name="text"/></textarea>
+        <input type="submit" value="Send">
+    </form>
+<% end %>
+<br/>
+<% comment_array.each do | comment | %>
+    <h5>
+        <% comment_user = comment.user; %>
+        <%= HTML.escape( comment_user ? comment_user.pseudonym : "" ) %> - <%= HTML.escape( comment.date_time.to_s() ) %>
+    </h5>
+    <p>
+        <%= HTML.escape( comment.text ) %>
+    </p>
+<% end %>

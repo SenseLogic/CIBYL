@@ -1,0 +1,30 @@
+version: 1.0
+shards:
+  db:
+    github: crystal-lang/crystal-db
+    version: 0.5.1
+
+  exception_page:
+    github: crystal-loot/exception_page
+    version: 0.1.1
+
+  kemal:
+    github: kemalcr/kemal
+    version: 0.25.1
+
+  kemal-session:
+    github: kemalcr/kemal-session
+    version: 0.11.0
+
+  kilt:
+    github: jeromegn/kilt
+    version: 0.4.0
+
+  mysql:
+    github: crystal-lang/crystal-mysql
+    version: 0.5.1
+
+  radix:
+    github: luislavena/radix
+    version: 0.3.8
+

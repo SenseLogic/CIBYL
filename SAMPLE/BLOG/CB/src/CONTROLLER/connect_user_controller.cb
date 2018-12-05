@@ -1,0 +1,34 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def ConnectUser(
+        context : HTTP::SERVER::CONTEXT
+        )
+    {
+        session = SESSION.New( context );
+
+        user
+            = GetUserByPseudonymAndPassword(
+                  context.Params.Body[ "pseudonym" ],
+                  context.Params.Body[ "password" ]
+                  );
+
+        if ( user.Nil?() )
+        {
+            session.Message = "Invalid pseudonym or password.";
+        }
+        else
+        {
+            session.UserId = user.Id;
+            session.UserIsConnected = true;
+            session.UserIsAdministrator = user.IsAdministrator;
+        }
+
+        session.Store( context );
+
+        context.Redirect( session.Path );
+    }
+}

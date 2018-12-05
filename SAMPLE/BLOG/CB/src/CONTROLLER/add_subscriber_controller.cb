@@ -1,0 +1,21 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def AddSubscriber(
+        context : HTTP::SERVER::CONTEXT
+        )
+    {
+        session = SESSION.New( context );
+
+        AddSubscriber( context.Params.Body[ "email" ] );
+
+        session.UserHasSubscribed = true;
+        session.Message = "Thanks for your subscription.";
+        session.Store( context );
+
+        context.Redirect( session.Path );
+    }
+}

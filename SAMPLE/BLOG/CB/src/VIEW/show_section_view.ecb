@@ -1,0 +1,21 @@
+<h2>
+    <a href="/show_section/<%= section.Id %>">
+        <%~ section.Name %>
+    </a>
+</h2>
+<img class="responsive-img" src="/static/img/<%= section.ImageIndex %>.jpg"/>
+<p>
+    <%~ section.Text %>
+</p>
+<hr/>
+<% article_array.Each do | article | %>
+    <h5>
+        <a href="/show_article/<%= article.Id %>">
+            <%~ article.Title %>
+        </a>
+    </h5>
+    <h6>
+        <% article_user = article.User; %>
+        <%~ article_user ? article_user.Pseudonym : "" %> - <%~ article.Date.ToS() %>
+    </h6>
+<% end %>

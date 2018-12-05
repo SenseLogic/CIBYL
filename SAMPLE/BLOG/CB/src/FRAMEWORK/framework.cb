@@ -1,0 +1,20 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- FUNCTIONS
+
+    def GetLastInsertId(
+        ) : INT32
+    {
+        new_id = 0;
+
+        Database.QueryEach( "select last_insert_id()" )
+            do | result_set |
+            {
+                new_id = result_set.Read( INT64 ).ToI32();
+            }
+
+        return new_id;
+    }
+}

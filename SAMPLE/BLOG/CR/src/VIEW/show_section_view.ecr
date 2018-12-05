@@ -1,0 +1,21 @@
+<h2>
+    <a href="/show_section/<%= section.id %>">
+        <%= HTML.escape( section.name ) %>
+    </a>
+</h2>
+<img class="responsive-img" src="/static/img/<%= section.image_index %>.jpg"/>
+<p>
+    <%= HTML.escape( section.text ) %>
+</p>
+<hr/>
+<% article_array.each do | article | %>
+    <h5>
+        <a href="/show_article/<%= article.id %>">
+            <%= HTML.escape( article.title ) %>
+        </a>
+    </h5>
+    <h6>
+        <% article_user = article.user; %>
+        <%= HTML.escape( article_user ? article_user.pseudonym : "" ) %> - <%= HTML.escape( article.date.to_s() ) %>
+    </h6>
+<% end %>

@@ -1,0 +1,140 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class SESSION
+    {
+        // -- ATTRIBUTES
+
+        property
+            Path : STRING,
+            Message : STRING,
+            UserId : INT32,
+            UserIsConnected : BOOL,
+            UserIsAdministrator : BOOL,
+            UserHasSubscribed : BOOL;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            context : HTTP::SERVER::CONTEXT
+            ) : VOID
+        {
+            @Path = GetSessionString( context, "Path", "" );
+            @Message = GetSessionString( context, "Message", "" );
+            @UserId = GetSessionInteger( context, "UserId", 0 );
+            @UserIsConnected = GetSessionBoolean( context, "UserIsConnected", false );
+            @UserIsAdministrator = GetSessionBoolean( context, "UserIsAdministrator", false );
+            @UserHasSubscribed = GetSessionBoolean( context, "UserHasSubscribed", false );
+        }
+
+        // -- OPERATIONS
+
+        def Store(
+            context : HTTP::SERVER::CONTEXT
+            ) : VOID
+        {
+            SetSessionString( context, "Path", @Path );
+            SetSessionString( context, "Message", @Message );
+            SetSessionInteger( context, "UserId", @UserId );
+            SetSessionBoolean( context, "UserIsConnected", @UserIsConnected );
+            SetSessionBoolean( context, "UserIsAdministrator", @UserIsAdministrator );
+            SetSessionBoolean( context, "UserHasSubscribed", @UserHasSubscribed );
+        }
+
+        // ~~
+
+        def SetSessionBoolean(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            boolean : BOOL
+            )
+        {
+            context.session.bool( key, boolean );
+        }
+
+        // ~~
+
+        def GetSessionBoolean(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            default_boolean : BOOL
+            ) : BOOL
+        {
+            boolean = context.session.bool?( key );
+
+            if ( boolean.Nil?() )
+            {
+                return default_boolean;
+            }
+            else
+            {
+                return boolean;
+            }
+        }
+
+        // ~~
+
+        def SetSessionInteger(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            integer : INT32
+            )
+        {
+            context.session.int( key, integer );
+        }
+
+        // ~~
+
+        def GetSessionInteger(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            default_integer : INT32
+            ) : INT32
+        {
+            integer = context.session.int?( key );
+
+            if ( integer.Nil?() )
+            {
+                return default_integer;
+            }
+            else
+            {
+                return integer;
+            }
+        }
+
+        // ~~
+
+        def SetSessionString(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            string : STRING
+            )
+        {
+            context.session.string( key, string );
+        }
+
+        // ~~
+
+        def GetSessionString(
+            context : HTTP::SERVER::CONTEXT,
+            key : STRING,
+            default_string : STRING
+            ) : STRING
+        {
+            string = context.session.string?( key );
+
+            if ( string.Nil?() )
+            {
+                return default_string;
+            }
+            else
+            {
+                return string;
+            }
+        }
+    }
+}

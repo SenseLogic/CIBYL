@@ -1,0 +1,145 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class USER
+    {
+        // -- ATTRIBUTES
+
+        property
+            Id : INT32,
+            Email : STRING,
+            Pseudonym : STRING,
+            Password : STRING,
+            IsAdministrator : BOOL;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            @Id = 0,
+            @Email = "",
+            @Pseudonym = "",
+            @Password = "",
+            @IsAdministrator = false
+            ) : VOID
+        {
+        }
+    }
+
+    // -- FUNCTIONS
+
+    def GetUser(
+        result_set : DB::RESULT_SET
+        ) : USER
+    {
+        return USER.New(
+            result_set.Read( INT32 ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING ),
+            result_set.Read( INT8 ) ? true : false
+            );
+    }
+
+    // ~~
+
+    def GetUserArray(
+        ) : ARRAY( USER )
+    {
+        user_array = ARRAY( USER ).New();
+
+        Database.QueryEach "select * from USER order by Email asc"
+            do | result_set |
+            {
+                user_array.Push( GetUser( result_set ) );
+            }
+
+        return user_array;
+    }
+
+    // ~~
+
+    def GetUserById(
+        id : INT32
+        ) : USER | NIL
+    {
+        Database.QueryEach "select * from USER where Id = ?", id
+            do | result_set |
+            {
+                return GetUser( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def GetUserByPseudonymAndPassword(
+        pseudonym : STRING,
+        password : STRING
+        ) : USER | NIL
+    {
+        Database.QueryEach "select * from USER where Pseudonym = ? and Password = ?", pseudonym, password
+            do | result_set |
+            {
+                return GetUser( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def ChangeUser(
+        id : INT32,
+        email : STRING,
+        pseudonym : STRING,
+        password : STRING,
+        it_is_administrator : BOOL
+        ) : VOID
+    {
+        Database.Exec(
+            "update USER set Id = ?, Email = ?, Pseudonym = ?, Password = ?, IsAdministrator = ? where Id = ?",
+            id,
+            email,
+            pseudonym,
+            password,
+            it_is_administrator ? 1 : 0,
+            id
+            );
+    }
+
+    // ~~
+
+    def AddUser(
+        email : STRING,
+        pseudonym : STRING,
+        password : STRING,
+        it_is_administrator : BOOL
+        ) : INT32
+    {
+        Database.Exec(
+            "insert into USER ( Email, Pseudonym, Password, IsAdministrator ) values ( ?, ?, ?, ? )",
+            email,
+            pseudonym,
+            password,
+            it_is_administrator ? 1 : 0
+            );
+
+        return GetLastInsertId();
+    }
+
+    // ~~
+
+    def RemoveUser(
+        id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "delete from USER where Id = ?",
+            id
+            );
+    }
+}

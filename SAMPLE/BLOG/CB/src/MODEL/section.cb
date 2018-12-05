@@ -1,0 +1,131 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class SECTION
+    {
+        // -- ATTRIBUTES
+
+        property
+            Id : INT32,
+            Number : INT32,
+            Name : STRING,
+            Text : STRING,
+            Image : STRING,
+            ImageIndex : INT32;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            @Id = 0,
+            @Number = 0,
+            @Name = "",
+            @Text = "",
+            @Image = "",
+            @ImageIndex = 0
+            ) : VOID
+        {
+        }
+    }
+
+    // -- FUNCTIONS
+
+    def GetSection(
+        result_set : DB::RESULT_SET
+        ) : SECTION
+    {
+        return SECTION.New(
+            result_set.Read( INT32 ),
+            result_set.Read( INT32 ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING )
+            );
+    }
+
+    // ~~
+
+    def GetSectionArray(
+        ) : ARRAY( SECTION )
+    {
+        section_array = ARRAY( SECTION ).New();
+
+        Database.QueryEach "select * from SECTION order by Number asc"
+            do | result_set |
+            {
+                section_array.Push( GetSection( result_set ) );
+            }
+
+        return section_array;
+    }
+
+    // ~~
+
+    def GetSectionById(
+        id : INT32
+        ) : SECTION | NIL
+    {
+        Database.QueryEach "select * from SECTION where Id = ?", id
+            do | result_set |
+            {
+                return GetSection( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def ChangeSection(
+        id : INT32,
+        number : INT32,
+        name : STRING,
+        text : STRING,
+        image : STRING
+        ) : VOID
+    {
+        Database.Exec(
+            "update SECTION set Id = ?, Number = ?, Name = ?, Text = ?, Image = ? where Id = ?",
+            id,
+            number,
+            name,
+            text,
+            image,
+            id
+            );
+    }
+
+    // ~~
+
+    def AddSection(
+        number : INT32,
+        name : STRING,
+        text : STRING,
+        image : STRING
+        ) : INT32
+    {
+        Database.Exec(
+            "insert into SECTION ( Number, Name, Text, Image ) values ( ?, ?, ?, ? )",
+            number,
+            name,
+            text,
+            image
+            );
+
+        return GetLastInsertId();
+    }
+
+    // ~~
+
+    def RemoveSection(
+        id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "delete from SECTION where Id = ?",
+            id
+            );
+    }
+}

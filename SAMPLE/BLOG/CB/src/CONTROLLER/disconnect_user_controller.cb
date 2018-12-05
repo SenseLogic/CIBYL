@@ -1,0 +1,18 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def DisconnectUser(
+        context : HTTP::SERVER::CONTEXT
+        )
+    {
+        session = SESSION.New( context );
+
+        session.UserIsConnected = false;
+        session.Store( context );
+
+        context.Redirect( session.Path );
+    }
+}

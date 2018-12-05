@@ -1,0 +1,23 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def AddComment(
+        context : HTTP::SERVER::CONTEXT,
+        article_id : INT32
+        )
+    {
+        session = SESSION.New( context );
+
+        text = context.Params.Body[ "text" ];
+        article = GetArticleById( article_id );
+        AddComment( article_id, session.UserId, text );
+
+        session.Message = "Your comment has been added.";
+        session.Store( context );
+
+        context.Redirect( session.Path );
+    }
+}

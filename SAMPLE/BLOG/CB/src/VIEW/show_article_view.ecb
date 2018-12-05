@@ -1,0 +1,41 @@
+<h2>
+    <a href="/show_section/<%= section.Id %>">
+        <%~ section.Name %>
+    </a>
+</h2>
+<h4>
+    <a href="/show_article/<%= article.Id %>">
+        <%~ article.Title %>
+    </a>
+</h4>
+<h5>
+    <% article_user = article.User; %>
+    <%~ article_user ? article_user.Pseudonym : "" %> - <%~ article.Date.ToS() %>
+</h5>
+<img class="responsive-img" src="/static/img/<%= article.ImageIndex %>.jpg"/>
+<p>
+    <%~ article.Text %>
+</p>
+<hr/>
+<% if ( session.UserIsConnected ) %>
+    <h4>
+        Comment
+    </h4>
+    <form action="/add_comment/<%= article.Id %>/" method="post">
+        <label for="text">
+            Text :
+        </label>
+        <textarea id="text" name="text"/></textarea>
+        <input type="submit" value="Send">
+    </form>
+<% end %>
+<br/>
+<% comment_array.Each do | comment | %>
+    <h5>
+        <% comment_user = comment.User; %>
+        <%~ comment_user ? comment_user.Pseudonym : "" %> - <%~ comment.DateTime.ToS() %>
+    </h5>
+    <p>
+        <%~ comment.Text %>
+    </p>
+<% end %>

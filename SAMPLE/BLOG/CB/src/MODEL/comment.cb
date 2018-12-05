@@ -1,0 +1,171 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class COMMENT
+    {
+        // -- ATTRIBUTES
+
+        property
+            Id : INT32,
+            ArticleId : INT32,
+            UserId : INT32,
+            Text : STRING,
+            DateTime : TIME,
+            Article : ARTICLE | NIL,
+            User : USER | NIL;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            @Id = 0,
+            @ArticleId = 0,
+            @UserId = 0,
+            @Text = 0,
+            @DateTime = TIME.Utc( 1, 1, 1, 0, 0, 0 ),
+            @Article = nil,
+            @User = nil
+            ) : VOID
+        {
+        }
+    }
+
+    // -- FUNCTIONS
+
+    def GetComment(
+        result_set : DB::RESULT_SET
+        ) : COMMENT
+    {
+        return COMMENT.New(
+            result_set.Read( INT32 ),
+            result_set.Read( INT32 ),
+            result_set.Read( INT32 ),
+            result_set.Read( STRING ),
+            result_set.Read( TIME )
+            );
+    }
+
+    // ~~
+
+    def InflateComment(
+        comment : COMMENT
+        ) : VOID
+    {
+        comment.Article = GetArticleById( comment.ArticleId );
+        comment.User = GetUserById( comment.UserId );
+    }
+
+    // ~~
+
+    def InflateCommentArray(
+        comment_array : ARRAY( COMMENT )
+        ) : VOID
+    {
+        comment_array.Each
+            do | comment |
+            {
+                InflateComment( comment );
+            }
+    }
+
+    // ~~
+
+    def GetCommentArray(
+        ) : ARRAY( COMMENT )
+    {
+        comment_array = ARRAY( COMMENT ).New();
+
+        Database.QueryEach "select * from COMMENT order by DateTime DESC"
+            do | result_set |
+            {
+                comment_array.Push( GetComment( result_set ) );
+            }
+
+        return comment_array;
+    }
+
+    // ~~
+
+    def GetCommentById(
+        id : INT32
+        ) : COMMENT | NIL
+    {
+        Database.QueryEach "select * from COMMENT where Id = ?", id
+            do | result_set |
+            {
+                return GetComment( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def GetCommentArrayByArticleId(
+        article_id : INT32
+        ) : ARRAY( COMMENT )
+    {
+        comment_array = ARRAY( COMMENT ).New();
+
+        Database.QueryEach "select * from COMMENT where ArticleId = ? order by DateTime DESC", article_id
+            do | result_set |
+            {
+                comment_array.Push( GetComment( result_set ) );
+            }
+
+        return comment_array;
+    }
+
+    // ~~
+
+    def ChangeComment(
+        id : INT32,
+        article_id : INT32,
+        user_id : INT32,
+        text : STRING,
+        date_time : STRING
+        ) : VOID
+    {
+        Database.Exec(
+            "update COMMENT set Id = ?, ArticleId = ?, UserId = ?, Text = ?, DateTime = ? where Id = ?",
+            id,
+            article_id,
+            user_id,
+            text,
+            date_time,
+            id
+            );
+    }
+
+    // ~~
+
+    def AddComment(
+        article_id : INT32,
+        user_id : INT32,
+        text : STRING
+        ) : INT32
+    {
+        Database.Exec(
+            "insert into COMMENT ( ArticleId, UserId, Text, DateTime ) values ( ?, ?, ?, NOW() )",
+            article_id,
+            user_id,
+            text
+            );
+
+        return GetLastInsertId();
+    }
+
+    // ~~
+
+    def RemoveComment(
+        id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "delete from COMMENT where Id = ?",
+            id
+            );
+    }
+}

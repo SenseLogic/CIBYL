@@ -1,0 +1,21 @@
+name: blog
+version: 0.1.0
+
+authors:
+  - senselogic <ecstatic.coder@gmail.com>
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  kemal-session:
+    github: kemalcr/kemal-session
+  mysql:
+    github: crystal-lang/crystal-mysql
+
+targets:
+  blog:
+    main: src/blog.cr
+
+crystal: 0.27.0
+
+license: MIT

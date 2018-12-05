@@ -1,0 +1,36 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def ShowSection(
+        context : HTTP::SERVER::CONTEXT,
+        section_id : INT32
+        )
+    {
+        session = SESSION.New( context );
+
+        session.Path = context.Request.Path;
+        session.Store( context );
+
+        section_array = GetSectionArray();
+
+        if ( section_id <= 0 )
+        {
+            section_id = section_array[ 0 ].Id;
+        }
+
+        section = GetSectionById( section_id );
+
+        if ( section )
+        {
+            article_array = GetArticleArrayBySectionId( section_id );
+            InflateArticleArray( article_array );
+
+            section.ImageIndex = section_id % 20;
+
+            Render( "src/VIEW/show_section_view.ecr", "src/VIEW/show_page_view.ecr" );
+        }
+    }
+}

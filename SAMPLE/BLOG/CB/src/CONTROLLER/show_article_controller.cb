@@ -1,0 +1,36 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- OPERATIONS
+
+    def ShowArticle(
+        context : HTTP::SERVER::CONTEXT,
+        article_id : INT32
+        )
+    {
+        session = SESSION.New( context );
+
+        session.Path = context.Request.Path;
+        session.Store( context );
+
+        article = GetArticleById( article_id );
+
+        if ( article )
+        {
+            section = GetSectionById( article.SectionId );
+
+            if ( section )
+            {
+                section_array = GetSectionArray();
+                comment_array = GetCommentArrayByArticleId( article_id );
+
+                article.ImageIndex = article.Id % 20;
+                InflateArticle( article );
+                InflateCommentArray( comment_array );
+
+                Render( "src/VIEW/show_article_view.ecr", "src/VIEW/show_page_view.ecr" );
+            }
+        }
+    }
+}

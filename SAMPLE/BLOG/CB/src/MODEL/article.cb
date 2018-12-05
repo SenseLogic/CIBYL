@@ -1,0 +1,187 @@
+// -- MODULES
+
+module BLOG
+{
+    // -- TYPES
+
+    class ARTICLE
+    {
+        // -- ATTRIBUTES
+
+        property
+            Id : INT32,
+            SectionId : INT32,
+            UserId : INT32,
+            Title : STRING,
+            Text : STRING,
+            Image : STRING,
+            Date : TIME,
+            Section : SECTION | NIL,
+            User : USER | NIL,
+            ImageIndex : INT32;
+
+        // -- CONSTRUCTORS
+
+        def Initialize(
+            @Id = 0,
+            @SectionId = 0,
+            @UserId = 0,
+            @Title = "",
+            @Text = "",
+            @Image = "",
+            @Date = TIME.Utc( 1, 1, 1, 0, 0, 0 ),
+            @Section = nil,
+            @User = nil,
+            @ImageIndex = 0
+            ) : VOID
+        {
+        }
+    }
+
+    // -- FUNCTIONS
+
+    def GetArticle(
+        result_set : DB::RESULT_SET
+        ) : ARTICLE
+    {
+        return ARTICLE.New(
+            result_set.Read( INT32 ),
+            result_set.Read( INT32 ),
+            result_set.Read( INT32 ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING ),
+            result_set.Read( STRING ),
+            result_set.Read( TIME )
+            );
+    }
+
+    // ~~
+
+    def InflateArticle(
+        article : ARTICLE
+        ) : VOID
+    {
+        article.Section = GetSectionById( article.SectionId );
+        article.User = GetUserById( article.UserId );
+    }
+
+    // ~~
+
+    def InflateArticleArray(
+        article_array : ARRAY( ARTICLE )
+        ) : VOID
+    {
+        article_array.Each
+            do | article |
+            {
+                InflateArticle( article );
+            }
+    }
+
+    // ~~
+
+    def GetArticleArray(
+        ) : ARRAY( ARTICLE )
+    {
+        article_array = ARRAY( ARTICLE ).New();
+
+        Database.QueryEach "select * from ARTICLE order by Date DESC"
+            do | result_set |
+            {
+                article_array.Push( GetArticle( result_set ) );
+            }
+
+        return article_array;
+    }
+
+    // ~~
+
+    def GetArticleById(
+        id : INT32
+        ) : ARTICLE | NIL
+    {
+        Database.QueryEach "select * from ARTICLE where Id = ?", id
+            do | result_set |
+            {
+                return GetArticle( result_set );
+            }
+
+        return nil;
+    }
+
+    // ~~
+
+    def GetArticleArrayBySectionId(
+        section_id : INT32
+        ) : ARRAY( ARTICLE )
+    {
+        article_array = ARRAY( ARTICLE ).New();
+
+        Database.QueryEach "select * from ARTICLE where SectionId = ? order by Date DESC", section_id
+            do | result_set |
+            {
+                article_array.Push( GetArticle( result_set ) );
+            }
+
+        return article_array;
+    }
+
+    // ~~
+
+    def ChangeArticle(
+        id : INT32,
+        title : STRING,
+        text : STRING,
+        image : STRING,
+        date : STRING,
+        section_id : INT32,
+        user_id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "update ARTICLE set Id = ?, SectionId = ?, UserId = ?, Title = ?, Text = ?, Image = ?, Date = ? where Id = ?",
+            id,
+            section_id,
+            user_id,
+            title,
+            text,
+            image,
+            date,
+            id
+            );
+    }
+
+    // ~~
+
+    def AddArticle(
+        title : STRING,
+        text : STRING,
+        image : STRING,
+        section_id : INT32,
+        user_id : INT32
+        ) : INT32
+    {
+        Database.Exec(
+            "insert into ARTICLE ( SectionId, UserId, Title, Text, Image, Date ) values ( ?, ?, ?, ?, ?, NOW() )",
+            section_id,
+            user_id,
+            title,
+            text,
+            image
+            );
+
+        return GetLastInsertId();
+    }
+
+    // ~~
+
+    def RemoveArticle(
+        id : INT32
+        ) : VOID
+    {
+        Database.Exec(
+            "delete from ARTICLE where Id = ?",
+            id
+            );
+    }
+}

@@ -1,0 +1,106 @@
+// -- IMPORTS
+
+require "db";
+require "ecr";
+require "kemal";
+require "kemal-session";
+require "mysql";
+require "./CONTROLLER/add_comment_controller.cr";
+require "./CONTROLLER/disconnect_user_controller.cr";
+require "./CONTROLLER/show_section_controller.cr";
+require "./CONTROLLER/add_subscriber_controller.cr";
+require "./CONTROLLER/connect_user_controller.cr";
+require "./CONTROLLER/show_article_controller.cr";
+require "./FRAMEWORK/framework.cr";
+require "./MODEL/article.cr";
+require "./MODEL/comment.cr";
+require "./MODEL/section.cr";
+require "./MODEL/session.cr";
+require "./MODEL/subscriber.cr";
+require "./MODEL/user.cr";
+
+// -- TYPES
+
+class APPLICATION
+{
+    // -- IMPORTS
+
+    include BLOG;
+
+    // -- ATTRIBUTES
+
+    property
+        Database : DB::DATABASE;
+
+    // -- CONSTRUCTORS
+
+    def Initialize(
+        @Database = DB.Open( "mysql://root:root@localhost:3306/BLOG" )
+        ) : VOID
+    {
+    }
+
+    // -- OPERATIONS
+
+    def Run(
+        ) : VOID
+    {
+        KEMAL::SESSION.Config
+            do | config |
+            {
+                config.secret = "Top secret ;)";
+            }
+
+        Get( "/" )
+            do | context |
+            {
+                ShowSection( context, 0 );
+            }
+
+        Get( "/show_section/:section_id" )
+            do | context |
+            {
+                section_id = context.Params.Url[ "section_id" ];
+                ShowSection( context, section_id.ToI32() );
+            }
+
+        Get( "/show_article/:article_id" )
+            do | context |
+            {
+                article_id = context.Params.Url[ "article_id" ];
+                ShowArticle( context, article_id.ToI32() );
+            }
+
+        Post( "/add_comment/:article_id" )
+            do | context |
+            {
+                article_id = context.Params.Url[ "article_id" ];
+                AddComment( context, article_id.ToI32() );
+            }
+
+        Post( "/add_subscriber" )
+            do | context |
+            {
+                AddSubscriber( context );
+            }
+
+        Post( "/connect_user" )
+            do | context |
+            {
+                ConnectUser( context );
+            }
+
+        Post( "/disconnect_user" )
+            do | context |
+            {
+                DisconnectUser( context );
+            }
+
+        KEMAL.Run();
+    }
+}
+
+// -- STATEMENTS
+
+application = APPLICATION.New();
+application.Run();
