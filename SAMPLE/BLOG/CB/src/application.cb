@@ -5,19 +5,8 @@ require "ecr";
 require "kemal";
 require "kemal-session";
 require "mysql";
-require "./CONTROLLER/add_comment_controller.cr";
-require "./CONTROLLER/disconnect_user_controller.cr";
-require "./CONTROLLER/show_section_controller.cr";
-require "./CONTROLLER/add_subscriber_controller.cr";
-require "./CONTROLLER/connect_user_controller.cr";
-require "./CONTROLLER/show_article_controller.cr";
-require "./FRAMEWORK/framework.cr";
-require "./MODEL/article.cr";
-require "./MODEL/comment.cr";
-require "./MODEL/section.cr";
-require "./MODEL/session.cr";
-require "./MODEL/subscriber.cr";
-require "./MODEL/user.cr";
+require "./CONTROLLER/controller.cr";
+require "./MODEL/model.cr";
 
 // -- TYPES
 
@@ -96,7 +85,11 @@ class APPLICATION
                 DisconnectUser( context );
             }
 
-        KEMAL.Run();
+        KEMAL.Run()
+            do | configuration |
+            {
+                configuration.Server.NotNil!().BindTcp( "0.0.0.0", 3000, reuse_port: true );
+            }
     }
 }
 

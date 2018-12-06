@@ -1,4 +1,4 @@
 #!/bin/sh
 set -x
 cd CR
-crystal run src/blog.cr
+crystal run src/application.cr
