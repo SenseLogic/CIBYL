@@ -35,9 +35,9 @@ class Application
         ) : Void
 
         Kemal::Session.config \
-            do | config |
+            do | configuration |
 
-                config.secret = "Top secret ;)";
+                configuration.secret = "Top secret ;)";
             end
 
         get( "/" ) \
