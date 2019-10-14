@@ -75,7 +75,7 @@ Characters and identifiers prefixed with `\` are kept unchanged.
 
 ## Installation
 
-Install the [DMD 2 compiler](https://dlang.org/download.html) ((using the MinGW setup option on Windows)).
+Install the [DMD 2 compiler](https://dlang.org/download.html) (using the MinGW setup option on Windows).
 
 Build the executable with the following command line :
 
