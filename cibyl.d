@@ -1503,9 +1503,9 @@ void FindFiles(
     {
         foreach ( input_folder_entry; dirEntries( input_folder_path, "*" ~ input_file_extension, SpanMode.depth ) )
         {
-            if ( input_folder_entry.isFile() )
+            if ( input_folder_entry.isFile )
             {
-                input_file_path = input_folder_entry.name();
+                input_file_path = input_folder_entry.name;
 
                 if ( input_file_path.startsWith( input_folder_path )
                      && input_file_path.endsWith( input_file_extension ) )
