@@ -31,17 +31,6 @@ import std.string : endsWith, indexOf, join, replace, split, startsWith, strip, 
 
 // -- TYPES
 
-version ( X86 )
-{
-    alias INT = int;
-}
-else
-{
-    alias INT = long;
-}
-
-// ~~
-
 enum LANGUAGE
 {
     // -- CONSTANTS
@@ -57,7 +46,7 @@ class LINE
 {
     // -- ATTRIBUTES
 
-    INT
+    long
         FirstSpaceCount,
         LastSpaceCount;
     string
@@ -71,7 +60,7 @@ class LINE
         string text
         )
     {
-        INT
+        long
             character_count;
 
         character_count = text.length;
@@ -191,7 +180,7 @@ class CODE
         FilePath;
     LINE[]
         LineArray;
-    INT
+    long
         LineIndex;
 
     // -- CONSTRUCTORS
@@ -207,11 +196,11 @@ class CODE
 
     bool HasPriorCommand(
         string command,
-        INT last_line_index,
-        INT space_count
+        long last_line_index,
+        long space_count
         )
     {
-        INT
+        long
             line_index;
         LINE
             line;
@@ -240,10 +229,10 @@ class CODE
     // ~~
 
     bool FindBrace(
-        ref INT line_index,
+        ref long line_index,
         string brace,
-        INT first_line_index,
-        INT space_count
+        long first_line_index,
+        long space_count
         )
     {
         LINE
@@ -317,7 +306,7 @@ class CODE
         LANGUAGE language
         )
     {
-        INT
+        long
             closing_line_index,
             opening_line_index;
         LINE
@@ -405,7 +394,7 @@ class CODE
     {
         LINE
             line;
-        INT
+        long
             line_index;
 
         for ( line_index = 0;
@@ -489,7 +478,7 @@ class CONTEXT
 {
     // -- ATTRIBUTES
 
-    INT
+    long
         BraceLevel;
     bool
         IsInsideShortComment,
@@ -500,7 +489,7 @@ class CONTEXT
     char
         OpeningDelimiter,
         ClosingDelimiter;
-    INT
+    long
         DelimiterLevel;
 }
 
@@ -695,7 +684,7 @@ class FILE
 
     string ProcessIdentifiers(
         string text,
-        INT line_index
+        long line_index
         )
     {
         char
@@ -708,7 +697,7 @@ class FILE
             context;
         CONTEXT[]
             context_array;
-        INT
+        long
             character_index,
             escaped_character_index,
             line_character_index,
@@ -1051,7 +1040,7 @@ class FILE
     string ProcessText(
         string text,
         bool blocks_are_processed,
-        INT line_index
+        long line_index
         )
     {
         CODE
@@ -1105,7 +1094,7 @@ class FILE
     {
         string
             processed_text;
-        INT
+        long
             character_index,
             line_count,
             line_index,
@@ -1221,7 +1210,7 @@ FILE[]
     DictionaryFileArray;
 FILE[ string ]
     FileMap;
-INT
+long
     PauseDuration,
     TabulationSpaceCount;
 LANGUAGE
@@ -1264,11 +1253,11 @@ void Abort(
 
 // ~~
 
-INT GetSpaceCount(
+long GetSpaceCount(
     string text
     )
 {
-    INT
+    long
         space_count;
 
     space_count = 0;
@@ -1285,7 +1274,7 @@ INT GetSpaceCount(
 // ~~
 
 string GetSpaceText(
-    INT space_count
+    long space_count
     )
 {
     if ( space_count <= 0 )
@@ -1389,7 +1378,7 @@ string GetPascalCaseIdentifier(
         character;
     string
         pascal_case_identifier;
-    INT
+    long
         character_index;
 
     for ( character_index = 0;
@@ -1665,14 +1654,14 @@ void main(
         else if ( option == "--pause"
                   && argument_array.length >= 1 )
         {
-            PauseDuration = argument_array[ 0 ].to!INT();
+            PauseDuration = argument_array[ 0 ].to!long();
 
             argument_array = argument_array[ 1 .. $ ];
         }
         else if ( option == "--tabulation"
                   && argument_array.length >= 1 )
         {
-            TabulationSpaceCount = argument_array[ 0 ].to!INT();
+            TabulationSpaceCount = argument_array[ 0 ].to!long();
 
             argument_array = argument_array[ 1 .. $ ];
         }
