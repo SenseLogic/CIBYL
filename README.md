@@ -80,7 +80,7 @@ Install the [DMD 2 compiler](https://dlang.org/download.html) (using the MinGW s
 Build the executable with the following command line :
 
 ```bash
-dmd -m64 cibyl.d
+dmd -O -inline -m64 cibyl.d
 ```
 
 ## Command line
