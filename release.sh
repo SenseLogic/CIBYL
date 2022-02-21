@@ -1,4 +1,4 @@
 #!/bin/sh
 set -x
-dmd -O -inline -m64 cibyl.d
+dmd -O -m64 cibyl.d
 rm *.o
